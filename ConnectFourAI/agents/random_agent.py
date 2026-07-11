@@ -1,5 +1,5 @@
 import random
-from connect_four.agents.base import BaseAgent
+from ConnectFourAI.agents.base import BaseAgent
 
 class RandomAgent(BaseAgent):
     """

@@ -1,7 +1,7 @@
 import argparse
 import time
-from connect_four.engine import ConnectFourEngine
-from connect_four.agents.random_agent import RandomAgent
+from ConnectFourAI.engine import ConnectFourEngine
+from ConnectFourAI.agents.random_agent import RandomAgent
 
 def run_game(mode, seed, delay):
     engine = ConnectFourEngine()

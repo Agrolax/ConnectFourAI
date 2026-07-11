@@ -6,9 +6,9 @@ This repository contains a modular Python implementation of a Connect Four game 
 
 ## Code Structure
 
-- [connect_four/engine.py](file:///Users/safdar/Documents/antigravity/eager-darwin/connect_four/engine.py): Implements the core game state, rules, win/draw detection, state cloning, and turn tracking.
-- [connect_four/agents/base.py](file:///Users/safdar/Documents/antigravity/eager-darwin/connect_four/agents/base.py): Base class defining the API for Connect Four AI agents.
-- [connect_four/agents/random_agent.py](file:///Users/safdar/Documents/antigravity/eager-darwin/connect_four/agents/random_agent.py): The Random Agent baseline that chooses legal moves uniformly at random using a seeded `random.Random` instance.
+- [ConnectFourAI/engine.py](file:///Users/safdar/Documents/antigravity/eager-darwin/ConnectFourAI/engine.py): Implements the core game state, rules, win/draw detection, state cloning, and turn tracking.
+- [ConnectFourAI/agents/base.py](file:///Users/safdar/Documents/antigravity/eager-darwin/ConnectFourAI/agents/base.py): Base class defining the API for Connect Four AI agents.
+- [ConnectFourAI/agents/random_agent.py](file:///Users/safdar/Documents/antigravity/eager-darwin/ConnectFourAI/agents/random_agent.py): The Random Agent baseline that chooses legal moves uniformly at random using a seeded `random.Random` instance.
 - [main.py](file:///Users/safdar/Documents/antigravity/eager-darwin/main.py): A CLI interface for playing or simulating games.
 - [tests/](file:///Users/safdar/Documents/antigravity/eager-darwin/tests/): Automated test suite to verify correctness.
 

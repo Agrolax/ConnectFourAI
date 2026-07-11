@@ -1,5 +1,5 @@
 import unittest
-from connect_four.engine import ConnectFourEngine
+from ConnectFourAI.engine import ConnectFourEngine
 
 class TestConnectFourEngine(unittest.TestCase):
     def setUp(self):
