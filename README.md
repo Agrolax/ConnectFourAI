@@ -2,13 +2,13 @@
 
 Connect Four is played on a 7 × 6 board (7 columns, 6 rows). Two players alternately drop a disc into one of the seven columns; a disc falls to the lowest empty cell of that column. The first player to connect four consecutive discs horizontally, vertically, or diagonally wins. If the board fills with no winner, the game is a draw.
 
-This repository contains a modular Python implementation of a Connect Four game engine and a seedable Random AI Agent, satisfying Requirements 1 & 2 (Agent 1) of the Assignment.
+This repository contains a modular Python implementation of a Connect Four game engine and a seedable Random AI Agent.
 
 ---
 
-## What is the `tests/` folder for?
+## Automated Unit Tests
 
-We generated a `tests/` folder containing automated unit tests ([tests/test_engine.py](./tests/test_engine.py) and [tests/test_agents.py](./tests/test_agents.py)) to ensure correctness and prevent regressions.
+([tests/test_engine.py](./tests/test_engine.py) and [tests/test_agents.py](./tests/test_agents.py)) help ensure correctness and prevent regressions.
 - **Why it is needed:** Manual testing of every possible win direction (horizontal, vertical, diagonal, anti-diagonal), draw conditions, and invalid inputs is slow and error-prone.
 - **Regression prevention:** When you implement Agent 2 (Rule-Based) and Agent 3 (Minimax), the unit tests guarantee that any changes made to the game state representation or move execution do not break the core engine rules.
 - **Verification:** It allows you to verify the entire system in under a millisecond by running:
@@ -103,32 +103,6 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
   - Record a 3-5 minute video demonstrating one full run (engine CLI plus agent-vs-agent matches) with narration.
 - **How to do it:**
   - Record screen using OBS/QuickTime while running `main.py` simulations, upload to Drive/YouTube, and put the link in the README.
-
----
-
-## Optional Web Interface Design Roadmap
-
-If you want to play against the AI in a clean browser-based visual game:
-
-### Step 1: Frontend & Backend Split
-- **Backend:** Create a lightweight Python web server using **Flask** or **FastAPI**.
-  - Expose API endpoints such as:
-    - `/api/init` to reset the engine state.
-    - `/api/move` to let the player apply a move.
-    - `/api/agent-move` to trigger the AI agent and get its selected move.
-    - `/api/state` to retrieve the current board array and game status.
-- **Alternative (Pure JS):** Port the `ConnectFourEngine` and Agents to JavaScript so the game runs completely in the browser without needing a running Python backend, allowing simple static hosting.
-
-### Step 2: UI Design
-- Create an HTML/CSS interface with:
-  - A clean dark mode palette.
-  - Glassmorphic panels displaying whose turn it is and the move count.
-  - Interactive grid: hovering over a column highlights it.
-  - CSS keyframe animations to simulate gravity (the disk falling smoothly from the top of the column to its rest position).
-
-### Step 3: Deployment & Hosting
-- If using a Python backend: Deploy to **Render** or **PythonAnywhere**.
-- If using Pure JS: Deploy to **Vercel**, **Netlify**, or **GitHub Pages** for free.
 
 ---
 
