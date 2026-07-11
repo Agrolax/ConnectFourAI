@@ -6,28 +6,46 @@ This repository contains a modular Python implementation of a Connect Four game 
 
 ---
 
+## What is the `tests/` folder for?
+
+We generated a `tests/` folder containing automated unit tests ([tests/test_engine.py](./tests/test_engine.py) and [tests/test_agents.py](./tests/test_agents.py)) to ensure correctness and prevent regressions.
+- **Why it is needed:** Manual testing of every possible win direction (horizontal, vertical, diagonal, anti-diagonal), draw conditions, and invalid inputs is slow and error-prone.
+- **Regression prevention:** When you implement Agent 2 (Rule-Based) and Agent 3 (Minimax), the unit tests guarantee that any changes made to the game state representation or move execution do not break the core engine rules.
+- **Verification:** It allows you to verify the entire system in under a millisecond by running:
+  ```bash
+  python3 -m unittest discover -s tests
+  ```
+
+---
+
 ## Assignment Requirements & Progress
 
 ### Requirement 1: Game Engine [1.5 marks]
 - **Status:** **Completed**
-- **Implementation:** Located in [ConnectFourAI/engine.py](file:///Users/safdar/Documents/antigravity/eager-darwin/ConnectFourAI/engine.py)
-- **Work Done:**
-  - Board representation: 2D grid/list of size 6 rows × 7 columns.
-  - Legal-move generation: `legal_moves()` returning indices of non-full columns.
-  - Move execution with gravity: `apply_move(col)` drops discs to the lowest empty row; raises `ValueError` if column is full or invalid.
-  - Win detection: Scans horizontal, vertical, and both diagonal directions for 4 consecutive matching discs.
-  - Draw detection: Active when no moves are legal and there is no winner.
-  - Supporting features: `clone()` for deep copying engine state, `current_player()` for turn-tracking.
+- **Implementation File:** [ConnectFourAI/engine.py](./ConnectFourAI/engine.py)
+- **Detailed Work Done:**
+  - **Board Representation:** Designed an internal 2D list grid representing 6 rows (0-5, where 0 is bottom and 5 is top) by 7 columns (0-6).
+  - **Legal-Move Generation:** Created the `legal_moves()` API which dynamically checks column height limits (column top index 5) and returns a list of column indices that can accept a disc.
+  - **Gravity-based Execution:** Implemented `apply_move(col)` which simulates physical gravity by placing the player's disc in the lowest available row index in the selected column.
+  - **Strict Error Handling:** Configured `apply_move(col)` to raise a `ValueError` for out-of-bounds columns or columns that are already full, preventing silent failures.
+  - **Win Detection:** Developed scanning algorithms searching all active coordinate patterns on the board:
+    - *Horizontal:* 4 consecutive identical discs on any row.
+    - *Vertical:* 4 consecutive identical discs on any column.
+    - *Main Diagonal:* 4 consecutive identical discs in a top-left to bottom-right slope.
+    - *Anti-Diagonal:* 4 consecutive identical discs in a bottom-left to top-right slope (tested separately to isolate potential logic bugs).
+  - **Draw Detection:** Detects if no legal moves remain (`legal_moves()` is empty) and no player has won, returning `0` (Draw).
+  - **Turn & State Tracking:** Tracks `current_player()` (1 or 2) and `move_count`.
+  - **State Deep Copying:** Added `clone()` returning a complete deep copy of the engine's game state, enabling future look-ahead search agents to simulate future board states without altering the main game state.
 
 ### Requirement 2: AI Agents
-Each agent receives the board state and returns a single legal column index.
 
 #### Agent 1 — Random Agent [0.5 marks]
 - **Status:** **Completed**
-- **Implementation:** Located in [ConnectFourAI/agents/random_agent.py](file:///Users/safdar/Documents/antigravity/eager-darwin/ConnectFourAI/agents/random_agent.py)
-- **Work Done:**
-  - Uniformly selects a legal move at random.
-  - Utilizes a seedable `random.Random(seed)` instance internally (avoiding global state mutation) to guarantee reproducible game play during evaluations.
+- **Implementation File:** [ConnectFourAI/agents/random_agent.py](./ConnectFourAI/agents/random_agent.py)
+- **Detailed Work Done:**
+  - **Seeded Random Instance:** Configured `RandomAgent` to accept an optional `seed` parameter in `__init__` which instantiates an isolated `random.Random(seed)` generator. This avoids messing with Python's global random state and ensures all simulation results can be reproduced identically.
+  - **Move Selection:** Uses `rng.choice()` to uniformly select one option from the active `engine.legal_moves()` list.
+  - **Error Handling:** Raises a `ValueError` if invoked on a terminal board state where no legal moves exist.
 
 #### Agent 2 — Rule-Based Agent [1.5 marks]
 - **Status:** **Pending**
@@ -38,7 +56,7 @@ Each agent receives the board state and returns a single legal column index.
     3. Center Preference: Prefer the center column (column 3).
     4. Threat/Line Building: Extend longest line of player's own discs.
 - **How to do it:**
-  - Create `connect_four_ai/agents/rule_based_agent.py` subclassing `BaseAgent`.
+  - Create `ConnectFourAI/agents/rule_based_agent.py` subclassing `BaseAgent`.
   - For rules 1 and 2: Simulate placing a disc in each legal column (using `engine.clone()`) and check if `winner()` returns that player.
   - For rule 3: Sort legal moves by distance to column 3.
   - For rule 4: Iterate through all lines of length 4, scoring them based on count of player discs vs empty spaces.
@@ -50,7 +68,7 @@ Each agent receives the board state and returns a single legal column index.
   - Terminal evaluation: win = positive infinity/large constant, loss = negative infinity/large constant, draw = 0 (from the perspective of the agent to move).
   - Heuristic evaluation for non-terminal states at search depth limit using windowed scoring: slide a window of size 4 across every row, column, and diagonal, scoring it (heavy reward for 3-in-a-window, modest reward for 2-in-a-window, penalizing opponent similarly).
 - **How to do it:**
-  - Create `connect_four_ai/agents/minimax_agent.py` subclassing `BaseAgent`.
+  - Create `ConnectFourAI/agents/minimax_agent.py` subclassing `BaseAgent`.
   - Write a recursive `minimax` function with alpha-beta pruning for efficiency.
   - Use `engine.clone()` and `apply_move()` inside the search tree to simulate state transitions.
   - Implement a scoring utility that sums scores of all overlapping length-4 windows on the board.
@@ -88,7 +106,33 @@ Each agent receives the board state and returns a single legal column index.
 
 ---
 
-## Usage
+## Optional Web Interface Design Roadmap
+
+If you want to play against the AI in a clean browser-based visual game:
+
+### Step 1: Frontend & Backend Split
+- **Backend:** Create a lightweight Python web server using **Flask** or **FastAPI**.
+  - Expose API endpoints such as:
+    - `/api/init` to reset the engine state.
+    - `/api/move` to let the player apply a move.
+    - `/api/agent-move` to trigger the AI agent and get its selected move.
+    - `/api/state` to retrieve the current board array and game status.
+- **Alternative (Pure JS):** Port the `ConnectFourEngine` and Agents to JavaScript so the game runs completely in the browser without needing a running Python backend, allowing simple static hosting.
+
+### Step 2: UI Design
+- Create an HTML/CSS interface with:
+  - A clean dark mode palette.
+  - Glassmorphic panels displaying whose turn it is and the move count.
+  - Interactive grid: hovering over a column highlights it.
+  - CSS keyframe animations to simulate gravity (the disk falling smoothly from the top of the column to its rest position).
+
+### Step 3: Deployment & Hosting
+- If using a Python backend: Deploy to **Render** or **PythonAnywhere**.
+- If using Pure JS: Deploy to **Vercel**, **Netlify**, or **GitHub Pages** for free.
+
+---
+
+## CLI Usage
 
 ### Run Unit Tests
 To execute the automated unit tests:
