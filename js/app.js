@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle Screen Views Programmatically (avoid specificity bugs)
     function showScreen(screen) {
         if (screen === 'settings') {
-            settingsScreen.style.display = 'block';
-            gameScreen.style.display = 'none';
+            settingsScreen.classList.remove('hidden');
+            gameScreen.classList.add('hidden');
         } else {
-            settingsScreen.style.display = 'none';
-            gameScreen.style.display = 'grid'; // active board view is grid
+            settingsScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
         }
     }
 
@@ -168,11 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
             winnerCelebrationTitle.style.textShadow = 'none';
         }
 
-        winnerModal.style.display = 'flex';
+        winnerModal.classList.remove('hidden');
     }
 
     function closeWinnerModal() {
-        winnerModal.style.display = 'none';
+        winnerModal.classList.add('hidden');
     }
 
     // Stop execution loops
