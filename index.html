@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="glass-bg-blobs">
@@ -47,12 +47,42 @@
             <h2>Select Game Settings</h2>
             
             <div class="control-group">
-                <label for="game-mode">Game Mode</label>
-                <div class="custom-select-wrapper">
-                    <select id="game-mode">
-                        <option value="player-vs-random" selected>Player vs Random AI</option>
-                        <option value="random-vs-random">Random AI vs Random AI</option>
-                    </select>
+                <label>Choose Game Mode</label>
+                <div class="modes-grid">
+                    <!-- Completed Active Modes -->
+                    <div class="mode-card selected" data-value="player-vs-random">
+                        <div class="mode-icon">👤 <span>vs</span> 🤖</div>
+                        <div class="mode-label">Player vs Random</div>
+                        <div class="mode-desc">Play manually against a uniform random opponent.</div>
+                    </div>
+                    
+                    <div class="mode-card" data-value="random-vs-random">
+                        <div class="mode-icon">🤖 <span>vs</span> 🤖</div>
+                        <div class="mode-label">Random vs Random</div>
+                        <div class="mode-desc">Watch two random bots play a match automatically.</div>
+                    </div>
+                    
+                    <!-- Pending Modes (Greyed out) -->
+                    <div class="mode-card disabled">
+                        <div class="mode-tag">Coming Soon</div>
+                        <div class="mode-icon">👤 <span>vs</span> 📋</div>
+                        <div class="mode-label">Player vs Rule-Based</div>
+                        <div class="mode-desc">Play against manual prioritized rules.</div>
+                    </div>
+                    
+                    <div class="mode-card disabled">
+                        <div class="mode-tag">Coming Soon</div>
+                        <div class="mode-icon">👤 <span>vs</span> 🧠</div>
+                        <div class="mode-label">Player vs Minimax</div>
+                        <div class="mode-desc">Play against deep search adversarial AI.</div>
+                    </div>
+
+                    <div class="mode-card disabled">
+                        <div class="mode-tag">Coming Soon</div>
+                        <div class="mode-icon">🧠 <span>vs</span> 🤖</div>
+                        <div class="mode-label">Minimax vs Random</div>
+                        <div class="mode-desc">Watch a search agent play the random baseline.</div>
+                    </div>
                 </div>
             </div>
 
@@ -76,33 +106,6 @@
             </div>
 
             <button id="btn-start" class="btn btn-primary btn-block">Start Match</button>
-
-            <!-- Project Progress Grid -->
-            <div class="project-scope-card">
-                <h3>Development Status</h3>
-                <div class="scope-grid">
-                    <div class="scope-item completed">
-                        <span class="scope-status">✓</span>
-                        <span class="scope-name">Engine Core</span>
-                    </div>
-                    <div class="scope-item completed">
-                        <span class="scope-status">✓</span>
-                        <span class="scope-name">Random AI</span>
-                    </div>
-                    <div class="scope-item pending">
-                        <span class="scope-status">○</span>
-                        <span class="scope-name">Rule-Based AI</span>
-                    </div>
-                    <div class="scope-item pending">
-                        <span class="scope-status">○</span>
-                        <span class="scope-name">Minimax AI</span>
-                    </div>
-                    <div class="scope-item pending">
-                        <span class="scope-status">○</span>
-                        <span class="scope-name">Evaluation</span>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- SCREEN 2: ACTIVE MATCH BOARD (Hidden initially) -->

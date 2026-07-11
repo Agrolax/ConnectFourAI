@@ -18,6 +18,18 @@ This repository contains a modular Python implementation of a Connect Four game 
 
 ---
 
+## How the Random Seed Works
+
+Computers cannot generate truly random numbers; they use **Pseudo-Random Number Generators (PRNGs)**, which are deterministic mathematical algorithms.
+- **The Starting Point (Seed):** A PRNG starts its algorithm with a starting integer value called a **Seed**.
+- **Deterministic Sequence:** Once a seed is provided, the generator applies a mathematical formula (such as Mersenne Twister in Python or the LCG in our JavaScript port) to generate a sequence of numbers that *look* random but are actually 100% deterministic.
+- **Identical Results:** If you initialize the random generator with the exact same seed (e.g., `42`), it will generate the **exact same sequence of numbers** every single time you run the program.
+- **Why it matters for AI Experiments:**
+  - Without a seed, the Random Agent's decisions are based on the computer's system clock, causing games to play out differently every time.
+  - For Requirement 3 (Experimental Evaluation), using seeds makes your head-to-head win/draw rates **reproducible**. Anyone else running your program with the same seed will get the exact same results, validating that your experimental numbers are not just a result of random luck.
+
+---
+
 ## Assignment Requirements & Progress
 
 ### Requirement 1: Game Engine [1.5 marks]

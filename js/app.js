@@ -12,8 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameScreen = document.getElementById('game-screen');
 
     // DOM Form Controls (Landing Page)
-    const gameModeSelect = document.getElementById('game-mode');
+    const modesGrid = document.querySelector('.modes-grid');
+    const modeCards = document.querySelectorAll('.mode-card:not(.disabled)');
     const randomSeedInput = document.getElementById('random-seed');
+    
+    let selectedGameMode = 'player-vs-random';
     const simulationDelayInput = document.getElementById('simulation-delay');
     const delayValLabel = document.getElementById('delay-val');
     const speedControlGroup = document.getElementById('speed-control-group');
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isHovering && isGameActive && engine && !engine.isTerminal()) {
             const activePlayer = engine.currentPlayer();
-            const isHumanTurn = (gameModeSelect.value === 'player-vs-random' && activePlayer === 1);
+            const isHumanTurn = (selectedGameMode === 'player-vs-random' && activePlayer === 1);
             
             if (isHumanTurn) {
                 indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
@@ -205,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isGameActive || !engine) return;
         if (engine.isTerminal()) return;
 
-        const mode = gameModeSelect.value;
+        const mode = selectedGameMode;
         const currentPl = engine.currentPlayer();
         
         if (mode === 'player-vs-random' && currentPl === 1) {
@@ -248,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateStatusUI();
 
                 if (!checkTerminalStatus()) {
-                    if (gameModeSelect.value === 'random-vs-random') {
+                    if (selectedGameMode === 'random-vs-random') {
                         scheduleAIMove();
                     }
                 }
@@ -267,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Toggle settings widgets when mode changes
     function handleModeChange() {
-        const mode = gameModeSelect.value;
+        const mode = selectedGameMode;
         if (mode === 'random-vs-random') {
             speedControlGroup.style.display = 'block';
         } else {
@@ -281,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeWinnerModal();
         
         engine = new ConnectFourEngine();
-        const mode = gameModeSelect.value;
+        const mode = selectedGameMode;
         let seedVal = null;
         if (randomSeedInput.value.trim() !== '') {
             seedVal = parseInt(randomSeedInput.value);
@@ -309,12 +312,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Return back to configuration landing page
     function backToSettings() {
         stopLoops();
         closeWinnerModal();
         isGameActive = false;
         
+        modesGrid.classList.remove('match-active');
         showScreen('settings');
     }
 
@@ -323,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeBoardUI();
         
         engine = new ConnectFourEngine();
-        const mode = gameModeSelect.value;
+        const mode = selectedGameMode;
         let seedVal = null;
         if (randomSeedInput.value.trim() !== '') {
             seedVal = parseInt(randomSeedInput.value);
@@ -341,7 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         isGameActive = true;
+        // Lock mode card changes while playing
+        modesGrid.classList.add('match-active');
         
+        // Toggle screen visibility
         showScreen('board');
         
         updateStatusUI();
@@ -353,7 +359,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event Listeners
-    gameModeSelect.addEventListener('change', handleModeChange);
+    modeCards.forEach(card => {
+        card.addEventListener('click', () => {
+            if (isGameActive) return;
+            modeCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedGameMode = card.dataset.value;
+            handleModeChange();
+        });
+    });
     
     simulationDelayInput.addEventListener('input', () => {
         delayValLabel.textContent = `${parseFloat(simulationDelayInput.value).toFixed(1)}s`;
