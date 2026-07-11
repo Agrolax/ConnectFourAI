@@ -157,15 +157,34 @@ document.addEventListener('DOMContentLoaded', () => {
         winnerCelebrationTitle.textContent = title;
         winnerCelebrationMsg.textContent = msg;
         
+        const winnerIcon = document.getElementById('winner-icon');
+        
         if (winnerType === 1) {
             winnerCelebrationTitle.style.color = 'var(--p1-color)';
-            winnerCelebrationTitle.style.textShadow = '0 0 16px var(--p1-glow)';
+            winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(225, 29, 72, 0.6)';
+            if (winnerIcon) {
+                winnerIcon.textContent = '🏆';
+                winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(225, 29, 72, 0.6))';
+            }
         } else if (winnerType === 2) {
             winnerCelebrationTitle.style.color = 'var(--p2-color)';
-            winnerCelebrationTitle.style.textShadow = '0 0 16px var(--p2-glow)';
+            winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(6, 182, 212, 0.6)';
+            if (winnerIcon) {
+                if (selectedGameMode === 'player-vs-random') {
+                    winnerIcon.textContent = '💀';
+                    winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
+                } else {
+                    winnerIcon.textContent = '🏆';
+                    winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
+                }
+            }
         } else {
             winnerCelebrationTitle.style.color = 'var(--text-secondary)';
             winnerCelebrationTitle.style.textShadow = 'none';
+            if (winnerIcon) {
+                winnerIcon.textContent = '🤝';
+                winnerIcon.style.filter = 'none';
+            }
         }
 
         winnerModal.classList.remove('hidden');
@@ -195,8 +214,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 showWinnerModal("Match Draw", "The board is full and there is no winner. Well played!", 0);
             } else {
                 highlightWinningDiscs(result.cells);
-                const playerName = winVal === 1 ? "Player 1 (Red)" : "Player 2 (Yellow)";
-                showWinnerModal("Victory!", `${playerName} has connected four in a row!`, winVal);
+                if (selectedGameMode === 'player-vs-random') {
+                    if (winVal === 1) {
+                        showWinnerModal("Victory!", "You connected four and defeated the Random AI agent!", 1);
+                    } else {
+                        showWinnerModal("Defeat!", "The Random AI agent connected four and won.", 2);
+                    }
+                } else {
+                    const playerName = winVal === 1 ? "Player 1 (Red)" : "Player 2 (Yellow)";
+                    showWinnerModal("Match Over", `${playerName} has connected four in a row!`, winVal);
+                }
             }
             return true;
         }
