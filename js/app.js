@@ -7,26 +7,34 @@ document.addEventListener('DOMContentLoaded', () => {
     let simulationTimeoutId = null;
     let currentHoverColumn = null;
 
-    // DOM Elements
+    // DOM Screens
+    const settingsScreen = document.getElementById('settings-screen');
+    const gameScreen = document.getElementById('game-screen');
+
+    // DOM Form Controls (Landing Page)
     const gameModeSelect = document.getElementById('game-mode');
     const randomSeedInput = document.getElementById('random-seed');
     const simulationDelayInput = document.getElementById('simulation-delay');
     const delayValLabel = document.getElementById('delay-val');
     const speedControlGroup = document.getElementById('speed-control-group');
     const btnStart = document.getElementById('btn-start');
-    const btnReset = document.getElementById('btn-reset');
     
+    // DOM Controls (Game Page)
+    const btnReset = document.getElementById('btn-reset');
+    const btnBack = document.getElementById('btn-back');
     const currentPlayerVal = document.getElementById('current-player-val');
     const moveCountVal = document.getElementById('move-count-val');
-    
-    const gameAlert = document.getElementById('game-alert');
-    const gameAlertMsg = document.getElementById('game-alert-msg');
-    const btnDismissAlert = document.getElementById('btn-dismiss-alert');
-    
     const connect4Board = document.getElementById('connect4-board');
     const dropIndicators = document.getElementById('drop-indicators');
 
-    // Initialize board DOM slots (42 cells: 6 rows x 7 cols)
+    // DOM Modal Elements
+    const winnerModal = document.getElementById('winner-modal');
+    const winnerCelebrationTitle = document.getElementById('winner-celebration-title');
+    const winnerCelebrationMsg = document.getElementById('winner-celebration-msg');
+    const btnModalReplay = document.getElementById('btn-modal-replay');
+    const btnModalClose = document.getElementById('btn-modal-close');
+
+    // Initialize board slots (42 cells: 6 rows x 7 cols)
     function initializeBoardUI() {
         connect4Board.innerHTML = '';
         for (let i = 0; i < 42; i++) {
@@ -77,8 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isHovering && isGameActive && engine && !engine.isTerminal()) {
             const activePlayer = engine.currentPlayer();
-            
-            // Check if player is a human or if the game mode is simulation
             const isHumanTurn = (gameModeSelect.value === 'player-vs-random' && activePlayer === 1);
             
             if (isHumanTurn) {
@@ -115,32 +121,45 @@ document.addEventListener('DOMContentLoaded', () => {
         const cell = getHTMLCell(rEngine, cEngine);
         if (!cell) return;
 
-        // Clear cell contents first just in case
         cell.innerHTML = '';
-
         const disc = document.createElement('div');
         disc.classList.add('board-disc');
         disc.classList.add(player === 1 ? 'p1' : 'p2');
         cell.appendChild(disc);
     }
 
-    // Show alert banner
-    function showAlert(msg, winnerType) {
-        gameAlert.className = 'game-alert-banner';
-        if (winnerType === 1) {
-            gameAlert.classList.add('winner-p1');
-        } else if (winnerType === 2) {
-            gameAlert.classList.add('winner-p2');
-        } else if (winnerType === 0) {
-            gameAlert.classList.add('winner-draw');
-        }
-        
-        gameAlertMsg.textContent = msg;
-        gameAlert.style.display = 'flex';
+    // Highlight the winning 4 discs on the board
+    function highlightWinningDiscs(winningCells) {
+        winningCells.forEach(([r, c]) => {
+            const cell = getHTMLCell(r, c);
+            if (cell) {
+                cell.classList.add('winning-cell');
+            }
+        });
     }
 
-    function dismissAlert() {
-        gameAlert.style.display = 'none';
+    // Show celebration modal
+    function showWinnerModal(title, msg, winnerType) {
+        winnerCelebrationTitle.textContent = title;
+        winnerCelebrationMsg.textContent = msg;
+        
+        // Add color accent to title
+        if (winnerType === 1) {
+            winnerCelebrationTitle.style.color = 'var(--p1-color)';
+            winnerCelebrationTitle.style.textShadow = '0 0 16px var(--p1-glow)';
+        } else if (winnerType === 2) {
+            winnerCelebrationTitle.style.color = 'var(--p2-color)';
+            winnerCelebrationTitle.style.textShadow = '0 0 16px var(--p2-glow)';
+        } else {
+            winnerCelebrationTitle.style.color = 'var(--text-secondary)';
+            winnerCelebrationTitle.style.textShadow = 'none';
+        }
+
+        winnerModal.classList.remove('hidden');
+    }
+
+    function closeWinnerModal() {
+        winnerModal.classList.add('hidden');
     }
 
     // Stop execution loops
@@ -151,17 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Check if the game is over and display banner
+    // Check if the game is over and display celebration modal
     function checkTerminalStatus() {
-        if (engine.isTerminal()) {
+        const result = engine.winner();
+        if (result !== null) {
             isGameActive = false;
             stopLoops();
             
-            const winVal = engine.winner();
+            const winVal = result.player;
             if (winVal === 0) {
-                showAlert("Game Over: It's a draw!", 0);
+                showWinnerModal("Match Draw", "The board is full and there is no winner. Well played!", 0);
             } else {
-                showAlert(`Game Over: Player ${winVal} (${winVal === 1 ? 'Red' : 'Yellow'}) wins!`, winVal);
+                highlightWinningDiscs(result.cells);
+                const playerName = winVal === 1 ? "Player 1 (Red)" : "Player 2 (Yellow)";
+                showWinnerModal("Victory!", `${playerName} has connected four in a row!`, winVal);
             }
             return true;
         }
@@ -173,24 +195,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isGameActive || !engine) return;
         if (engine.isTerminal()) return;
 
-        // Verify it is Player 1's turn and mode is player-vs-random
         const mode = gameModeSelect.value;
         const currentPl = engine.currentPlayer();
         
         if (mode === 'player-vs-random' && currentPl === 1) {
-            // Human move
             try {
                 const moveResult = engine.applyMove(col);
                 animateDisc(moveResult.row, moveResult.col, 1);
                 updateStatusUI();
                 
-                // Recalculate hover styling
                 if (currentHoverColumn !== null) {
                     highlightColumn(currentHoverColumn, true);
                 }
 
                 if (!checkTerminalStatus()) {
-                    // Trigger AI response
                     scheduleAIMove();
                 }
             } catch (err) {
@@ -220,14 +238,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateStatusUI();
 
                 if (!checkTerminalStatus()) {
-                    // If simulation mode, queue next step. Otherwise, wait for human input.
                     if (gameModeSelect.value === 'random-vs-random') {
                         scheduleAIMove();
                     }
                 }
             } catch (err) {
                 console.error("AI Error:", err);
-                showAlert(`AI Error: ${err.message}`, 0);
             }
         }
     }
@@ -249,41 +265,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Reset whole game to initial clean slate
-    function resetGame() {
+    // Reset board only (keeps active settings screen hidden, restart match directly)
+    function resetBoard() {
         stopLoops();
-        isGameActive = false;
-        engine = null;
-        agent1 = null;
-        agent2 = null;
+        closeWinnerModal();
         
-        // Reset HTML controls
-        gameModeSelect.disabled = false;
-        randomSeedInput.disabled = false;
-        btnStart.disabled = false;
-        
-        currentPlayerVal.innerHTML = '<span class="token token-p1-small"></span> Player 1';
-        moveCountVal.textContent = '0';
-        
-        dismissAlert();
-        initializeBoardUI();
-        resetHighlights();
-    }
-
-    // Start a new game with active configs
-    function startGame() {
-        resetGame();
-
         engine = new ConnectFourEngine();
         const mode = gameModeSelect.value;
-        
-        // Retrieve and parse seed value
         let seedVal = null;
         if (randomSeedInput.value.trim() !== '') {
             seedVal = parseInt(randomSeedInput.value);
         }
 
-        // Initialize players/agents
         const seed1 = seedVal !== null ? seedVal : null;
         const seed2 = seedVal !== null ? seedVal + 1000 : null;
 
@@ -291,20 +284,64 @@ document.addEventListener('DOMContentLoaded', () => {
             agent1 = new RandomAgent(seed1);
             agent2 = new RandomAgent(seed2);
         } else {
-            // Player vs Random
+            agent1 = null;
             agent2 = new RandomAgent(seed2);
         }
 
         isGameActive = true;
         
-        // Disable settings adjustments while active
-        gameModeSelect.disabled = true;
-        randomSeedInput.disabled = true;
-        btnStart.disabled = true;
-
+        initializeBoardUI();
         updateStatusUI();
+        resetHighlights();
 
-        // If Random vs Random, initiate automated loop immediately
+        if (mode === 'random-vs-random') {
+            scheduleAIMove();
+        }
+    }
+
+    // Return back to configuration landing page
+    function backToSettings() {
+        stopLoops();
+        closeWinnerModal();
+        isGameActive = false;
+        
+        // Hide board screen, show settings screen
+        gameScreen.classList.add('hidden');
+        settingsScreen.classList.remove('hidden');
+    }
+
+    // Start match from configuration page
+    function startMatch() {
+        // Initialize board DOM and logic
+        initializeBoardUI();
+        
+        engine = new ConnectFourEngine();
+        const mode = gameModeSelect.value;
+        let seedVal = null;
+        if (randomSeedInput.value.trim() !== '') {
+            seedVal = parseInt(randomSeedInput.value);
+        }
+
+        const seed1 = seedVal !== null ? seedVal : null;
+        const seed2 = seedVal !== null ? seedVal + 1000 : null;
+
+        if (mode === 'random-vs-random') {
+            agent1 = new RandomAgent(seed1);
+            agent2 = new RandomAgent(seed2);
+        } else {
+            agent1 = null;
+            agent2 = new RandomAgent(seed2);
+        }
+
+        isGameActive = true;
+        
+        // Toggle screen visibility
+        settingsScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        
+        updateStatusUI();
+        resetHighlights();
+
         if (mode === 'random-vs-random') {
             scheduleAIMove();
         }
@@ -317,9 +354,22 @@ document.addEventListener('DOMContentLoaded', () => {
         delayValLabel.textContent = `${parseFloat(simulationDelayInput.value).toFixed(1)}s`;
     });
 
-    btnStart.addEventListener('click', startGame);
-    btnReset.addEventListener('click', resetGame);
-    btnDismissAlert.addEventListener('click', dismissAlert);
+    // Configuration Screen
+    btnStart.addEventListener('click', startMatch);
+
+    // Active Match Screen
+    btnReset.addEventListener('click', resetBoard);
+    btnBack.addEventListener('click', backToSettings);
+
+    // Modal Events
+    btnModalReplay.addEventListener('click', () => {
+        closeWinnerModal();
+        resetBoard();
+    });
+    btnModalClose.addEventListener('click', () => {
+        closeWinnerModal();
+        backToSettings();
+    });
 
     // Board click and hover listeners
     connect4Board.addEventListener('click', (e) => {
@@ -364,6 +414,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Run first initialization
-    initializeBoardUI();
     handleModeChange();
 });

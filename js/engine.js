@@ -65,7 +65,7 @@ class ConnectFourEngine {
                     val === this.board[r][c+1] &&
                     val === this.board[r][c+2] &&
                     val === this.board[r][c+3]) {
-                    return val;
+                    return { player: val, cells: [[r, c], [r, c+1], [r, c+2], [r, c+3]] };
                 }
             }
         }
@@ -78,7 +78,7 @@ class ConnectFourEngine {
                     val === this.board[r+1][c] &&
                     val === this.board[r+2][c] &&
                     val === this.board[r+3][c]) {
-                    return val;
+                    return { player: val, cells: [[r, c], [r+1, c], [r+2, c], [r+3, c]] };
                 }
             }
         }
@@ -91,7 +91,7 @@ class ConnectFourEngine {
                     val === this.board[r+1][c+1] &&
                     val === this.board[r+2][c+2] &&
                     val === this.board[r+3][c+3]) {
-                    return val;
+                    return { player: val, cells: [[r, c], [r+1, c+1], [r+2, c+2], [r+3, c+3]] };
                 }
             }
         }
@@ -104,14 +104,14 @@ class ConnectFourEngine {
                     val === this.board[r-1][c+1] &&
                     val === this.board[r-2][c+2] &&
                     val === this.board[r-3][c+3]) {
-                    return val;
+                    return { player: val, cells: [[r, c], [r-1, c+1], [r-2, c+2], [r-3, c+3]] };
                 }
             }
         }
 
         // 5. Check for draw
         if (this.legalMoves().length === 0) {
-            return 0;
+            return { player: 0, cells: [] };
         }
 
         return null;
