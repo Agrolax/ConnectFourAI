@@ -34,6 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnModalReplay = document.getElementById('btn-modal-replay');
     const btnModalClose = document.getElementById('btn-modal-close');
 
+    // Toggle Screen Views Programmatically (avoid specificity bugs)
+    function showScreen(screen) {
+        if (screen === 'settings') {
+            settingsScreen.style.display = 'block';
+            gameScreen.style.display = 'none';
+        } else {
+            settingsScreen.style.display = 'none';
+            gameScreen.style.display = 'grid'; // active board view is grid
+        }
+    }
+
     // Initialize board slots (42 cells: 6 rows x 7 cols)
     function initializeBoardUI() {
         connect4Board.innerHTML = '';
@@ -143,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         winnerCelebrationTitle.textContent = title;
         winnerCelebrationMsg.textContent = msg;
         
-        // Add color accent to title
         if (winnerType === 1) {
             winnerCelebrationTitle.style.color = 'var(--p1-color)';
             winnerCelebrationTitle.style.textShadow = '0 0 16px var(--p1-glow)';
@@ -155,11 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
             winnerCelebrationTitle.style.textShadow = 'none';
         }
 
-        winnerModal.classList.remove('hidden');
+        winnerModal.style.display = 'flex';
     }
 
     function closeWinnerModal() {
-        winnerModal.classList.add('hidden');
+        winnerModal.style.display = 'none';
     }
 
     // Stop execution loops
@@ -305,14 +315,11 @@ document.addEventListener('DOMContentLoaded', () => {
         closeWinnerModal();
         isGameActive = false;
         
-        // Hide board screen, show settings screen
-        gameScreen.classList.add('hidden');
-        settingsScreen.classList.remove('hidden');
+        showScreen('settings');
     }
 
     // Start match from configuration page
     function startMatch() {
-        // Initialize board DOM and logic
         initializeBoardUI();
         
         engine = new ConnectFourEngine();
@@ -335,9 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         isGameActive = true;
         
-        // Toggle screen visibility
-        settingsScreen.classList.add('hidden');
-        gameScreen.classList.remove('hidden');
+        showScreen('board');
         
         updateStatusUI();
         resetHighlights();
@@ -414,5 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Run first initialization
+    showScreen('settings');
     handleModeChange();
 });

@@ -322,37 +322,44 @@ input[type="range"] {
     text-transform: uppercase;
 }
 
-.scope-checklist {
-    list-style: none;
+.scope-grid {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
-.scope-checklist li {
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.scope-checklist li.checked {
-    color: #34d399; /* Green check */
-}
-
-.scope-checklist li.unchecked {
-    color: var(--text-secondary);
-    opacity: 0.7;
-}
-
-.check-icon {
+.scope-item {
     display: inline-flex;
-    justify-content: center;
     align-items: center;
-    width: 20px;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--card-border);
+    background: rgba(8, 11, 24, 0.4);
+    transition: all 0.2s ease;
+}
+
+.scope-item.completed {
+    color: #34d399; /* emerald-400 */
+    border-color: rgba(52, 211, 153, 0.25);
+    background: rgba(52, 211, 153, 0.05);
+}
+
+.scope-item.pending {
+    color: var(--text-secondary);
+    border-color: var(--card-border);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.scope-status {
+    font-size: 12px;
     font-weight: bold;
-    margin-right: 8px;
-    font-size: 14px;
+}
+
+.scope-name {
+    font-family: 'Outfit', sans-serif;
 }
 
 /* SCREEN 2: Active Match layout */
