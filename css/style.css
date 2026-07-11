@@ -219,6 +219,11 @@ header {
     margin-bottom: 10px;
 }
 
+.control-group label.label-with-tooltip {
+    justify-content: flex-start;
+    gap: 4px;
+}
+
 /* Playful Game Mode Cards Grid */
 .modes-grid {
     display: grid;
