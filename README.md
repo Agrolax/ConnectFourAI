@@ -21,7 +21,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
 ## Assignment Requirements & Progress
 
 ### Requirement 1: Game Engine [1.5 marks]
-- **Status:** **Completed**
+- **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 - **Implementation File:** [ConnectFourAI/engine.py](./ConnectFourAI/engine.py)
 - **Detailed Work Done:**
   - **Board Representation:** Designed an internal 2D list grid representing 6 rows (0-5, where 0 is bottom and 5 is top) by 7 columns (0-6).
@@ -40,7 +40,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
 ### Requirement 2: AI Agents
 
 #### Agent 1 — Random Agent [0.5 marks]
-- **Status:** **Completed**
+- **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 - **Implementation File:** [ConnectFourAI/agents/random_agent.py](./ConnectFourAI/agents/random_agent.py)
 - **Detailed Work Done:**
   - **Seeded Random Instance:** Configured `RandomAgent` to accept an optional `seed` parameter in `__init__` which instantiates an isolated `random.Random(seed)` generator. This avoids messing with Python's global random state and ensures all simulation results can be reproduced identically.
@@ -48,7 +48,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
   - **Error Handling:** Raises a `ValueError` if invoked on a terminal board state where no legal moves exist.
 
 #### Agent 2 — Rule-Based Agent [1.5 marks]
-- **Status:** **Pending**
+- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Implement an agent driven by manually defined, prioritized rules:
     1. Winning Move: Play if a move wins immediately.
@@ -62,7 +62,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
   - For rule 4: Iterate through all lines of length 4, scoring them based on count of player discs vs empty spaces.
 
 #### Agent 3 — Minimax Agent [3 marks]
-- **Status:** **Pending**
+- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Implement Minimax adversarial search with configurable search depth (fixed depth 4 for experiments).
   - Terminal evaluation: win = positive infinity/large constant, loss = negative infinity/large constant, draw = 0 (from the perspective of the agent to move).
@@ -76,7 +76,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
 ---
 
 ### Requirement 3: Experimental Evaluation [2 marks]
-- **Status:** **Pending**
+- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Run head-to-head matches for pairings: Random vs Rule-Based, Rule-Based vs Minimax, Minimax vs Random.
   - Play 30 games per pairing (alternating starting turns, ~15 times each way).
@@ -89,7 +89,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
 ---
 
 ### Requirement 4: Report [1 mark]
-- **Status:** **Pending**
+- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Compile a `Report.pdf` containing introduction, system design (engine & agent architecture), agent details, experimental results, and discussion (interpretations, improvement proposals like MCTS).
 - **How to do it:**
@@ -98,7 +98,7 @@ We generated a `tests/` folder containing automated unit tests ([tests/test_engi
 ---
 
 ### Requirement 5: Demonstration Video [0.5 marks]
-- **Status:** **Pending**
+- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Record a 3-5 minute video demonstrating one full run (engine CLI plus agent-vs-agent matches) with narration.
 - **How to do it:**
