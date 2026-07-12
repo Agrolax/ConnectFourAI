@@ -1,6 +1,7 @@
 import unittest
 from ConnectFourAI.engine import ConnectFourEngine
 from ConnectFourAI.agents.random_agent import RandomAgent
+from ConnectFourAI.agents.rule_based_agent import RuleBasedAgent
 
 class TestRandomAgent(unittest.TestCase):
     def test_random_agent_valid_move(self):
