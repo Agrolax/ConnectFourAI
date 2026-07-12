@@ -313,11 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle settings widgets when mode changes
     function handleModeChange() {
         const mode = selectedGameMode;
-        if (mode === 'random-vs-random') {
-            speedControlGroup.style.display = 'block';
-        } else {
-            speedControlGroup.style.display = 'none';
-        }
+        if (
+    mode === 'random-vs-random' ||
+    mode === 'rule-vs-random'
+) {
+    speedControlGroup.style.display = 'block';
+} else {
+    speedControlGroup.style.display = 'none';
+}
     }
 
     // Reset board only (keeps active settings screen hidden, restart match directly)
