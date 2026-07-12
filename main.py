@@ -2,13 +2,13 @@ import argparse
 import time
 
 from ConnectFourAI.engine import ConnectFourEngine
-from ConnectFourAI.agents.random_agent import RandomAgent
-from ConnectFourAI.agents.rule_based_agent import RuleBasedAgent
+from ConnectFourAI.agents import RandomAgent, RuleBasedAgent, MinimaxAgent
 
 # Modes that involve a human player typing moves into the terminal.
 PLAYER_MODES = {
     'player-vs-random': 'random',
     'player-vs-rulebased': 'rulebased',
+    'player-vs-minimax': 'minimax',
 }
 
 # Modes that are fully AI vs AI (no human input).
@@ -17,17 +17,24 @@ AI_VS_AI_MODES = {
     'rulebased-vs-random': ('rulebased', 'random'),
     'random-vs-rulebased': ('random', 'rulebased'),
     'rulebased-vs-rulebased': ('rulebased', 'rulebased'),
+    'minimax-vs-random': ('minimax', 'random'),
+    'random-vs-minimax': ('random', 'minimax'),
+    'rulebased-vs-minimax': ('rulebased', 'minimax'),
+    'minimax-vs-rulebased': ('minimax', 'rulebased'),
+    'minimax-vs-minimax': ('minimax', 'minimax'),
 }
 
 ALL_MODES = list(PLAYER_MODES.keys()) + list(AI_VS_AI_MODES.keys())
 
 
 def _make_agent(kind, seed):
-    """Build an agent instance of the given kind ('random' or 'rulebased')."""
+    """Build an agent instance of the given kind ('random', 'rulebased', or 'minimax')."""
     if kind == 'random':
         return RandomAgent(seed=seed)
     if kind == 'rulebased':
         return RuleBasedAgent(seed=seed)
+    if kind == 'minimax':
+        return MinimaxAgent(depth=4, seed=seed)
     raise ValueError(f"Unknown agent kind: {kind}")
 
 
