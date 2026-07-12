@@ -331,13 +331,40 @@ document.addEventListener('DOMContentLoaded', () => {
         simulationTimeoutId = setTimeout(executeAIMove, delaySecs * 1000);
     }
 
-    // Toggle settings widgets when mode changes
+    // Update match mode text display at top of board panel
+    function updateMatchModeIndicator() {
+        const getLabel = (type) => {
+            if (type === 'human') return 'Human';
+            if (type === 'random') return 'Random AI';
+            if (type === 'rule') return 'Rule-Based AI';
+            if (type === 'minimax') return 'Minimax AI';
+            return 'Unknown';
+        };
+        const p1 = getLabel(selectedPlayer1);
+        const p2 = getLabel(selectedPlayer2);
+        const indicator = document.getElementById('match-mode-indicator');
+        if (indicator) {
+            indicator.textContent = `${p1} vs ${p2}`;
+        }
+    }
+
+    // Toggle settings widgets when mode changes (show always, disable if inapplicable)
     function handleModeChange() {
-        const isSimulation = (selectedPlayer1 !== 'human' && selectedPlayer2 !== 'human');
-        if (isSimulation) {
-            speedControlGroup.style.display = 'block';
+        const hasAI = (selectedPlayer1 !== 'human' || selectedPlayer2 !== 'human');
+        const seedInput = document.getElementById('random-seed');
+        const delayInput = document.getElementById('simulation-delay');
+        const seedGroup = seedInput.closest('.control-group');
+        
+        if (hasAI) {
+            seedInput.disabled = false;
+            delayInput.disabled = false;
+            seedGroup.classList.remove('settings-inactive');
+            speedControlGroup.classList.remove('settings-inactive');
         } else {
-            speedControlGroup.style.display = 'none';
+            seedInput.disabled = true;
+            delayInput.disabled = true;
+            seedGroup.classList.add('settings-inactive');
+            speedControlGroup.classList.add('settings-inactive');
         }
     }
 
@@ -384,6 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeBoardUI();
         updateStatusUI();
         resetHighlights();
+        updateMatchModeIndicator();
 
         const currentPl = engine.currentPlayer();
         const activeAgent = currentPl === 1 ? agent1 : agent2;
@@ -447,6 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateStatusUI();
         resetHighlights();
+        updateMatchModeIndicator();
 
         const currentPl = engine.currentPlayer();
         const activeAgent = currentPl === 1 ? agent1 : agent2;
