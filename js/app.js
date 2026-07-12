@@ -99,7 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isHovering && isGameActive && engine && !engine.isTerminal()) {
             const activePlayer = engine.currentPlayer();
-            const isHumanTurn = (selectedGameMode === 'player-vs-random' && activePlayer === 1);
+            const isHumanTurn =
+    (
+        selectedGameMode === 'player-vs-random' ||
+        selectedGameMode === 'player-vs-rule'
+    ) &&
+    activePlayer === 1;
             
             if (isHumanTurn) {
                 indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
@@ -238,7 +243,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = selectedGameMode;
         const currentPl = engine.currentPlayer();
         
-        if (mode === 'player-vs-random' && currentPl === 1) {
+        if (
+    (
+        mode === 'player-vs-random' ||
+        mode === 'player-vs-rule'
+    ) &&
+    currentPl === 1
+) {
             try {
                 const moveResult = engine.applyMove(col);
                 animateDisc(moveResult.row, moveResult.col, 1);
