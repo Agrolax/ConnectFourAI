@@ -12,11 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameScreen = document.getElementById('game-screen');
 
     // DOM Form Controls (Landing Page)
-    const modesGrid = document.querySelector('.modes-grid');
-    const modeCards = document.querySelectorAll('.mode-card:not(.disabled)');
+    const playerOptionLists = document.querySelectorAll('.player-options');
+    const p1OptionCards = document.querySelectorAll('.player-options[data-player="1"] .player-option-card');
+    const p2OptionCards = document.querySelectorAll('.player-options[data-player="2"] .player-option-card');
     const randomSeedInput = document.getElementById('random-seed');
     
-    let selectedGameMode = 'player-vs-random';
+    let selectedPlayer1 = 'human';
+    let selectedPlayer2 = 'random';
     const simulationDelayInput = document.getElementById('simulation-delay');
     const delayValLabel = document.getElementById('delay-val');
     const speedControlGroup = document.getElementById('speed-control-group');
@@ -108,7 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isHovering && isGameActive && engine && !engine.isTerminal()) {
             const activePlayer = engine.currentPlayer();
-            const isHumanTurn = ((selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule' || selectedGameMode === 'player-vs-minimax') && activePlayer === 1);
+            const activeAgent = activePlayer === 1 ? agent1 : agent2;
+            const isHumanTurn = (activeAgent === null);
             
             if (isHumanTurn) {
                 indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
@@ -168,24 +171,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const winnerIcon = document.getElementById('winner-icon');
         
-        if (winnerType === 1) {
-            winnerCelebrationTitle.style.color = 'var(--p1-color)';
-            winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(225, 29, 72, 0.6)';
+        if (winnerType === 1 || winnerType === 2) {
+            const glowColor = winnerType === 1 ? 'rgba(225, 29, 72, 0.6)' : 'rgba(6, 182, 212, 0.6)';
+            winnerCelebrationTitle.style.color = winnerType === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
+            winnerCelebrationTitle.style.textShadow = `0 0 16px ${glowColor}`;
             if (winnerIcon) {
-                winnerIcon.textContent = '🏆';
-                winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(225, 29, 72, 0.6))';
-            }
-        } else if (winnerType === 2) {
-            winnerCelebrationTitle.style.color = 'var(--p2-color)';
-            winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(6, 182, 212, 0.6)';
-            if (winnerIcon) {
-                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule' || selectedGameMode === 'player-vs-minimax') {
-                    winnerIcon.textContent = '💀';
-                    winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
-                } else {
-                    winnerIcon.textContent = '🏆';
-                    winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
+                const p1Agent = agent1 !== null;
+                const p2Agent = agent2 !== null;
+                
+                let iconText = '🏆';
+                if (!p1Agent && !p2Agent) {
+                    iconText = '🏆';
+                } else if (!p1Agent || !p2Agent) {
+                    const humanWinner = (winnerType === 1 && !p1Agent) || (winnerType === 2 && !p2Agent);
+                    iconText = humanWinner ? '🏆' : '💀';
                 }
+                
+                winnerIcon.textContent = iconText;
+                winnerIcon.style.filter = `drop-shadow(0 0 12px ${glowColor})`;
             }
         } else {
             winnerCelebrationTitle.style.color = 'var(--text-secondary)';
@@ -223,18 +226,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 showWinnerModal("Match Draw", "The board is full and there is no winner. Well played!", 0);
             } else {
                 highlightWinningDiscs(result.cells);
-                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule' || selectedGameMode === 'player-vs-minimax') {
-                    let agentName = "Random";
-                    if (selectedGameMode === 'player-vs-rule') agentName = "Rule-Based";
-                    else if (selectedGameMode === 'player-vs-minimax') agentName = "Minimax";
+                
+                const p1Agent = agent1 !== null;
+                const p2Agent = agent2 !== null;
+
+                if (!p1Agent && !p2Agent) {
+                    // Player vs Player
+                    showWinnerModal("Victory!", `Player ${winVal} connected four and won the match!`, winVal);
+                } else if (!p1Agent || !p2Agent) {
+                    // Player vs AI
+                    const humanWinner = (winVal === 1 && !p1Agent) || (winVal === 2 && !p2Agent);
                     
-                    if (winVal === 1) {
-                        showWinnerModal("Victory!", `You connected four and defeated the ${agentName} AI agent!`, 1);
+                    let agentName = "AI";
+                    const activeAgent = winVal === 1 ? agent2 : agent1;
+                    if (activeAgent instanceof RandomAgent) agentName = "Random";
+                    else if (activeAgent instanceof RuleBasedAgent) agentName = "Rule-Based";
+                    else if (activeAgent instanceof MinimaxAgent) agentName = "Minimax";
+
+                    if (humanWinner) {
+                        showWinnerModal("Victory!", `You connected four and defeated the ${agentName} AI agent!`, winVal);
                     } else {
-                        showWinnerModal("Defeat!", `The ${agentName} AI agent connected four and won.`, 2);
+                        showWinnerModal("Defeat!", `The ${agentName} AI agent connected four and won.`, winVal);
                     }
                 } else {
-                    // Bot vs Bot games: 'random-vs-random', 'rule-vs-random', 'minimax-vs-random', 'rule-vs-minimax'
+                    // AI vs AI
                     const winnerColor = winVal === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
                     const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">Player ${winVal}</span>`;
                     showWinnerModal("Match Over", `${winnerHTML} has connected four in a row!`, winVal);
@@ -250,13 +265,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isGameActive || !engine) return;
         if (engine.isTerminal()) return;
 
-        const mode = selectedGameMode;
         const currentPl = engine.currentPlayer();
+        const activeAgent = currentPl === 1 ? agent1 : agent2;
         
-        if ((mode === 'player-vs-random' || mode === 'player-vs-rule' || mode === 'player-vs-minimax') && currentPl === 1) {
+        if (activeAgent === null) {
             try {
                 const moveResult = engine.applyMove(col);
-                animateDisc(moveResult.row, moveResult.col, 1);
+                animateDisc(moveResult.row, moveResult.col, currentPl);
                 updateStatusUI();
                 
                 if (currentHoverColumn !== null) {
@@ -264,7 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (!checkTerminalStatus()) {
-                    scheduleAIMove();
+                    const nextPlayer = engine.currentPlayer();
+                    const nextAgent = nextPlayer === 1 ? agent1 : agent2;
+                    if (nextAgent !== null) {
+                        scheduleAIMove();
+                    }
                 }
             } catch (err) {
                 console.warn("Invalid move: ", err.message);
@@ -293,7 +312,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateStatusUI();
 
                 if (!checkTerminalStatus()) {
-                    if (selectedGameMode === 'random-vs-random' || selectedGameMode === 'rule-vs-random' || selectedGameMode === 'minimax-vs-random' || selectedGameMode === 'rule-vs-minimax') {
+                    const nextPlayer = engine.currentPlayer();
+                    const nextAgent = nextPlayer === 1 ? agent1 : agent2;
+                    if (nextAgent !== null) {
                         scheduleAIMove();
                     }
                 }
@@ -312,8 +333,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Toggle settings widgets when mode changes
     function handleModeChange() {
-        const mode = selectedGameMode;
-        if (mode === 'random-vs-random' || mode === 'rule-vs-random' || mode === 'minimax-vs-random' || mode === 'rule-vs-minimax') {
+        const isSimulation = (selectedPlayer1 !== 'human' && selectedPlayer2 !== 'human');
+        if (isSimulation) {
             speedControlGroup.style.display = 'block';
         } else {
             speedControlGroup.style.display = 'none';
@@ -326,7 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
         closeWinnerModal();
         
         engine = new ConnectFourEngine();
-        const mode = selectedGameMode;
+        const p1Type = selectedPlayer1;
+        const p2Type = selectedPlayer2;
         let seedVal = null;
         if (randomSeedInput.value.trim() !== '') {
             seedVal = parseInt(randomSeedInput.value);
@@ -335,27 +357,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const seed1 = seedVal !== null ? seedVal : null;
         const seed2 = seedVal !== null ? seedVal + 1000 : null;
 
-        if (mode === 'random-vs-random') {
+        // Player 1 agent
+        if (p1Type === 'human') {
+            agent1 = null;
+        } else if (p1Type === 'random') {
             agent1 = new RandomAgent(seed1);
-            agent2 = new RandomAgent(seed2);
-        } else if (mode === 'rule-vs-random') {
+        } else if (p1Type === 'rule') {
             agent1 = new RuleBasedAgent(seed1);
-            agent2 = new RandomAgent(seed2);
-        } else if (mode === 'player-vs-rule') {
-            agent1 = null;
-            agent2 = new RuleBasedAgent(seed2);
-        } else if (mode === 'player-vs-minimax') {
-            agent1 = null;
-            agent2 = new MinimaxAgent(4, seed2);
-        } else if (mode === 'minimax-vs-random') {
+        } else if (p1Type === 'minimax') {
             agent1 = new MinimaxAgent(4, seed1);
+        }
+
+        // Player 2 agent
+        if (p2Type === 'human') {
+            agent2 = null;
+        } else if (p2Type === 'random') {
             agent2 = new RandomAgent(seed2);
-        } else if (mode === 'rule-vs-minimax') {
-            agent1 = new RuleBasedAgent(seed1);
+        } else if (p2Type === 'rule') {
+            agent2 = new RuleBasedAgent(seed2);
+        } else if (p2Type === 'minimax') {
             agent2 = new MinimaxAgent(4, seed2);
-        } else {
-            agent1 = null;
-            agent2 = new RandomAgent(seed2);
         }
 
         isGameActive = true;
@@ -364,7 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random' || mode === 'rule-vs-random' || mode === 'minimax-vs-random' || mode === 'rule-vs-minimax') {
+        const currentPl = engine.currentPlayer();
+        const activeAgent = currentPl === 1 ? agent1 : agent2;
+        if (activeAgent !== null) {
             scheduleAIMove();
         }
     }
@@ -374,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeWinnerModal();
         isGameActive = false;
         
-        modesGrid.classList.remove('match-active');
+        playerOptionLists.forEach(el => el.classList.remove('match-active'));
         showScreen('settings');
     }
 
@@ -383,7 +406,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeBoardUI();
         
         engine = new ConnectFourEngine();
-        const mode = selectedGameMode;
+        const p1Type = selectedPlayer1;
+        const p2Type = selectedPlayer2;
         let seedVal = null;
         if (randomSeedInput.value.trim() !== '') {
             seedVal = parseInt(randomSeedInput.value);
@@ -392,32 +416,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const seed1 = seedVal !== null ? seedVal : null;
         const seed2 = seedVal !== null ? seedVal + 1000 : null;
 
-        if (mode === 'random-vs-random') {
+        // Player 1 agent
+        if (p1Type === 'human') {
+            agent1 = null;
+        } else if (p1Type === 'random') {
             agent1 = new RandomAgent(seed1);
-            agent2 = new RandomAgent(seed2);
-        } else if (mode === 'rule-vs-random') {
+        } else if (p1Type === 'rule') {
             agent1 = new RuleBasedAgent(seed1);
-            agent2 = new RandomAgent(seed2);
-        } else if (mode === 'player-vs-rule') {
-            agent1 = null;
-            agent2 = new RuleBasedAgent(seed2);
-        } else if (mode === 'player-vs-minimax') {
-            agent1 = null;
-            agent2 = new MinimaxAgent(4, seed2);
-        } else if (mode === 'minimax-vs-random') {
+        } else if (p1Type === 'minimax') {
             agent1 = new MinimaxAgent(4, seed1);
+        }
+
+        // Player 2 agent
+        if (p2Type === 'human') {
+            agent2 = null;
+        } else if (p2Type === 'random') {
             agent2 = new RandomAgent(seed2);
-        } else if (mode === 'rule-vs-minimax') {
-            agent1 = new RuleBasedAgent(seed1);
+        } else if (p2Type === 'rule') {
+            agent2 = new RuleBasedAgent(seed2);
+        } else if (p2Type === 'minimax') {
             agent2 = new MinimaxAgent(4, seed2);
-        } else {
-            agent1 = null;
-            agent2 = new RandomAgent(seed2);
         }
 
         isGameActive = true;
-        // Lock mode card changes while playing
-        modesGrid.classList.add('match-active');
+        // Lock player option changes while playing
+        playerOptionLists.forEach(el => el.classList.add('match-active'));
         
         // Toggle screen visibility
         showScreen('board');
@@ -425,18 +448,30 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random' || mode === 'rule-vs-random' || mode === 'minimax-vs-random' || mode === 'rule-vs-minimax') {
+        const currentPl = engine.currentPlayer();
+        const activeAgent = currentPl === 1 ? agent1 : agent2;
+        if (activeAgent !== null) {
             scheduleAIMove();
         }
     }
 
-    // Event Listeners
-    modeCards.forEach(card => {
+    // Event Listeners for Player Option Selection Cards
+    p1OptionCards.forEach(card => {
         card.addEventListener('click', () => {
             if (isGameActive) return;
-            modeCards.forEach(c => c.classList.remove('selected'));
+            p1OptionCards.forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            selectedGameMode = card.dataset.value;
+            selectedPlayer1 = card.dataset.value;
+            handleModeChange();
+        });
+    });
+
+    p2OptionCards.forEach(card => {
+        card.addEventListener('click', () => {
+            if (isGameActive) return;
+            p2OptionCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedPlayer2 = card.dataset.value;
             handleModeChange();
         });
     });

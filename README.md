@@ -70,20 +70,18 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
   - **Tie-Breaking:** Uses an isolated `random.Random(seed)` instance (same pattern as `RandomAgent`) to choose uniformly at random whenever multiple moves are tied under the currently active rule, keeping results reproducible.
 
 #### Agent 3 — Minimax Agent [3 marks]
-- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
-- **What needs to be done:**
-  - Implement Minimax adversarial search with configurable search depth (fixed depth 4 for experiments).
-  - Terminal evaluation: win = positive infinity/large constant, loss = negative infinity/large constant, draw = 0 (from the perspective of the agent to move).
-  - Heuristic evaluation for non-terminal states at search depth limit using windowed scoring: slide a window of size 4 across every row, column, and diagonal, scoring it (heavy reward for 3-in-a-window, modest reward for 2-in-a-window, penalizing opponent similarly).
-- **How to do it:**
-  - Create `ConnectFourAI/agents/minimax_agent.py` subclassing `BaseAgent`.
-  - Write a recursive `minimax` function with alpha-beta pruning for efficiency.
-  - Use `engine.clone()` and `apply_move()` inside the search tree to simulate state transitions.
-  - Implement a scoring utility that sums scores of all overlapping length-4 windows on the board.
+- **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
+- **Implementation File:** [ConnectFourAI/agents/minimax_agent.py](./ConnectFourAI/agents/minimax_agent.py)
+- **Detailed Work Done:**
+  - **Adversarial Search:** Implemented minimax adversarial search with alpha-beta pruning to prune suboptimal paths and accelerate move search.
+  - **Depth Limit:** Set default search depth to 4 for optimal performance-time trade-off.
+  - **Terminal Valuation:** Scores win conditions with positive infinity (`float('inf')`) and losses with negative infinity (`float('-inf')`).
+  - **Heuristic Window Evaluation:** Slides length-4 windows horizontally, vertically, and diagonally across the grid. Scores each window dynamically (heavy weights for 3-in-a-row threats, moderate weights for 2-in-a-row setups, and subtracts opponent threat scores).
+  - **Reproducible Tie-Breaking:** Utilizes a seedable `random.Random` instance for picking among moves of equal valuation, keeping performance reproducible.
 
 ---
 
-### Requirement 3: Experimental Evaluation [2 marks]
+### Requirement 3: Experimental Evaluation [25% marks]
 - **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Run head-to-head matches for pairings: Random vs Rule-Based, Rule-Based vs Minimax, Minimax vs Random.
@@ -96,7 +94,7 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
 
 ---
 
-### Requirement 4: Report [1 mark]
+### Requirement 4: Report [12.5% marks]
 - **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Compile a `Report.pdf` containing introduction, system design (engine & agent architecture), agent details, experimental results, and discussion (interpretations, improvement proposals like MCTS).
@@ -105,7 +103,7 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
 
 ---
 
-### Requirement 5: Demonstration Video [0.5 marks]
+### Requirement 5: Demonstration Video [6.25% marks]
 - **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
 - **What needs to be done:**
   - Record a 3-5 minute video demonstrating one full run (engine CLI plus agent-vs-agent matches) with narration.
@@ -122,14 +120,26 @@ To execute the automated unit tests:
 python3 -m unittest discover -s tests
 ```
 
-### Play Game (Player vs AI)
-To play interactively against the Random Agent:
-```bash
-python3 main.py --mode player-vs-random
-```
+### Play Game (Interactive CLI)
+- **Player vs Player (Local):**
+  ```bash
+  python3 main.py --mode player-vs-player
+  ```
+- **Player vs Random AI:**
+  ```bash
+  python3 main.py --mode player-vs-random
+  ```
+- **Player vs Rule-Based AI:**
+  ```bash
+  python3 main.py --mode player-vs-rulebased
+  ```
+- **Player vs Minimax AI:**
+  ```bash
+  python3 main.py --mode player-vs-minimax
+  ```
 
 ### Simulate Game (AI vs AI)
-To run a simulated game between two Random Agents with a seed for reproducibility:
+To run a simulated game between two agents with a seed for reproducibility:
 ```bash
-python3 main.py --mode random-vs-random --seed 42 --delay 0.5
+python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
 ```

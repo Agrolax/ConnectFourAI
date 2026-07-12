@@ -6,6 +6,7 @@ from ConnectFourAI.agents import RandomAgent, RuleBasedAgent, MinimaxAgent
 
 # Modes that involve a human player typing moves into the terminal.
 PLAYER_MODES = {
+    'player-vs-player': 'player',
     'player-vs-random': 'random',
     'player-vs-rulebased': 'rulebased',
     'player-vs-minimax': 'minimax',
@@ -28,7 +29,9 @@ ALL_MODES = list(PLAYER_MODES.keys()) + list(AI_VS_AI_MODES.keys())
 
 
 def _make_agent(kind, seed):
-    """Build an agent instance of the given kind ('random', 'rulebased', or 'minimax')."""
+    """Build an agent instance of the given kind ('random', 'rulebased', 'minimax', or 'player')."""
+    if kind == 'player':
+        return None
     if kind == 'random':
         return RandomAgent(seed=seed)
     if kind == 'rulebased':
