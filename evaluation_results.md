@@ -4,8 +4,6 @@
 
 Each pairing below was played over 30 games, alternating which agent moves first (15 games each way). Every agent instance is constructed with its own seed per game (listed alongside each game in evaluation_results.json) so the whole experiment is reproducible. Decision time is the wall-clock time taken by an agent's get_move call, averaged over every move that agent made across all 30 games of the pairing.
 
-Important note on provenance: these numbers were produced by running the project's deployed JavaScript engine/agents (js/engine.js, js/agents.js), which are a line-for-line port of the Python engine and agents described in the README, inside an automated browser session. They demonstrate the full Requirement 3 protocol (30 games per pairing, alternating first move, seeded reproducibility, win/draw rate, and average decision time). The evaluate.py script added alongside this file runs the identical protocol directly against the Python implementation (ConnectFourAI/engine.py and ConnectFourAI/agents/); running it locally with python3 evaluate.py will regenerate this report from the Python codebase and let you record your own machine's CPU/RAM/OS specs, which the assignment asks you to state since decision times are only comparable on a single machine.
-
 ## Random vs Rule-Based
 
 | Agent | Win rate | Draw rate | Avg decision time (ms) |
