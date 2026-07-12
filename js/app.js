@@ -289,8 +289,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateStatusUI();
 
                 if (!checkTerminalStatus()) {
-                    if (selectedGameMode === 'random-vs-random') {
-                        scheduleAIMove();
+                    if (
+    selectedGameMode === 'random-vs-random' ||
+    selectedGameMode === 'rule-vs-random'
+) {
+    scheduleAIMove();
+}
                     }
                 }
             } catch (err) {
@@ -331,13 +335,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const seed1 = seedVal !== null ? seedVal : null;
         const seed2 = seedVal !== null ? seedVal + 1000 : null;
 
-        if (mode === 'random-vs-random') {
-            agent1 = new RandomAgent(seed1);
-            agent2 = new RandomAgent(seed2);
-        } else {
-            agent1 = null;
-            agent2 = new RandomAgent(seed2);
-        }
+if (mode === 'random-vs-random') {
+    agent1 = new RandomAgent(seed1);
+    agent2 = new RandomAgent(seed2);
+
+} else if (mode === 'player-vs-rule') {
+    agent1 = null;
+    agent2 = new RuleBasedAgent(seed2);
+
+} else if (mode === 'rule-vs-random') {
+    agent1 = new RuleBasedAgent(seed1);
+    agent2 = new RandomAgent(seed2);
+
+} else {
+    // Player vs Random
+    agent1 = null;
+    agent2 = new RandomAgent(seed2);
+}
 
         isGameActive = true;
         
