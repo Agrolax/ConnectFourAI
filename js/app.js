@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isHovering && isGameActive && engine && !engine.isTerminal()) {
             const activePlayer = engine.currentPlayer();
-            const isHumanTurn = ((selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule-based') && activePlayer === 1);
+            const isHumanTurn = ((selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule' || selectedGameMode === 'player-vs-minimax') && activePlayer === 1);
             
             if (isHumanTurn) {
                 indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             winnerCelebrationTitle.style.color = 'var(--p2-color)';
             winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(6, 182, 212, 0.6)';
             if (winnerIcon) {
-                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule-based') {
+                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule' || selectedGameMode === 'player-vs-minimax') {
                     winnerIcon.textContent = '💀';
                     winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
                 } else {
@@ -223,15 +223,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 showWinnerModal("Match Draw", "The board is full and there is no winner. Well played!", 0);
             } else {
                 highlightWinningDiscs(result.cells);
-                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule-based') {
-                    const agentName = selectedGameMode === 'player-vs-random' ? "Random" : "Rule-Based";
+                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule' || selectedGameMode === 'player-vs-minimax') {
+                    let agentName = "Random";
+                    if (selectedGameMode === 'player-vs-rule') agentName = "Rule-Based";
+                    else if (selectedGameMode === 'player-vs-minimax') agentName = "Minimax";
+                    
                     if (winVal === 1) {
                         showWinnerModal("Victory!", `You connected four and defeated the ${agentName} AI agent!`, 1);
                     } else {
                         showWinnerModal("Defeat!", `The ${agentName} AI agent connected four and won.`, 2);
                     }
                 } else {
-                    // Bot vs Bot games: 'random-vs-random', 'rule-based-vs-random'
+                    // Bot vs Bot games: 'random-vs-random', 'rule-vs-random', 'minimax-vs-random', 'rule-vs-minimax'
                     const winnerColor = winVal === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
                     const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">Player ${winVal}</span>`;
                     showWinnerModal("Match Over", `${winnerHTML} has connected four in a row!`, winVal);
@@ -250,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = selectedGameMode;
         const currentPl = engine.currentPlayer();
         
-        if ((mode === 'player-vs-random' || mode === 'player-vs-rule-based') && currentPl === 1) {
+        if ((mode === 'player-vs-random' || mode === 'player-vs-rule' || mode === 'player-vs-minimax') && currentPl === 1) {
             try {
                 const moveResult = engine.applyMove(col);
                 animateDisc(moveResult.row, moveResult.col, 1);
@@ -290,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateStatusUI();
 
                 if (!checkTerminalStatus()) {
-                    if (selectedGameMode === 'random-vs-random' || selectedGameMode === 'rule-based-vs-random') {
+                    if (selectedGameMode === 'random-vs-random' || selectedGameMode === 'rule-vs-random' || selectedGameMode === 'minimax-vs-random' || selectedGameMode === 'rule-vs-minimax') {
                         scheduleAIMove();
                     }
                 }
@@ -310,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle settings widgets when mode changes
     function handleModeChange() {
         const mode = selectedGameMode;
-        if (mode === 'random-vs-random' || mode === 'rule-based-vs-random') {
+        if (mode === 'random-vs-random' || mode === 'rule-vs-random' || mode === 'minimax-vs-random' || mode === 'rule-vs-minimax') {
             speedControlGroup.style.display = 'block';
         } else {
             speedControlGroup.style.display = 'none';
@@ -335,12 +338,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mode === 'random-vs-random') {
             agent1 = new RandomAgent(seed1);
             agent2 = new RandomAgent(seed2);
-        } else if (mode === 'rule-based-vs-random') {
+        } else if (mode === 'rule-vs-random') {
             agent1 = new RuleBasedAgent(seed1);
             agent2 = new RandomAgent(seed2);
-        } else if (mode === 'player-vs-rule-based') {
+        } else if (mode === 'player-vs-rule') {
             agent1 = null;
             agent2 = new RuleBasedAgent(seed2);
+        } else if (mode === 'player-vs-minimax') {
+            agent1 = null;
+            agent2 = new MinimaxAgent(4, seed2);
+        } else if (mode === 'minimax-vs-random') {
+            agent1 = new MinimaxAgent(4, seed1);
+            agent2 = new RandomAgent(seed2);
+        } else if (mode === 'rule-vs-minimax') {
+            agent1 = new RuleBasedAgent(seed1);
+            agent2 = new MinimaxAgent(4, seed2);
         } else {
             agent1 = null;
             agent2 = new RandomAgent(seed2);
@@ -352,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random' || mode === 'rule-based-vs-random') {
+        if (mode === 'random-vs-random' || mode === 'rule-vs-random' || mode === 'minimax-vs-random' || mode === 'rule-vs-minimax') {
             scheduleAIMove();
         }
     }
@@ -383,12 +395,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mode === 'random-vs-random') {
             agent1 = new RandomAgent(seed1);
             agent2 = new RandomAgent(seed2);
-        } else if (mode === 'rule-based-vs-random') {
+        } else if (mode === 'rule-vs-random') {
             agent1 = new RuleBasedAgent(seed1);
             agent2 = new RandomAgent(seed2);
-        } else if (mode === 'player-vs-rule-based') {
+        } else if (mode === 'player-vs-rule') {
             agent1 = null;
             agent2 = new RuleBasedAgent(seed2);
+        } else if (mode === 'player-vs-minimax') {
+            agent1 = null;
+            agent2 = new MinimaxAgent(4, seed2);
+        } else if (mode === 'minimax-vs-random') {
+            agent1 = new MinimaxAgent(4, seed1);
+            agent2 = new RandomAgent(seed2);
+        } else if (mode === 'rule-vs-minimax') {
+            agent1 = new RuleBasedAgent(seed1);
+            agent2 = new MinimaxAgent(4, seed2);
         } else {
             agent1 = null;
             agent2 = new RandomAgent(seed2);
@@ -404,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random' || mode === 'rule-based-vs-random') {
+        if (mode === 'random-vs-random' || mode === 'rule-vs-random' || mode === 'minimax-vs-random' || mode === 'rule-vs-minimax') {
             scheduleAIMove();
         }
     }

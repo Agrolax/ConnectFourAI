@@ -181,3 +181,207 @@ class RuleBasedAgent extends BaseAgent {
         return longestLine;
     }
 }
+
+class MinimaxAgent extends BaseAgent {
+    constructor(depth = 4, seed = null) {
+        super();
+        if (!Number.isInteger(depth) || depth < 1) {
+            throw new Error("Depth must be a positive integer.");
+        }
+        this.depth = depth;
+        this.seed = seed;
+        this.rng = new SeededRandom(seed);
+        this.WIN_SCORE = 1000000;
+        this.CENTER_COLUMN = 3;
+    }
+
+    getMove(engine) {
+        const legalMoves = engine.legalMoves();
+        if (legalMoves.length === 0) {
+            throw new Error("No legal moves available.");
+        }
+
+        const rootPlayer = engine.currentPlayer();
+        const moveScores = {};
+
+        // Search centre columns first to improve alpha-beta pruning
+        const ordered = this._orderedMoves(legalMoves);
+
+        for (const column of ordered) {
+            const simulation = engine.clone();
+            simulation.applyMove(column);
+
+            const score = this._minimax(
+                simulation,
+                this.depth - 1,
+                -Infinity,
+                Infinity,
+                rootPlayer
+            );
+
+            moveScores[column] = score;
+        }
+
+        const bestScore = Math.max(...Object.values(moveScores));
+        const bestMoves = Object.keys(moveScores)
+            .map(Number)
+            .filter(col => moveScores[col] === bestScore);
+
+        return this.rng.choice(bestMoves);
+    }
+
+    _minimax(engine, depth, alpha, beta, rootPlayer) {
+        const result = engine.winner();
+
+        // Terminal board evaluation
+        if (result !== null) {
+            const winVal = result.player;
+            if (winVal === rootPlayer) {
+                return this.WIN_SCORE + depth;
+            }
+            if (winVal === 0) {
+                return 0;
+            }
+            return -this.WIN_SCORE - depth;
+        }
+
+        // Stop searching and use the heuristic
+        if (depth === 0) {
+            return this._evaluateBoard(engine, rootPlayer);
+        }
+
+        const legalMoves = this._orderedMoves(engine.legalMoves());
+
+        // Maximizing player's turn
+        if (engine.currentPlayer() === rootPlayer) {
+            let bestScore = -Infinity;
+
+            for (const column of legalMoves) {
+                const simulation = engine.clone();
+                simulation.applyMove(column);
+
+                const score = this._minimax(
+                    simulation,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    rootPlayer
+                );
+
+                bestScore = Math.max(bestScore, score);
+                alpha = Math.max(alpha, bestScore);
+
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+
+            return bestScore;
+        }
+
+        // Minimizing opponent's turn
+        let bestScore = Infinity;
+
+        for (const column of legalMoves) {
+            const simulation = engine.clone();
+            simulation.applyMove(column);
+
+            const score = this._minimax(
+                simulation,
+                depth - 1,
+                alpha,
+                beta,
+                rootPlayer
+            );
+
+            bestScore = Math.min(bestScore, score);
+            beta = Math.min(beta, bestScore);
+
+            if (alpha >= beta) {
+                break;
+            }
+        }
+
+        return bestScore;
+    }
+
+    _evaluateBoard(engine, player) {
+        const board = engine.getBoardState();
+        const opponent = 3 - player;
+        let score = 0;
+
+        // Reward control of the centre column
+        let centerCountPlayer = 0;
+        let centerCountOpponent = 0;
+        for (let r = 0; r < 6; r++) {
+            const val = board[r][this.CENTER_COLUMN];
+            if (val === player) centerCountPlayer++;
+            else if (val === opponent) centerCountOpponent++;
+        }
+
+        score += centerCountPlayer * 6;
+        score -= centerCountOpponent * 6;
+
+        // Helper to count element in array
+        const countOccurrences = (arr, val) => arr.filter(item => item === val).length;
+
+        // Helper to score a window
+        const scoreWindow = (window) => {
+            const pCount = countOccurrences(window, player);
+            const oCount = countOccurrences(window, opponent);
+            const eCount = countOccurrences(window, 0);
+
+            if (pCount > 0 && oCount > 0) return 0;
+            if (pCount === 4) return 100000;
+            if (pCount === 3 && eCount === 1) return 100;
+            if (pCount === 2 && eCount === 2) return 10;
+            if (pCount === 1 && eCount === 3) return 1;
+
+            if (oCount === 4) return -100000;
+            if (oCount === 3 && eCount === 1) return -120;
+            if (oCount === 2 && eCount === 2) return -12;
+            if (oCount === 1 && eCount === 3) return -1;
+
+            return 0;
+        };
+
+        // Horizontal windows
+        for (let r = 0; r < 6; r++) {
+            for (let c = 0; c < 4; c++) {
+                const window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]];
+                score += scoreWindow(window);
+            }
+        }
+
+        // Vertical windows
+        for (let c = 0; c < 7; c++) {
+            for (let r = 0; r < 3; r++) {
+                const window = [board[r][c], board[r+1][c], board[r+2][c], board[r+3][c]];
+                score += scoreWindow(window);
+            }
+        }
+
+        // Diagonal windows (positive slope)
+        for (let r = 0; r < 3; r++) {
+            for (let c = 0; c < 4; c++) {
+                const window = [board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3]];
+                score += scoreWindow(window);
+            }
+        }
+
+        // Diagonal windows (negative slope)
+        for (let r = 3; r < 6; r++) {
+            for (let c = 0; c < 4; c++) {
+                const window = [board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3]];
+                score += scoreWindow(window);
+            }
+        }
+
+        return score;
+    }
+
+    _orderedMoves(moves) {
+        return [...moves].sort((a, b) => Math.abs(a - 3) - Math.abs(b - 3));
+    }
+}
+
