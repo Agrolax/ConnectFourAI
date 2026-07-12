@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Controls (Game Page)
     const btnReset = document.getElementById('btn-reset');
     const btnBack = document.getElementById('btn-back');
-    const currentPlayerVal = document.getElementById('current-player-val');
+    const player1Card = document.getElementById('player1-card');
+    const player2Card = document.getElementById('player2-card');
     const moveCountVal = document.getElementById('move-count-val');
     const connect4Board = document.getElementById('connect4-board');
     const dropIndicators = document.getElementById('drop-indicators');
@@ -81,9 +82,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const nextPlayer = engine.currentPlayer();
         if (nextPlayer === 1) {
-            currentPlayerVal.innerHTML = '<span class="token token-p1-small"></span> Player 1';
+            player1Card.classList.add('active', 'p1');
+            player1Card.querySelector('.player-status-text').textContent = 'Next Turn';
+            
+            player2Card.classList.remove('active', 'p2');
+            player2Card.querySelector('.player-status-text').textContent = 'Waiting';
         } else {
-            currentPlayerVal.innerHTML = '<span class="token token-p2-small"></span> Player 2';
+            player2Card.classList.add('active', 'p2');
+            player2Card.querySelector('.player-status-text').textContent = 'Next Turn';
+            
+            player1Card.classList.remove('active', 'p1');
+            player1Card.querySelector('.player-status-text').textContent = 'Waiting';
         }
     }
 
@@ -99,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isHovering && isGameActive && engine && !engine.isTerminal()) {
             const activePlayer = engine.currentPlayer();
-            const isHumanTurn = (selectedGameMode === 'player-vs-random' && activePlayer === 1);
+            const isHumanTurn = ((selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule-based') && activePlayer === 1);
             
             if (isHumanTurn) {
                 indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
@@ -155,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show celebration modal
     function showWinnerModal(title, msg, winnerType) {
         winnerCelebrationTitle.textContent = title;
-        winnerCelebrationMsg.textContent = msg;
+        winnerCelebrationMsg.innerHTML = msg;
         
         const winnerIcon = document.getElementById('winner-icon');
         
@@ -170,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             winnerCelebrationTitle.style.color = 'var(--p2-color)';
             winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(6, 182, 212, 0.6)';
             if (winnerIcon) {
-                if (selectedGameMode === 'player-vs-random') {
+                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule-based') {
                     winnerIcon.textContent = '💀';
                     winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
                 } else {
@@ -214,15 +223,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 showWinnerModal("Match Draw", "The board is full and there is no winner. Well played!", 0);
             } else {
                 highlightWinningDiscs(result.cells);
-                if (selectedGameMode === 'player-vs-random') {
+                if (selectedGameMode === 'player-vs-random' || selectedGameMode === 'player-vs-rule-based') {
+                    const agentName = selectedGameMode === 'player-vs-random' ? "Random" : "Rule-Based";
                     if (winVal === 1) {
-                        showWinnerModal("Victory!", "You connected four and defeated the Random AI agent!", 1);
+                        showWinnerModal("Victory!", `You connected four and defeated the ${agentName} AI agent!`, 1);
                     } else {
-                        showWinnerModal("Defeat!", "The Random AI agent connected four and won.", 2);
+                        showWinnerModal("Defeat!", `The ${agentName} AI agent connected four and won.`, 2);
                     }
                 } else {
-                    const playerName = winVal === 1 ? "Player 1 (Red)" : "Player 2 (Yellow)";
-                    showWinnerModal("Match Over", `${playerName} has connected four in a row!`, winVal);
+                    // Bot vs Bot games: 'random-vs-random', 'rule-based-vs-random'
+                    const winnerColor = winVal === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
+                    const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">Player ${winVal}</span>`;
+                    showWinnerModal("Match Over", `${winnerHTML} has connected four in a row!`, winVal);
                 }
             }
             return true;
@@ -238,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = selectedGameMode;
         const currentPl = engine.currentPlayer();
         
-        if (mode === 'player-vs-random' && currentPl === 1) {
+        if ((mode === 'player-vs-random' || mode === 'player-vs-rule-based') && currentPl === 1) {
             try {
                 const moveResult = engine.applyMove(col);
                 animateDisc(moveResult.row, moveResult.col, 1);
@@ -278,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateStatusUI();
 
                 if (!checkTerminalStatus()) {
-                    if (selectedGameMode === 'random-vs-random') {
+                    if (selectedGameMode === 'random-vs-random' || selectedGameMode === 'rule-based-vs-random') {
                         scheduleAIMove();
                     }
                 }
@@ -298,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle settings widgets when mode changes
     function handleModeChange() {
         const mode = selectedGameMode;
-        if (mode === 'random-vs-random') {
+        if (mode === 'random-vs-random' || mode === 'rule-based-vs-random') {
             speedControlGroup.style.display = 'block';
         } else {
             speedControlGroup.style.display = 'none';
@@ -323,6 +335,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mode === 'random-vs-random') {
             agent1 = new RandomAgent(seed1);
             agent2 = new RandomAgent(seed2);
+        } else if (mode === 'rule-based-vs-random') {
+            agent1 = new RuleBasedAgent(seed1);
+            agent2 = new RandomAgent(seed2);
+        } else if (mode === 'player-vs-rule-based') {
+            agent1 = null;
+            agent2 = new RuleBasedAgent(seed2);
         } else {
             agent1 = null;
             agent2 = new RandomAgent(seed2);
@@ -334,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random') {
+        if (mode === 'random-vs-random' || mode === 'rule-based-vs-random') {
             scheduleAIMove();
         }
     }
@@ -365,6 +383,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mode === 'random-vs-random') {
             agent1 = new RandomAgent(seed1);
             agent2 = new RandomAgent(seed2);
+        } else if (mode === 'rule-based-vs-random') {
+            agent1 = new RuleBasedAgent(seed1);
+            agent2 = new RandomAgent(seed2);
+        } else if (mode === 'player-vs-rule-based') {
+            agent1 = null;
+            agent2 = new RuleBasedAgent(seed2);
         } else {
             agent1 = null;
             agent2 = new RandomAgent(seed2);
@@ -380,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random') {
+        if (mode === 'random-vs-random' || mode === 'rule-based-vs-random') {
             scheduleAIMove();
         }
     }

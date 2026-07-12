@@ -58,16 +58,13 @@
                         <div class="mode-desc">Watch two random bots play a match automatically.</div>
                     </div>
                     
-                    <!-- Pending Modes (Greyed out) -->
-                    <div class="mode-card disabled">
-                        <div class="mode-tag">Coming Soon</div>
+                    <div class="mode-card" data-value="player-vs-rule-based">
                         <div class="mode-icon">👤 <span>vs</span> 📋</div>
                         <div class="mode-label">Player vs Rule-Based</div>
                         <div class="mode-desc">Play against manual prioritized rules.</div>
                     </div>
 
-                    <div class="mode-card disabled">
-                        <div class="mode-tag">Coming Soon</div>
+                    <div class="mode-card" data-value="rule-based-vs-random">
                         <div class="mode-icon">📋 <span>vs</span> 🤖</div>
                         <div class="mode-label">Rule-Based vs Random</div>
                         <div class="mode-desc">Watch rule-based AI play a random baseline.</div>
@@ -120,26 +117,50 @@
 
         <!-- SCREEN 2: ACTIVE MATCH BOARD (Hidden initially) -->
         <section id="game-screen" class="match-board-view hidden">
-            <!-- Sidebar stats panel -->
-            <div class="game-sidebar glass-card">
-                <h2>Active Match</h2>
-                
-                <div class="status-info">
-                    <div class="status-cards-vert">
-                        <div class="status-card" id="turn-card">
-                            <span class="card-label">Next Player</span>
-                            <span class="card-value" id="current-player-val"><span class="token token-p1-small"></span> Player 1</span>
+            <!-- Sidebar column wrapper -->
+            <div class="sidebar-panel">
+                <!-- Sidebar stats panel -->
+                <div class="game-sidebar glass-card">
+                    <h2>Active Match</h2>
+                    
+                    <div class="status-info">
+                        <div class="status-cards-vert">
+                            <!-- Two split player cards for both players -->
+                            <div class="player-turn-boxes">
+                                <div class="player-card active p1" id="player1-card">
+                                    <span class="token token-p1-small"></span>
+                                    <span class="player-name">Player 1 (Pink)</span>
+                                    <span class="player-status-text">Next Turn</span>
+                                </div>
+                                <div class="player-card" id="player2-card">
+                                    <span class="token token-p2-small"></span>
+                                    <span class="player-name">Player 2 (Cyan)</span>
+                                    <span class="player-status-text">Waiting</span>
+                                </div>
+                            </div>
+                            
+                            <div class="status-card">
+                                <span class="card-label">Total Moves</span>
+                                <span class="card-value" id="move-count-val">0</span>
+                            </div>
                         </div>
-                        <div class="status-card">
-                            <span class="card-label">Total Moves</span>
-                            <span class="card-value" id="move-count-val">0</span>
-                        </div>
+                    </div>
+
+                    <div class="game-controls">
+                        <button id="btn-reset" class="btn btn-primary btn-block">Reset Board</button>
+                        <button id="btn-back" class="btn btn-secondary btn-block">Back to Settings</button>
                     </div>
                 </div>
 
-                <div class="game-controls">
-                    <button id="btn-reset" class="btn btn-primary btn-block">Reset Board</button>
-                    <button id="btn-back" class="btn btn-secondary btn-block">Back to Settings</button>
+                <!-- SUCCESS MODAL (Rendered under the match details box) -->
+                <div id="winner-modal" class="winner-card glass-card hidden">
+                    <div class="winner-icon" id="winner-icon">🏆</div>
+                    <h2 id="winner-celebration-title">Victory!</h2>
+                    <p id="winner-celebration-msg">Player 1 wins the match.</p>
+                    <div class="modal-buttons">
+                        <button id="btn-modal-replay" class="btn btn-primary">Play Again</button>
+                        <button id="btn-modal-close" class="btn btn-secondary">Close Board</button>
+                    </div>
                 </div>
             </div>
 
@@ -160,19 +181,6 @@
                     <!-- Connect 4 Grid -->
                     <div class="connect4-board" id="connect4-board">
                         <!-- slots generated by JS -->
-                    </div>
-
-                    <!-- WINNER CELEBRATION MODAL OVERLAY -->
-                    <div id="winner-modal" class="winner-modal-overlay hidden">
-                        <div class="winner-modal-content glass-card">
-                            <div class="winner-icon" id="winner-icon">🏆</div>
-                            <h2 id="winner-celebration-title">Victory!</h2>
-                            <p id="winner-celebration-msg">Player 1 wins the match.</p>
-                            <div class="modal-buttons">
-                                <button id="btn-modal-replay" class="btn btn-primary">Play Again</button>
-                                <button id="btn-modal-close" class="btn btn-secondary">Close Board</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

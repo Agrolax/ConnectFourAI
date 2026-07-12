@@ -329,18 +329,27 @@ input[type="range"] {
 
 /* SCREEN 2: Active Match layout */
 .match-board-view {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
     gap: 40px;
     width: 100%;
-    max-width: 960px;
+    max-width: 100%;
     animation: fadeIn 0.4s ease;
+}
+
+.sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 360px;
+    flex-shrink: 0;
 }
 
 .game-sidebar {
     display: flex;
     flex-direction: column;
-    height: fit-content;
+    height: 100%;
 }
 
 .game-sidebar h2 {
@@ -360,6 +369,60 @@ input[type="range"] {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 24px;
+}
+
+.player-turn-boxes {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.player-card {
+    flex: 1;
+    background-color: #111827;
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-card .player-name {
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.player-card .player-status-text {
+    font-size: 9px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.player-card.active {
+    transform: scale(1.03);
+}
+
+.player-card.active.p1 {
+    border-color: var(--p1-color);
+    box-shadow: 0 0 14px rgba(225, 29, 72, 0.35);
+    background-color: #271625;
+}
+
+.player-card.active.p2 {
+    border-color: var(--p2-color);
+    box-shadow: 0 0 14px rgba(6, 182, 212, 0.35);
+    background-color: #122533;
+}
+
+.player-card.active .player-status-text {
+    color: #ffffff;
+    font-weight: 700;
 }
 
 .status-card {
@@ -412,9 +475,11 @@ input[type="range"] {
 
 /* Connect 4 Board UI */
 .board-panel {
+    flex: 1;
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
     justify-content: center;
-    align-items: center;
 }
 
 .board-container {
@@ -422,8 +487,10 @@ input[type="range"] {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     position: relative;
     border-radius: 24px;
+    height: 100%;
 }
 
 /* Column drop indicators */
@@ -541,33 +608,13 @@ input[type="range"] {
     }
 }
 
-/* WINNER CELEBRATION modal overlay */
-.winner-modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(15, 23, 42, 0.82);
-    backdrop-filter: blur(8px);
-    display: flex; /* class hidden handles hiding */
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    border-radius: 24px;
-    animation: fadeIn 0.3s ease;
-}
-
-.winner-modal-content {
-    max-width: 360px;
-    width: 90%;
+/* WINNER CELEBRATION card styles */
+.winner-card {
     text-align: center;
-    border-radius: 24px;
+    background-color: var(--card-bg);
     border: 2px solid var(--card-border);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-    background: rgba(30, 41, 59, 0.85);
-    backdrop-filter: blur(12px);
-    padding: 32px 24px;
+    border-radius: 24px;
+    padding: 24px;
     animation: slideUpPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
@@ -579,17 +626,18 @@ input[type="range"] {
     animation: bouncePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
-.winner-modal-content h2 {
+.winner-card h2 {
     font-family: 'Fredoka', sans-serif;
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
-.winner-modal-content p {
-    font-size: 16px;
-    margin-bottom: 28px;
+.winner-card p {
+    font-size: 14px;
+    margin-bottom: 20px;
     color: var(--text-primary);
+    line-height: 1.45;
 }
 
 .modal-buttons {
@@ -679,8 +727,19 @@ footer .members strong {
     }
     
     .match-board-view {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: center;
         gap: 32px;
+    }
+    
+    .sidebar-panel {
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .board-panel {
+        width: 100%;
+        max-width: 500px;
     }
     
     .game-sidebar {
@@ -695,17 +754,24 @@ footer .members strong {
         margin-top: 0;
         padding-top: 0;
         border-top: none;
+        width: 60%;
     }
     
     .status-cards-vert {
         flex-direction: row;
         gap: 12px;
         margin-bottom: 0;
+        align-items: center;
+    }
+    
+    .player-turn-boxes {
+        margin-bottom: 0;
     }
     
     .game-controls {
         flex-direction: row;
         gap: 12px;
+        width: 35%;
     }
     
     .game-sidebar h2 {
@@ -752,13 +818,19 @@ footer .members strong {
         gap: 16px;
     }
     
+    .status-info {
+        width: 100%;
+    }
+    
     .status-cards-vert {
         width: 100%;
+        flex-direction: column;
         justify-content: center;
     }
     
     .game-controls {
         width: 100%;
+        flex-direction: column;
         justify-content: center;
     }
 }
