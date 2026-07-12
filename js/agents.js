@@ -44,16 +44,17 @@ class RandomAgent extends BaseAgent {
         return this.rng.choice(moves);
     }
 }
-
 class RuleBasedAgent extends BaseAgent {
     constructor(seed = null) {
         super();
         this.seed = seed;
         this.rng = new SeededRandom(seed);
+        this.centerColumn = 3;
     }
 
     getMove(engine) {
         const moves = engine.legalMoves();
+
         if (moves.length === 0) {
             throw new Error("No legal moves available.");
         }
@@ -61,104 +62,122 @@ class RuleBasedAgent extends BaseAgent {
         const player = engine.currentPlayer();
         const opponent = 3 - player;
 
-        // Rule 1: Winning Move (check if we can win immediately)
-        for (const col of moves) {
-            const clone = engine.clone();
-            clone.applyMove(col);
-            const winRes = clone.winner();
-            if (winRes !== null && winRes.player === player) {
-                return col;
-            }
+        // Rule 1: Play an immediate winning move.
+        const winningMoves = moves.filter(col =>
+            this.winsFor(engine, col, player)
+        );
+
+        if (winningMoves.length > 0) {
+            return this.rng.choice(winningMoves);
         }
 
-        // Rule 2: Blocking Move (check if we must block the opponent's winning move)
-        for (const col of moves) {
-            const clone = engine.clone();
-            clone._currentPlayer = opponent; // Simulate opponent playing
-            clone.applyMove(col);
-            const winRes = clone.winner();
-            if (winRes !== null && winRes.player === opponent) {
-                return col;
-            }
+        // Rule 2: Block an immediate opponent winning move.
+        const blockingMoves = moves.filter(col =>
+            this.winsFor(engine, col, opponent)
+        );
+
+        if (blockingMoves.length > 0) {
+            return this.rng.choice(blockingMoves);
         }
 
-        // Rule 3 (Center Preference) and Rule 4 (Threat/Line Building)
-        const scoredMoves = moves.map(col => {
-            const clone = engine.clone();
-            clone.applyMove(col);
-            const score = this._scoreBoard(clone.board, player);
-            const distance = Math.abs(col - 3);
-            return { col, distance, score };
-        });
+        // Rule 3: Prefer columns closest to the centre.
+        const minimumDistance = Math.min(
+            ...moves.map(col => Math.abs(col - this.centerColumn))
+        );
 
-        // Prioritize Center Preference (distance ascending), then Threat/Line Building (score descending)
-        scoredMoves.sort((a, b) => {
-            if (a.distance !== b.distance) {
-                return a.distance - b.distance;
-            }
-            return b.score - a.score;
-        });
+        const centralMoves = moves.filter(
+            col => Math.abs(col - this.centerColumn) === minimumDistance
+        );
 
-        // Filter all moves that share the best distance and score
-        const best = scoredMoves[0];
-        const bestMoves = scoredMoves
-            .filter(m => m.distance === best.distance && m.score === best.score)
-            .map(m => m.col);
+        // Rule 4: Among equally central moves, extend longest line.
+        const scores = centralMoves.map(col => ({
+            col: col,
+            score: this.lineScore(engine, col, player)
+        }));
+
+        const bestScore = Math.max(...scores.map(item => item.score));
+
+        const bestMoves = scores
+            .filter(item => item.score === bestScore)
+            .map(item => item.col);
 
         return this.rng.choice(bestMoves);
     }
 
-    _scoreBoard(board, player) {
-        const opponent = 3 - player;
-        let score = 0;
+    drop(engine, col, player) {
+        const simulation = engine.clone();
 
-        // Helper to score a window of 4 coordinates
-        const scoreWindow = (coords) => {
-            let playerCount = 0;
-            let opponentCount = 0;
-            for (const [r, c] of coords) {
-                const val = board[r][c];
-                if (val === player) playerCount++;
-                else if (val === opponent) opponentCount++;
-            }
-            
-            if (opponentCount > 0) return 0; // Blocked window
-            if (playerCount === 4) return 1000;
-            if (playerCount === 3) return 100;
-            if (playerCount === 2) return 10;
-            if (playerCount === 1) return 1;
-            return 0;
-        };
+        for (let row = 0; row < 6; row++) {
+            if (simulation.board[row][col] === 0) {
+                simulation.board[row][col] = player;
 
-        // Horizontal windows
-        for (let r = 0; r < 6; r++) {
-            for (let c = 0; c < 4; c++) {
-                score += scoreWindow([[r, c], [r, c+1], [r, c+2], [r, c+3]]);
+                return {
+                    engine: simulation,
+                    row: row
+                };
             }
         }
 
-        // Vertical windows
-        for (let r = 0; r < 3; r++) {
-            for (let c = 0; c < 7; c++) {
-                score += scoreWindow([[r, c], [r+1, c], [r+2, c], [r+3, c]]);
+        throw new Error(`Column ${col} is full.`);
+    }
+
+    winsFor(engine, col, player) {
+        const simulation = this.drop(engine, col, player).engine;
+        const result = simulation.winner();
+
+        return result !== null && result.player === player;
+    }
+
+    lineScore(engine, col, player) {
+        const dropped = this.drop(engine, col, player);
+        const board = dropped.engine.board;
+        const row = dropped.row;
+
+        const directions = [
+            [0, 1],
+            [1, 0],
+            [1, 1],
+            [1, -1]
+        ];
+
+        let longestLine = 1;
+
+        for (const [rowChange, colChange] of directions) {
+            let count = 1;
+
+            let currentRow = row + rowChange;
+            let currentCol = col + colChange;
+
+            while (
+                currentRow >= 0 &&
+                currentRow < 6 &&
+                currentCol >= 0 &&
+                currentCol < 7 &&
+                board[currentRow][currentCol] === player
+            ) {
+                count++;
+                currentRow += rowChange;
+                currentCol += colChange;
             }
+
+            currentRow = row - rowChange;
+            currentCol = col - colChange;
+
+            while (
+                currentRow >= 0 &&
+                currentRow < 6 &&
+                currentCol >= 0 &&
+                currentCol < 7 &&
+                board[currentRow][currentCol] === player
+            ) {
+                count++;
+                currentRow -= rowChange;
+                currentCol -= colChange;
+            }
+
+            longestLine = Math.max(longestLine, count);
         }
 
-        // Diagonal windows (positive slope)
-        for (let r = 0; r < 3; r++) {
-            for (let c = 0; c < 4; c++) {
-                score += scoreWindow([[r, c], [r+1, c+1], [r+2, c+2], [r+3, c+3]]);
-            }
-        }
-
-        // Diagonal windows (negative slope)
-        for (let r = 3; r < 6; r++) {
-            for (let c = 0; c < 4; c++) {
-                score += scoreWindow([[r, c], [r-1, c+1], [r-2, c+2], [r-3, c+3]]);
-            }
-        }
-
-        return score;
+        return longestLine;
     }
 }
-

@@ -60,18 +60,14 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
   - **Error Handling:** Raises a `ValueError` if invoked on a terminal board state where no legal moves exist.
 
 #### Agent 2 — Rule-Based Agent [1.5 marks]
-- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
-- **What needs to be done:**
-  - Implement an agent driven by manually defined, prioritized rules:
-    1. Winning Move: Play if a move wins immediately.
-    2. Blocking Move: Block opponent's immediate winning moves.
-    3. Center Preference: Prefer the center column (column 3).
-    4. Threat/Line Building: Extend longest line of player's own discs.
-- **How to do it:**
-  - Create `ConnectFourAI/agents/rule_based_agent.py` subclassing `BaseAgent`.
-  - For rules 1 and 2: Simulate placing a disc in each legal column (using `engine.clone()`) and check if `winner()` returns that player.
-  - For rule 3: Sort legal moves by distance to column 3.
-  - For rule 4: Iterate through all lines of length 4, scoring them based on count of player discs vs empty spaces.
+- **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
+- **Implementation File:** [ConnectFourAI/agents/rule_based_agent.py](./ConnectFourAI/agents/rule_based_agent.py)
+- **Detailed Work Done:**
+  - **Winning Move:** Simulates dropping a disc in each legal column (via `engine.clone()`) and immediately plays any column where `winner()` returns the agent's own player.
+  - **Blocking Move:** If no immediate win exists, simulates the opponent dropping a disc in each legal column and blocks any column where the opponent would immediately win.
+  - **Center Preference:** Among the remaining legal moves, narrows the candidates to the column(s) closest to the center column (column 3).
+  - **Threat/Line Building:** Scores each central candidate by the length of the longest contiguous run of the agent's own discs (checked in all four directions) through the cell the disc would land in, and selects the move(s) with the highest score.
+  - **Tie-Breaking:** Uses an isolated `random.Random(seed)` instance (same pattern as `RandomAgent`) to choose uniformly at random whenever multiple moves are tied under the currently active rule, keeping results reproducible.
 
 #### Agent 3 — Minimax Agent [3 marks]
 - **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
