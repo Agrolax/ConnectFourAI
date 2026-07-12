@@ -42,3 +42,31 @@ class TestRandomAgent(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+    
+class TestRuleBasedAgent(unittest.TestCase):
+
+    def test_center_move_on_empty_board(self):
+        engine = ConnectFourEngine()
+        agent = RuleBasedAgent(seed=42)
+
+        move = agent.get_move(engine)
+
+        self.assertEqual(move, 3)
+
+    def test_returns_legal_move(self):
+        engine = ConnectFourEngine()
+        agent = RuleBasedAgent(seed=42)
+
+        move = agent.get_move(engine)
+
+        self.assertIn(move, engine.legal_moves())
+
+    def test_no_moves_error(self):
+        engine = ConnectFourEngine()
+
+        engine.board = [[1] * 7 for _ in range(6)]
+
+        agent = RuleBasedAgent(seed=42)
+
+        with self.assertRaises(ValueError):
+            agent.get_move(engine)
