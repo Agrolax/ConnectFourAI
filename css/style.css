@@ -852,6 +852,17 @@ footer .members strong {
     }
 }
 
+/* Tablet & Phone Selector Stacking */
+@media (max-width: 768px) {
+    .player-selectors {
+        flex-direction: column;
+        gap: 16px;
+    }
+    .vs-divider {
+        margin: 6px 0;
+    }
+}
+
 /* Phone view */
 @media (max-width: 500px) {
     :root {
