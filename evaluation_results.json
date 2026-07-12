@@ -1,773 +1,773 @@
 {
-  "Random_vs_RuleBased": {
+  "Random vs Rule-Based": {
     "stats": {
       "Random": {
-        "wins": 0,
+        "wins": 1,
         "draws": 0,
-        "totalTime": 0.9999999925494194,
-        "totalMoves": 153
+        "total_time": 0.00019387899999999403,
+        "total_moves": 193
       },
       "RuleBased": {
-        "wins": 30,
+        "wins": 29,
         "draws": 0,
-        "totalTime": 36.10000001266599,
-        "totalMoves": 168
+        "total_time": 0.05795157999999996,
+        "total_moves": 207
       }
     },
-    "gameLogs": [
+    "game_logs": [
       {
         "game": 0,
         "first": "Random",
-        "seedA": 1000,
-        "seedB": 2000,
+        "seed_a": 1000,
+        "seed_b": 2000,
         "result": "RuleBased",
-        "moves": 20
+        "moves": 10
       },
       {
         "game": 1,
         "first": "Random",
-        "seedA": 1001,
-        "seedB": 2001,
+        "seed_a": 1001,
+        "seed_b": 2001,
         "result": "RuleBased",
         "moves": 8
       },
       {
         "game": 2,
         "first": "Random",
-        "seedA": 1002,
-        "seedB": 2002,
+        "seed_a": 1002,
+        "seed_b": 2002,
         "result": "RuleBased",
-        "moves": 8
+        "moves": 20
       },
       {
         "game": 3,
         "first": "Random",
-        "seedA": 1003,
-        "seedB": 2003,
-        "result": "RuleBased",
-        "moves": 8
+        "seed_a": 1003,
+        "seed_b": 2003,
+        "result": "Random",
+        "moves": 7
       },
       {
         "game": 4,
         "first": "Random",
-        "seedA": 1004,
-        "seedB": 2004,
+        "seed_a": 1004,
+        "seed_b": 2004,
         "result": "RuleBased",
         "moves": 8
       },
       {
         "game": 5,
         "first": "Random",
-        "seedA": 1005,
-        "seedB": 2005,
+        "seed_a": 1005,
+        "seed_b": 2005,
         "result": "RuleBased",
-        "moves": 10
+        "moves": 16
       },
       {
         "game": 6,
         "first": "Random",
-        "seedA": 1006,
-        "seedB": 2006,
+        "seed_a": 1006,
+        "seed_b": 2006,
         "result": "RuleBased",
-        "moves": 10
+        "moves": 20
       },
       {
         "game": 7,
         "first": "Random",
-        "seedA": 1007,
-        "seedB": 2007,
+        "seed_a": 1007,
+        "seed_b": 2007,
         "result": "RuleBased",
         "moves": 8
       },
       {
         "game": 8,
         "first": "Random",
-        "seedA": 1008,
-        "seedB": 2008,
+        "seed_a": 1008,
+        "seed_b": 2008,
         "result": "RuleBased",
-        "moves": 8
+        "moves": 10
       },
       {
         "game": 9,
         "first": "Random",
-        "seedA": 1009,
-        "seedB": 2009,
+        "seed_a": 1009,
+        "seed_b": 2009,
         "result": "RuleBased",
-        "moves": 8
+        "moves": 20
       },
       {
         "game": 10,
         "first": "Random",
-        "seedA": 1010,
-        "seedB": 2010,
+        "seed_a": 1010,
+        "seed_b": 2010,
         "result": "RuleBased",
         "moves": 8
       },
       {
         "game": 11,
         "first": "Random",
-        "seedA": 1011,
-        "seedB": 2011,
+        "seed_a": 1011,
+        "seed_b": 2011,
         "result": "RuleBased",
-        "moves": 8
+        "moves": 22
       },
       {
         "game": 12,
         "first": "Random",
-        "seedA": 1012,
-        "seedB": 2012,
+        "seed_a": 1012,
+        "seed_b": 2012,
         "result": "RuleBased",
-        "moves": 8
+        "moves": 24
       },
       {
         "game": 13,
         "first": "Random",
-        "seedA": 1013,
-        "seedB": 2013,
+        "seed_a": 1013,
+        "seed_b": 2013,
         "result": "RuleBased",
-        "moves": 18
+        "moves": 8
       },
       {
         "game": 14,
         "first": "Random",
-        "seedA": 1014,
-        "seedB": 2014,
+        "seed_a": 1014,
+        "seed_b": 2014,
         "result": "RuleBased",
         "moves": 8
       },
       {
         "game": 15,
         "first": "RuleBased",
-        "seedA": 1015,
-        "seedB": 2015,
+        "seed_a": 1015,
+        "seed_b": 2015,
         "result": "RuleBased",
         "moves": 7
       },
       {
         "game": 16,
         "first": "RuleBased",
-        "seedA": 1016,
-        "seedB": 2016,
+        "seed_a": 1016,
+        "seed_b": 2016,
         "result": "RuleBased",
-        "moves": 23
+        "moves": 17
       },
       {
         "game": 17,
         "first": "RuleBased",
-        "seedA": 1017,
-        "seedB": 2017,
+        "seed_a": 1017,
+        "seed_b": 2017,
         "result": "RuleBased",
-        "moves": 15
+        "moves": 21
       },
       {
         "game": 18,
         "first": "RuleBased",
-        "seedA": 1018,
-        "seedB": 2018,
+        "seed_a": 1018,
+        "seed_b": 2018,
         "result": "RuleBased",
-        "moves": 7
+        "moves": 13
       },
       {
         "game": 19,
         "first": "RuleBased",
-        "seedA": 1019,
-        "seedB": 2019,
-        "result": "RuleBased",
-        "moves": 15
-      },
-      {
-        "game": 20,
-        "first": "RuleBased",
-        "seedA": 1020,
-        "seedB": 2020,
+        "seed_a": 1019,
+        "seed_b": 2019,
         "result": "RuleBased",
         "moves": 7
       },
       {
+        "game": 20,
+        "first": "RuleBased",
+        "seed_a": 1020,
+        "seed_b": 2020,
+        "result": "RuleBased",
+        "moves": 17
+      },
+      {
         "game": 21,
         "first": "RuleBased",
-        "seedA": 1021,
-        "seedB": 2021,
+        "seed_a": 1021,
+        "seed_b": 2021,
         "result": "RuleBased",
         "moves": 7
       },
       {
         "game": 22,
         "first": "RuleBased",
-        "seedA": 1022,
-        "seedB": 2022,
+        "seed_a": 1022,
+        "seed_b": 2022,
         "result": "RuleBased",
-        "moves": 7
+        "moves": 15
       },
       {
         "game": 23,
         "first": "RuleBased",
-        "seedA": 1023,
-        "seedB": 2023,
+        "seed_a": 1023,
+        "seed_b": 2023,
         "result": "RuleBased",
-        "moves": 7
+        "moves": 27
       },
       {
         "game": 24,
         "first": "RuleBased",
-        "seedA": 1024,
-        "seedB": 2024,
+        "seed_a": 1024,
+        "seed_b": 2024,
         "result": "RuleBased",
-        "moves": 7
+        "moves": 15
       },
       {
         "game": 25,
         "first": "RuleBased",
-        "seedA": 1025,
-        "seedB": 2025,
+        "seed_a": 1025,
+        "seed_b": 2025,
         "result": "RuleBased",
         "moves": 7
       },
       {
         "game": 26,
         "first": "RuleBased",
-        "seedA": 1026,
-        "seedB": 2026,
+        "seed_a": 1026,
+        "seed_b": 2026,
         "result": "RuleBased",
-        "moves": 7
+        "moves": 15
       },
       {
         "game": 27,
         "first": "RuleBased",
-        "seedA": 1027,
-        "seedB": 2027,
+        "seed_a": 1027,
+        "seed_b": 2027,
         "result": "RuleBased",
-        "moves": 31
+        "moves": 7
       },
       {
         "game": 28,
         "first": "RuleBased",
-        "seedA": 1028,
-        "seedB": 2028,
+        "seed_a": 1028,
+        "seed_b": 2028,
         "result": "RuleBased",
         "moves": 21
       },
       {
         "game": 29,
         "first": "RuleBased",
-        "seedA": 1029,
-        "seedB": 2029,
+        "seed_a": 1029,
+        "seed_b": 2029,
         "result": "RuleBased",
         "moves": 7
       }
     ]
   },
-  "RuleBased_vs_Minimax": {
+  "Rule-Based vs Minimax": {
     "stats": {
       "RuleBased": {
-        "wins": 1,
-        "draws": 2,
-        "totalTime": 10.600000001490116,
-        "totalMoves": 249
+        "wins": 3,
+        "draws": 1,
+        "total_time": 0.06771058299999702,
+        "total_moves": 255
       },
       "Minimax": {
-        "wins": 27,
-        "draws": 2,
-        "totalTime": 4305.599999997765,
-        "totalMoves": 263
+        "wins": 26,
+        "draws": 1,
+        "total_time": 8.281697499999996,
+        "total_moves": 267
       }
     },
-    "gameLogs": [
+    "game_logs": [
       {
         "game": 0,
         "first": "RuleBased",
-        "seedA": 3000,
-        "seedB": 4000,
+        "seed_a": 3000,
+        "seed_b": 4000,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 1,
         "first": "RuleBased",
-        "seedA": 3001,
-        "seedB": 4001,
+        "seed_a": 3001,
+        "seed_b": 4001,
         "result": "Minimax",
-        "moves": 22
+        "moves": 20
       },
       {
         "game": 2,
         "first": "RuleBased",
-        "seedA": 3002,
-        "seedB": 4002,
+        "seed_a": 3002,
+        "seed_b": 4002,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 3,
         "first": "RuleBased",
-        "seedA": 3003,
-        "seedB": 4003,
-        "result": "Minimax",
-        "moves": 22
+        "seed_a": 3003,
+        "seed_b": 4003,
+        "result": "RuleBased",
+        "moves": 35
       },
       {
         "game": 4,
         "first": "RuleBased",
-        "seedA": 3004,
-        "seedB": 4004,
+        "seed_a": 3004,
+        "seed_b": 4004,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 5,
         "first": "RuleBased",
-        "seedA": 3005,
-        "seedB": 4005,
-        "result": "Minimax",
-        "moves": 18
-      },
-      {
-        "game": 6,
-        "first": "RuleBased",
-        "seedA": 3006,
-        "seedB": 4006,
-        "result": "draw",
-        "moves": 42
-      },
-      {
-        "game": 7,
-        "first": "RuleBased",
-        "seedA": 3007,
-        "seedB": 4007,
-        "result": "draw",
-        "moves": 42
-      },
-      {
-        "game": 8,
-        "first": "RuleBased",
-        "seedA": 3008,
-        "seedB": 4008,
-        "result": "Minimax",
-        "moves": 20
-      },
-      {
-        "game": 9,
-        "first": "RuleBased",
-        "seedA": 3009,
-        "seedB": 4009,
+        "seed_a": 3005,
+        "seed_b": 4005,
         "result": "RuleBased",
         "moves": 35
       },
       {
+        "game": 6,
+        "first": "RuleBased",
+        "seed_a": 3006,
+        "seed_b": 4006,
+        "result": "Minimax",
+        "moves": 22
+      },
+      {
+        "game": 7,
+        "first": "RuleBased",
+        "seed_a": 3007,
+        "seed_b": 4007,
+        "result": "Minimax",
+        "moves": 22
+      },
+      {
+        "game": 8,
+        "first": "RuleBased",
+        "seed_a": 3008,
+        "seed_b": 4008,
+        "result": "Minimax",
+        "moves": 22
+      },
+      {
+        "game": 9,
+        "first": "RuleBased",
+        "seed_a": 3009,
+        "seed_b": 4009,
+        "result": "draw",
+        "moves": 42
+      },
+      {
         "game": 10,
         "first": "RuleBased",
-        "seedA": 3010,
-        "seedB": 4010,
+        "seed_a": 3010,
+        "seed_b": 4010,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 11,
         "first": "RuleBased",
-        "seedA": 3011,
-        "seedB": 4011,
+        "seed_a": 3011,
+        "seed_b": 4011,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 12,
         "first": "RuleBased",
-        "seedA": 3012,
-        "seedB": 4012,
+        "seed_a": 3012,
+        "seed_b": 4012,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 13,
         "first": "RuleBased",
-        "seedA": 3013,
-        "seedB": 4013,
+        "seed_a": 3013,
+        "seed_b": 4013,
         "result": "Minimax",
         "moves": 22
       },
       {
         "game": 14,
         "first": "RuleBased",
-        "seedA": 3014,
-        "seedB": 4014,
-        "result": "Minimax",
-        "moves": 22
+        "seed_a": 3014,
+        "seed_b": 4014,
+        "result": "RuleBased",
+        "moves": 35
       },
       {
         "game": 15,
         "first": "Minimax",
-        "seedA": 3015,
-        "seedB": 4015,
+        "seed_a": 3015,
+        "seed_b": 4015,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 16,
         "first": "Minimax",
-        "seedA": 3016,
-        "seedB": 4016,
+        "seed_a": 3016,
+        "seed_b": 4016,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 17,
         "first": "Minimax",
-        "seedA": 3017,
-        "seedB": 4017,
+        "seed_a": 3017,
+        "seed_b": 4017,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 18,
         "first": "Minimax",
-        "seedA": 3018,
-        "seedB": 4018,
+        "seed_a": 3018,
+        "seed_b": 4018,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 19,
         "first": "Minimax",
-        "seedA": 3019,
-        "seedB": 4019,
+        "seed_a": 3019,
+        "seed_b": 4019,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 20,
         "first": "Minimax",
-        "seedA": 3020,
-        "seedB": 4020,
+        "seed_a": 3020,
+        "seed_b": 4020,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 21,
         "first": "Minimax",
-        "seedA": 3021,
-        "seedB": 4021,
+        "seed_a": 3021,
+        "seed_b": 4021,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 22,
         "first": "Minimax",
-        "seedA": 3022,
-        "seedB": 4022,
+        "seed_a": 3022,
+        "seed_b": 4022,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 23,
         "first": "Minimax",
-        "seedA": 3023,
-        "seedB": 4023,
+        "seed_a": 3023,
+        "seed_b": 4023,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 24,
         "first": "Minimax",
-        "seedA": 3024,
-        "seedB": 4024,
+        "seed_a": 3024,
+        "seed_b": 4024,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 25,
         "first": "Minimax",
-        "seedA": 3025,
-        "seedB": 4025,
+        "seed_a": 3025,
+        "seed_b": 4025,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 26,
         "first": "Minimax",
-        "seedA": 3026,
-        "seedB": 4026,
+        "seed_a": 3026,
+        "seed_b": 4026,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 27,
         "first": "Minimax",
-        "seedA": 3027,
-        "seedB": 4027,
+        "seed_a": 3027,
+        "seed_b": 4027,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 28,
         "first": "Minimax",
-        "seedA": 3028,
-        "seedB": 4028,
+        "seed_a": 3028,
+        "seed_b": 4028,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 29,
         "first": "Minimax",
-        "seedA": 3029,
-        "seedB": 4029,
+        "seed_a": 3029,
+        "seed_b": 4029,
         "result": "Minimax",
         "moves": 9
       }
     ]
   },
-  "Minimax_vs_Random": {
+  "Minimax vs Random": {
     "stats": {
       "Minimax": {
         "wins": 30,
         "draws": 0,
-        "totalTime": 4541.300000011921,
-        "totalMoves": 202
+        "total_time": 8.200311294000011,
+        "total_moves": 197
       },
       "Random": {
         "wins": 0,
         "draws": 0,
-        "totalTime": 0.3999999985098839,
-        "totalMoves": 187
+        "total_time": 0.0002760460000050813,
+        "total_moves": 182
       }
     },
-    "gameLogs": [
+    "game_logs": [
       {
         "game": 0,
         "first": "Minimax",
-        "seedA": 5000,
-        "seedB": 6000,
+        "seed_a": 5000,
+        "seed_b": 6000,
         "result": "Minimax",
-        "moves": 9
+        "moves": 17
       },
       {
         "game": 1,
         "first": "Minimax",
-        "seedA": 5001,
-        "seedB": 6001,
+        "seed_a": 5001,
+        "seed_b": 6001,
         "result": "Minimax",
         "moves": 11
       },
       {
         "game": 2,
         "first": "Minimax",
-        "seedA": 5002,
-        "seedB": 6002,
+        "seed_a": 5002,
+        "seed_b": 6002,
         "result": "Minimax",
-        "moves": 13
+        "moves": 11
       },
       {
         "game": 3,
         "first": "Minimax",
-        "seedA": 5003,
-        "seedB": 6003,
+        "seed_a": 5003,
+        "seed_b": 6003,
         "result": "Minimax",
-        "moves": 9
+        "moves": 7
       },
       {
         "game": 4,
         "first": "Minimax",
-        "seedA": 5004,
-        "seedB": 6004,
+        "seed_a": 5004,
+        "seed_b": 6004,
         "result": "Minimax",
         "moves": 9
       },
       {
         "game": 5,
         "first": "Minimax",
-        "seedA": 5005,
-        "seedB": 6005,
+        "seed_a": 5005,
+        "seed_b": 6005,
         "result": "Minimax",
-        "moves": 9
+        "moves": 15
       },
       {
         "game": 6,
         "first": "Minimax",
-        "seedA": 5006,
-        "seedB": 6006,
+        "seed_a": 5006,
+        "seed_b": 6006,
         "result": "Minimax",
-        "moves": 9
+        "moves": 7
       },
       {
         "game": 7,
         "first": "Minimax",
-        "seedA": 5007,
-        "seedB": 6007,
+        "seed_a": 5007,
+        "seed_b": 6007,
         "result": "Minimax",
-        "moves": 9
+        "moves": 7
       },
       {
         "game": 8,
         "first": "Minimax",
-        "seedA": 5008,
-        "seedB": 6008,
+        "seed_a": 5008,
+        "seed_b": 6008,
         "result": "Minimax",
-        "moves": 9
+        "moves": 7
       },
       {
         "game": 9,
         "first": "Minimax",
-        "seedA": 5009,
-        "seedB": 6009,
+        "seed_a": 5009,
+        "seed_b": 6009,
         "result": "Minimax",
         "moves": 11
       },
       {
         "game": 10,
         "first": "Minimax",
-        "seedA": 5010,
-        "seedB": 6010,
+        "seed_a": 5010,
+        "seed_b": 6010,
         "result": "Minimax",
-        "moves": 15
+        "moves": 11
       },
       {
         "game": 11,
         "first": "Minimax",
-        "seedA": 5011,
-        "seedB": 6011,
+        "seed_a": 5011,
+        "seed_b": 6011,
         "result": "Minimax",
-        "moves": 9
+        "moves": 11
       },
       {
         "game": 12,
         "first": "Minimax",
-        "seedA": 5012,
-        "seedB": 6012,
+        "seed_a": 5012,
+        "seed_b": 6012,
         "result": "Minimax",
-        "moves": 11
+        "moves": 7
       },
       {
         "game": 13,
         "first": "Minimax",
-        "seedA": 5013,
-        "seedB": 6013,
+        "seed_a": 5013,
+        "seed_b": 6013,
         "result": "Minimax",
-        "moves": 11
+        "moves": 15
       },
       {
         "game": 14,
         "first": "Minimax",
-        "seedA": 5014,
-        "seedB": 6014,
+        "seed_a": 5014,
+        "seed_b": 6014,
         "result": "Minimax",
         "moves": 15
       },
       {
         "game": 15,
         "first": "Random",
-        "seedA": 5015,
-        "seedB": 6015,
+        "seed_a": 5015,
+        "seed_b": 6015,
         "result": "Minimax",
-        "moves": 14
+        "moves": 18
       },
       {
         "game": 16,
         "first": "Random",
-        "seedA": 5016,
-        "seedB": 6016,
+        "seed_a": 5016,
+        "seed_b": 6016,
         "result": "Minimax",
-        "moves": 12
+        "moves": 14
       },
       {
         "game": 17,
         "first": "Random",
-        "seedA": 5017,
-        "seedB": 6017,
+        "seed_a": 5017,
+        "seed_b": 6017,
         "result": "Minimax",
         "moves": 14
       },
       {
         "game": 18,
         "first": "Random",
-        "seedA": 5018,
-        "seedB": 6018,
-        "result": "Minimax",
-        "moves": 16
-      },
-      {
-        "game": 19,
-        "first": "Random",
-        "seedA": 5019,
-        "seedB": 6019,
-        "result": "Minimax",
-        "moves": 22
-      },
-      {
-        "game": 20,
-        "first": "Random",
-        "seedA": 5020,
-        "seedB": 6020,
-        "result": "Minimax",
-        "moves": 16
-      },
-      {
-        "game": 21,
-        "first": "Random",
-        "seedA": 5021,
-        "seedB": 6021,
+        "seed_a": 5018,
+        "seed_b": 6018,
         "result": "Minimax",
         "moves": 12
       },
       {
+        "game": 19,
+        "first": "Random",
+        "seed_a": 5019,
+        "seed_b": 6019,
+        "result": "Minimax",
+        "moves": 20
+      },
+      {
+        "game": 20,
+        "first": "Random",
+        "seed_a": 5020,
+        "seed_b": 6020,
+        "result": "Minimax",
+        "moves": 12
+      },
+      {
+        "game": 21,
+        "first": "Random",
+        "seed_a": 5021,
+        "seed_b": 6021,
+        "result": "Minimax",
+        "moves": 8
+      },
+      {
         "game": 22,
         "first": "Random",
-        "seedA": 5022,
-        "seedB": 6022,
+        "seed_a": 5022,
+        "seed_b": 6022,
         "result": "Minimax",
-        "moves": 16
+        "moves": 28
       },
       {
         "game": 23,
         "first": "Random",
-        "seedA": 5023,
-        "seedB": 6023,
+        "seed_a": 5023,
+        "seed_b": 6023,
         "result": "Minimax",
         "moves": 20
       },
       {
         "game": 24,
         "first": "Random",
-        "seedA": 5024,
-        "seedB": 6024,
+        "seed_a": 5024,
+        "seed_b": 6024,
         "result": "Minimax",
-        "moves": 18
+        "moves": 10
       },
       {
         "game": 25,
         "first": "Random",
-        "seedA": 5025,
-        "seedB": 6025,
-        "result": "Minimax",
-        "moves": 22
-      },
-      {
-        "game": 26,
-        "first": "Random",
-        "seedA": 5026,
-        "seedB": 6026,
+        "seed_a": 5025,
+        "seed_b": 6025,
         "result": "Minimax",
         "moves": 12
       },
       {
+        "game": 26,
+        "first": "Random",
+        "seed_a": 5026,
+        "seed_b": 6026,
+        "result": "Minimax",
+        "moves": 18
+      },
+      {
         "game": 27,
         "first": "Random",
-        "seedA": 5027,
-        "seedB": 6027,
+        "seed_a": 5027,
+        "seed_b": 6027,
         "result": "Minimax",
         "moves": 8
       },
       {
         "game": 28,
         "first": "Random",
-        "seedA": 5028,
-        "seedB": 6028,
+        "seed_a": 5028,
+        "seed_b": 6028,
         "result": "Minimax",
-        "moves": 12
+        "moves": 8
       },
       {
         "game": 29,
         "first": "Random",
-        "seedA": 5029,
-        "seedB": 6029,
+        "seed_a": 5029,
+        "seed_b": 6029,
         "result": "Minimax",
         "moves": 16
       }

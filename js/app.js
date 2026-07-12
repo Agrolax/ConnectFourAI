@@ -83,15 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
         moveCountVal.textContent = engine.moveCount;
         
         const nextPlayer = engine.currentPlayer();
+        const nextLabel = getPlayerLabel(nextPlayer);
+        
         if (nextPlayer === 1) {
             player1Card.classList.add('active', 'p1');
-            player1Card.querySelector('.player-status-text').textContent = 'Next Turn';
+            player1Card.querySelector('.player-status-text').textContent = `Next Move: ${nextLabel}`;
             
             player2Card.classList.remove('active', 'p2');
             player2Card.querySelector('.player-status-text').textContent = 'Waiting';
         } else {
             player2Card.classList.add('active', 'p2');
-            player2Card.querySelector('.player-status-text').textContent = 'Next Turn';
+            player2Card.querySelector('.player-status-text').textContent = `Next Move: ${nextLabel}`;
             
             player1Card.classList.remove('active', 'p1');
             player1Card.querySelector('.player-status-text').textContent = 'Waiting';

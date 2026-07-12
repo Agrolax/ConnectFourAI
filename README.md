@@ -82,15 +82,13 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
 ---
 
 ### Requirement 3: Experimental Evaluation [25% marks]
-- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
-- **What needs to be done:**
-  - Run head-to-head matches for pairings: Random vs Rule-Based, Rule-Based vs Minimax, Minimax vs Random.
-  - Play 30 games per pairing (alternating starting turns, ~15 times each way).
-  - Log win rate, draw rate, and average decision time per move per agent.
-- **How to do it:**
-  - Create an evaluation runner script (e.g. `evaluate.py`).
-  - Run the pairings sequentially, using `time.perf_counter()` around `agent.get_move(engine)` calls to record decision times.
-  - Save results in tables to be included in the final report.
+- **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
+- **Evaluation Report:** [evaluation_results.md](./evaluation_results.md)
+- **Detailed Work Done:**
+  - `[x]` Run head-to-head matches for pairings: Random vs Rule-Based, Rule-Based vs Minimax, Minimax vs Random.
+  - `[x]` Play 30 games per pairing (alternating starting turns, ~15 times each way).
+  - `[x]` Log win rate, draw rate, and average decision time per move per agent.
+- **Evaluation Runner Script:** [evaluate.py](./evaluate.py) - records and outputs decision times using high-precision `time.perf_counter()`.
 
 ---
 
