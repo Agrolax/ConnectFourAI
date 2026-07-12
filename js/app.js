@@ -175,7 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
             winnerCelebrationTitle.style.color = 'var(--p2-color)';
             winnerCelebrationTitle.style.textShadow = '0 0 16px rgba(6, 182, 212, 0.6)';
             if (winnerIcon) {
-                if (selectedGameMode === 'player-vs-random') {
+                if (
+    selectedGameMode === 'player-vs-random' ||
+    selectedGameMode === 'player-vs-rule'
+) {
                     winnerIcon.textContent = '💀';
                     winnerIcon.style.filter = 'drop-shadow(0 0 12px rgba(6, 182, 212, 0.6))';
                 } else {
@@ -219,7 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 showWinnerModal("Match Draw", "The board is full and there is no winner. Well played!", 0);
             } else {
                 highlightWinningDiscs(result.cells);
-                if (selectedGameMode === 'player-vs-random') {
+                if (
+    selectedGameMode === 'player-vs-random' ||
+    selectedGameMode === 'player-vs-rule'
+) {
                     if (winVal === 1) {
                         showWinnerModal("Victory!", "You connected four and defeated the Random AI agent!", 1);
                     } else {
@@ -362,9 +368,12 @@ if (mode === 'random-vs-random') {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random') {
-            scheduleAIMove();
-        }
+        if (
+    mode === 'random-vs-random' ||
+    mode === 'rule-vs-random'
+) {
+    scheduleAIMove();
+}
     }
 
     function backToSettings() {
@@ -391,12 +400,21 @@ if (mode === 'random-vs-random') {
         const seed2 = seedVal !== null ? seedVal + 1000 : null;
 
         if (mode === 'random-vs-random') {
-            agent1 = new RandomAgent(seed1);
-            agent2 = new RandomAgent(seed2);
-        } else {
-            agent1 = null;
-            agent2 = new RandomAgent(seed2);
-        }
+    agent1 = new RandomAgent(seed1);
+    agent2 = new RandomAgent(seed2);
+
+} else if (mode === 'player-vs-rule') {
+    agent1 = null;
+    agent2 = new RuleBasedAgent(seed2);
+
+} else if (mode === 'rule-vs-random') {
+    agent1 = new RuleBasedAgent(seed1);
+    agent2 = new RandomAgent(seed2);
+
+} else {
+    agent1 = null;
+    agent2 = new RandomAgent(seed2);
+}
 
         isGameActive = true;
         // Lock mode card changes while playing
@@ -408,9 +426,12 @@ if (mode === 'random-vs-random') {
         updateStatusUI();
         resetHighlights();
 
-        if (mode === 'random-vs-random') {
-            scheduleAIMove();
-        }
+        if (
+    mode === 'random-vs-random' ||
+    mode === 'rule-vs-random'
+) {
+    scheduleAIMove();
+}
     }
 
     // Event Listeners
