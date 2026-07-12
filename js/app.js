@@ -85,10 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextPlayer = engine.currentPlayer();
         if (nextPlayer === 1) {
             player1Card.classList.add('active', 'p1');
+            player1Card.querySelector('.player-status-text').textContent = 'Next Turn';
+            
             player2Card.classList.remove('active', 'p2');
+            player2Card.querySelector('.player-status-text').textContent = 'Waiting';
         } else {
             player2Card.classList.add('active', 'p2');
+            player2Card.querySelector('.player-status-text').textContent = 'Next Turn';
+            
             player1Card.classList.remove('active', 'p1');
+            player1Card.querySelector('.player-status-text').textContent = 'Waiting';
         }
     }
 
@@ -226,27 +232,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!p1Agent && !p2Agent) {
                     // Player vs Player
-                    showWinnerModal("Victory!", `Player ${winVal} connected four and won the match!`, winVal);
+                    showWinnerModal("Victory!", `Player ${winVal} (Human) connected four and won the match!`, winVal);
                 } else if (!p1Agent || !p2Agent) {
-                    // Player vs AI
+                    // Player vs AI / AI vs Player
                     const humanWinner = (winVal === 1 && !p1Agent) || (winVal === 2 && !p2Agent);
-                    
-                    let agentName = "AI";
-                    const activeAgent = winVal === 1 ? agent2 : agent1;
-                    if (activeAgent instanceof RandomAgent) agentName = "Random";
-                    else if (activeAgent instanceof RuleBasedAgent) agentName = "Rule-Based";
-                    else if (activeAgent instanceof MinimaxAgent) agentName = "Minimax";
+                    const agentName = getPlayerLabel(winVal === 1 ? 2 : 1);
 
                     if (humanWinner) {
-                        showWinnerModal("Victory!", `You connected four and defeated the ${agentName} AI agent!`, winVal);
+                        showWinnerModal("Victory!", `You connected four and defeated the ${agentName}!`, winVal);
                     } else {
-                        showWinnerModal("Defeat!", `The ${agentName} AI agent connected four and won.`, winVal);
+                        showWinnerModal("Defeat!", `The ${agentName} connected four and won the match.`, winVal);
                     }
                 } else {
                     // AI vs AI
                     const winnerColor = winVal === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
-                    const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">Player ${winVal}</span>`;
-                    showWinnerModal("Match Over", `${winnerHTML} has connected four in a row!`, winVal);
+                    const winnerLabel = getPlayerLabel(winVal);
+                    const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">${winnerLabel} (Player ${winVal})</span>`;
+                    showWinnerModal("Match Over", `${winnerHTML} has connected four and won!`, winVal);
                 }
             }
             return true;
@@ -325,21 +327,24 @@ document.addEventListener('DOMContentLoaded', () => {
         simulationTimeoutId = setTimeout(executeAIMove, delaySecs * 1000);
     }
 
-    // Update match mode text display at top of board panel
+    // Helper to get printable player agent labels
+    function getPlayerLabel(index) {
+        const type = index === 1 ? selectedPlayer1 : selectedPlayer2;
+        if (type === 'human') return 'Human';
+        if (type === 'random') return 'Random AI';
+        if (type === 'rule') return 'Rule-Based AI';
+        if (type === 'minimax') return 'Minimax AI';
+        return 'Unknown';
+    }
+
+    // Update player card type labels on game start
     function updateMatchModeIndicator() {
-        const getLabel = (type) => {
-            if (type === 'human') return 'Human';
-            if (type === 'random') return 'Random AI';
-            if (type === 'rule') return 'Rule-Based AI';
-            if (type === 'minimax') return 'Minimax AI';
-            return 'Unknown';
-        };
-        const p1 = getLabel(selectedPlayer1);
-        const p2 = getLabel(selectedPlayer2);
-        const indicator = document.getElementById('match-mode-indicator');
-        if (indicator) {
-            indicator.textContent = `${p1} vs ${p2}`;
-        }
+        const p1 = getPlayerLabel(1);
+        const p2 = getPlayerLabel(2);
+        const p1Val = document.getElementById('player1-type-val');
+        const p2Val = document.getElementById('player2-type-val');
+        if (p1Val) p1Val.textContent = p1;
+        if (p2Val) p2Val.textContent = p2;
     }
 
     // Toggle settings widgets when mode changes (show always, disable if inapplicable)
