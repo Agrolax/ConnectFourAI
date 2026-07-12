@@ -317,10 +317,17 @@ header {
 /* Extra Settings (seed and speed side by side) */
 .extra-settings {
     display: flex;
-    align-items: flex-end; /* Moves range input lower to center vertically with seed box */
+    align-items: flex-start; /* Align label tops */
     gap: 20px;
     margin-bottom: 24px;
     width: 100%;
+}
+
+.extra-settings label {
+    height: 20px; /* Aligns both labels perfectly */
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
 .extra-settings .control-group {
@@ -358,6 +365,9 @@ header {
 /* Sliders */
 input[type="range"] {
     width: 100%;
+    height: 48px; /* Matches seed text input height to center track vertically */
+    margin: 0;
+    display: block;
     accent-color: var(--accent-color);
 }
 
