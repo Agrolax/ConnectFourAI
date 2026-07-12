@@ -1,4 +1,5 @@
 import random
+
 from ConnectFourAI.agents.base import BaseAgent
 
 ROWS = 6
@@ -6,20 +7,6 @@ COLS = 7
 
 
 class RuleBasedAgent(BaseAgent):
-    """
-    Agent driven by manually defined, prioritized rules (in order):
-
-      1. Winning move   - play any move that wins immediately.
-      2. Blocking move  - if the opponent has an immediate winning move
-                           available, play a column that blocks it.
-      3. Center control - prefer columns closest to the centre (column 3).
-      4. Threat/line    - among the remaining candidates, prefer the move
-                           that extends the longest line of the agent discs.
-
-    Whenever two or more moves are equally good under the rule that is
-    currently deciding the move, one of them is chosen uniformly at
-    random using a seedable RNG, so results are reproducible.
-    """
 
     CENTER_COLUMN = 3
 
@@ -29,73 +16,123 @@ class RuleBasedAgent(BaseAgent):
 
     def get_move(self, engine):
         moves = engine.legal_moves()
+
         if not moves:
             raise ValueError("No legal moves available.")
 
         player = engine.current_player()
         opponent = 3 - player
 
-        # Rule 1: take an immediate win if one exists.
-        winning = [c for c in moves if self._wins_for(engine, c, player)]
-        if winning:
-            return self.rng.choice(winning)
+        # Rule 1: Play an immediate winning move.
+        winning_moves = [
+            col for col in moves
+            if self._wins_for(engine, col, player)
+        ]
 
-        # Rule 2: block the opponent immediate winning move(s).
-        blocking = [c for c in moves if self._wins_for(engine, c, opponent)]
-        if blocking:
-            return self.rng.choice(blocking)
+        if winning_moves:
+            return self.rng.choice(winning_moves)
 
-        # Rule 3: prefer the column(s) closest to the centre.
-        min_dist = min(abs(c - self.CENTER_COLUMN) for c in moves)
-        central = [c for c in moves if abs(c - self.CENTER_COLUMN) == min_dist]
+        # Rule 2: Block an immediate opponent win.
+        blocking_moves = [
+            col for col in moves
+            if self._wins_for(engine, col, opponent)
+        ]
 
-        # Rule 4: break remaining ties by extending our longest line.
-        scores = {c: self._line_score(engine, c, player) for c in central}
-        best = max(scores.values())
-        best_moves = [c for c, s in scores.items() if s == best]
+        if blocking_moves:
+            return self.rng.choice(blocking_moves)
+
+        # Rule 3: Find the most central legal moves.
+        minimum_distance = min(
+            abs(col - self.CENTER_COLUMN)
+            for col in moves
+        )
+
+        central_moves = [
+            col for col in moves
+            if abs(col - self.CENTER_COLUMN) == minimum_distance
+        ]
+
+        # Rule 4: Among equally central moves, extend the longest line.
+        line_scores = {
+            col: self._line_score(engine, col, player)
+            for col in central_moves
+        }
+
+        best_score = max(line_scores.values())
+
+        best_moves = [
+            col
+            for col, score in line_scores.items()
+            if score == best_score
+        ]
 
         return self.rng.choice(best_moves)
 
-    # -- helpers ---------------------------------------------------------
-
     @staticmethod
     def _drop(engine, col, player):
-        """Clones the engine and drops a disc for player into col, purely
-        to evaluate the resulting board (does not alter whose turn it
-        officially is)."""
-        sim = engine.clone()
-        for r in range(ROWS):
-            if sim.board[r][col] == 0:
-                sim.board[r][col] = player
-                return sim, r
+        """
+        Return a cloned engine after placing one disc for player in col.
+
+        The original engine is not changed.
+        """
+        simulation = engine.clone()
+
+        for row in range(ROWS):
+            if simulation.board[row][col] == 0:
+                simulation.board[row][col] = player
+                return simulation, row
+
         raise ValueError(f"Column {col} is full.")
 
     def _wins_for(self, engine, col, player):
-        """True if player dropping a disc in col completes 4-in-a-row."""
-        sim, _ = self._drop(engine, col, player)
-        return sim.winner() == player
+        """Return True if player wins immediately by playing col."""
+        simulation, _ = self._drop(engine, col, player)
+        return simulation.winner() == player
 
     def _line_score(self, engine, col, player):
         """
-        Score of dropping a disc for player in col: the length of the
-        longest contiguous run of player discs (through the newly
-        placed disc) across the four possible directions.
+        Return the longest contiguous line passing through the newly
+        placed disc.
         """
-        sim, row = self._drop(engine, col, player)
-        board = sim.board
-        directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
-        best = 0
-        for dr, dc in directions:
+        simulation, row = self._drop(engine, col, player)
+        board = simulation.board
+
+        directions = [
+            (0, 1),   # Horizontal
+            (1, 0),   # Vertical
+            (1, 1),   # Positive diagonal
+            (1, -1),  # Negative diagonal
+        ]
+
+        longest_line = 1
+
+        for row_change, col_change in directions:
             count = 1
-            r, c = row + dr, col + dc
-            while 0 <= r < ROWS and 0 <= c < COLS and board[r][c] == player:
+
+            current_row = row + row_change
+            current_col = col + col_change
+
+            while (
+                0 <= current_row < ROWS
+                and 0 <= current_col < COLS
+                and board[current_row][current_col] == player
+            ):
                 count += 1
-                r += dr
-                c += dc
-            r, c = row - dr, col - dc
-            while 0 <= r < ROWS and 0 <= c < COLS and board[r][c] == player:
+                current_row += row_change
+                current_col += col_change
+
+            current_row = row - row_change
+            current_col = col - col_change
+
+            while (
+                0 <= current_row < ROWS
+                and 0 <= current_col < COLS
+                and board[current_row][current_col] == player
+            ):
                 count += 1
-                r -= dr
-                c -= dc
-            best = max(best, count)
-        return best
+                current_row -= row_change
+                current_col -= col_change
+
+            longest_line = max(longest_line, count)
+
+        return longest_line
