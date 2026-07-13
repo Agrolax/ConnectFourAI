@@ -331,7 +331,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateStatusUI() {
         if (!engine) return;
         moveCountVal.textContent = engine.moveCount;
+
+        const terminal = engine.winner();
+        if (terminal !== null) {
+            updateEndgameStatus(terminal.player);
+            updateClocks();
+            return;
+        }
+
         const nextPlayer = engine.currentPlayer();
+        player1Card.classList.remove('result-won', 'result-lost', 'result-draw');
+        player2Card.classList.remove('result-won', 'result-lost', 'result-draw');
 
         if (nextPlayer === 1) {
             player1Card.classList.add('active', 'p1');
@@ -345,6 +355,33 @@ document.addEventListener('DOMContentLoaded', () => {
             player1Card.querySelector('.player-status-text').textContent = 'Waiting';
         }
         updateClocks();
+    }
+
+    function updateEndgameStatus(winVal) {
+        const p1Status = player1Card.querySelector('.player-status-text');
+        const p2Status = player2Card.querySelector('.player-status-text');
+        player1Card.classList.remove('result-won', 'result-lost', 'result-draw', 'active', 'p1');
+        player2Card.classList.remove('result-won', 'result-lost', 'result-draw', 'active', 'p2');
+
+        if (winVal === 0) {
+            p1Status.textContent = 'Draw';
+            p2Status.textContent = 'Draw';
+            player1Card.classList.add('result-draw', 'active', 'p1');
+            player2Card.classList.add('result-draw', 'active', 'p2');
+            return;
+        }
+
+        if (winVal === 1) {
+            p1Status.textContent = 'Won';
+            p2Status.textContent = 'Lost';
+            player1Card.classList.add('result-won', 'active', 'p1');
+            player2Card.classList.add('result-lost');
+        } else {
+            p2Status.textContent = 'Won';
+            p1Status.textContent = 'Lost';
+            player2Card.classList.add('result-won', 'active', 'p2');
+            player1Card.classList.add('result-lost');
+        }
     }
 
     function highlightColumn(col, isHovering) {
@@ -482,6 +519,9 @@ document.addEventListener('DOMContentLoaded', () => {
         stopLoops();
 
         const winVal = result.player;
+        updateEndgameStatus(winVal);
+        updateClocks();
+
         if (winVal === 0) {
             showWinnerModal('Match draw', 'The board is full and there is no winner. Well played.', 0);
             return true;

@@ -732,6 +732,33 @@ input[type="range"] {
     color: var(--accent-color);
 }
 
+.player-card.result-won {
+    opacity: 1;
+}
+
+.player-card.result-lost {
+    opacity: 0.55;
+}
+
+.player-card.result-draw {
+    opacity: 1;
+}
+
+#player1-card.result-won .player-status-text,
+#player2-card.result-won .player-status-text {
+    color: #34d399;
+}
+
+#player1-card.result-lost .player-status-text,
+#player2-card.result-lost .player-status-text {
+    color: #f87171;
+}
+
+#player1-card.result-draw .player-status-text,
+#player2-card.result-draw .player-status-text {
+    color: var(--text-secondary);
+}
+
 .match-stat-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
