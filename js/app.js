@@ -674,6 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMatchModeIndicator();
         startClocks();
         gameAudio.enterGamePage();
+        gameAudio.playReset();
         const activeAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
         if (activeAgent !== null) scheduleAIMove();
     }

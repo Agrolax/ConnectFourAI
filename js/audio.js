@@ -145,6 +145,18 @@
             this.tone(90, 0.16, 'sine', 0.16, t + 0.1);
         }
 
+        async playReset() {
+            if (!this.settings.masterEnabled || !this.settings.sfxEnabled) return;
+            await this.resume();
+            if (!this.ctx) return;
+            const t = this.ctx.currentTime;
+            // Soft sweep / clear cue
+            this.tone(420, 0.1, 'triangle', 0.14, t);
+            this.tone(280, 0.14, 'sine', 0.16, t + 0.06);
+            this.tone(160, 0.18, 'sine', 0.12, t + 0.12);
+            this.tone(640, 0.08, 'triangle', 0.08, t + 0.16);
+        }
+
         async playWin() {
             if (!this.settings.masterEnabled || !this.settings.sfxEnabled || !this.settings.resultEnabled) return;
             await this.resume();
