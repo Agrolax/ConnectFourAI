@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
         minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>'
     };
 
-    const WIN_ICON = '<svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>';
-    const LOSS_ICON = '<svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 12.1a1 1 0 01-1.4 1.4L12 13.4l-2.1 2.1a1 1 0 01-1.4-1.4l2.1-2.1-2.1-2.1a1 1 0 011.4-1.4l2.1 2.1 2.1-2.1a1 1 0 011.4 1.4L13.4 12l2.1 2.1z"/></svg>';
-    const DRAW_ICON = '<svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10a1 1 0 010 2H7a1 1 0 010-2zm0 6h10a1 1 0 010 2H7a1 1 0 010-2z"/></svg>';
+    const WIN_ICON = '<svg width="88" height="88" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>';
+    const LOSS_ICON = '<svg width="88" height="88" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 12.1a1 1 0 01-1.4 1.4L12 13.4l-2.1 2.1a1 1 0 01-1.4-1.4l2.1-2.1-2.1-2.1a1 1 0 011.4-1.4l2.1 2.1 2.1-2.1a1 1 0 011.4 1.4L13.4 12l2.1 2.1z"/></svg>';
+    const DRAW_ICON = '<svg width="88" height="88" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10a1 1 0 010 2H7a1 1 0 010-2zm0 6h10a1 1 0 010 2H7a1 1 0 010-2z"/></svg>';
 
     const EVAL_SUMMARY = [
         {
