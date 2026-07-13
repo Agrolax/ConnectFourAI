@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let turnStartMs = null;
     let clockIntervalId = null;
     let lastMoveCells = { 1: null, 2: null };
+    let lastTurnElapsedMs = 0;
+    let lastTurnPlayer = null;
+    let freezeTurnClock = false;
 
     const settingsScreen = document.getElementById('settings-screen');
     const gameScreen = document.getElementById('game-screen');
@@ -96,18 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
+    function formatTurnClock(ms) {
+        const safeMs = Math.max(0, Math.floor(ms));
+        const mins = Math.floor(safeMs / 60000);
+        const secs = Math.floor((safeMs % 60000) / 1000);
+        const millis = safeMs % 1000;
+        if (mins > 0) {
+            return `${mins}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
+        }
+        return `${secs}.${millis.toString().padStart(3, '0')}s`;
+    }
+
     function updateClocks() {
         if (!matchStartMs) return;
         const now = Date.now();
         timeElapsedVal.textContent = formatClock(now - matchStartMs);
 
+        if (freezeTurnClock && lastTurnPlayer) {
+            turnClockVal.hidden = false;
+            turnClockVal.textContent = formatTurnClock(lastTurnElapsedMs);
+            turnClockVal.classList.remove('p1', 'p2');
+            turnClockVal.classList.add(lastTurnPlayer === 1 ? 'p1' : 'p2');
+            return;
+        }
+
         if (isGameActive && turnStartMs && engine && !engine.isTerminal()) {
             const nextPlayer = engine.currentPlayer();
+            const elapsed = now - turnStartMs;
+            lastTurnElapsedMs = elapsed;
+            lastTurnPlayer = nextPlayer;
             turnClockVal.hidden = false;
-            turnClockVal.textContent = formatClock(now - turnStartMs);
+            turnClockVal.textContent = formatTurnClock(elapsed);
             turnClockVal.classList.remove('p1', 'p2');
             turnClockVal.classList.add(nextPlayer === 1 ? 'p1' : 'p2');
-        } else {
+        } else if (!freezeTurnClock) {
             turnClockVal.hidden = true;
             turnClockVal.classList.remove('p1', 'p2');
         }
@@ -116,13 +141,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function startClocks() {
         matchStartMs = Date.now();
         turnStartMs = Date.now();
+        lastTurnElapsedMs = 0;
+        lastTurnPlayer = null;
+        freezeTurnClock = false;
         if (clockIntervalId) clearInterval(clockIntervalId);
         updateClocks();
-        clockIntervalId = setInterval(updateClocks, 250);
+        clockIntervalId = setInterval(updateClocks, 50);
+    }
+
+    function captureTurnElapsed(player) {
+        if (!turnStartMs) return;
+        lastTurnElapsedMs = Date.now() - turnStartMs;
+        lastTurnPlayer = player;
     }
 
     function resetTurnClock() {
         turnStartMs = Date.now();
+        updateClocks();
+    }
+
+    function freezeLastTurnClock() {
+        freezeTurnClock = true;
         updateClocks();
     }
 
@@ -439,8 +478,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!cell) return;
         cell.innerHTML = '';
         const disc = document.createElement('div');
-        disc.classList.add('board-disc', player === 1 ? 'p1' : 'p2');
+        disc.classList.add('board-disc', 'dropping', player === 1 ? 'p1' : 'p2');
         cell.appendChild(disc);
+        const endDrop = () => disc.classList.remove('dropping');
+        disc.addEventListener('animationend', endDrop, { once: true });
+        setTimeout(endDrop, 500);
         markLastMove(rEngine, cEngine, player);
         gameAudio.playDrop();
     }
@@ -484,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         stopClocks();
+        freezeLastTurnClock();
         if (winnerType === 0) gameAudio.playDraw();
         else {
             const p1Agent = agent1 !== null;
@@ -498,6 +541,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         winnerModal.classList.remove('hidden');
+        scrollBoardIntoViewOnMobile();
+    }
+
+    function scrollBoardIntoViewOnMobile() {
+        if (window.matchMedia('(min-width: 901px)').matches) return;
+        const boardPanel = document.querySelector('.board-panel');
+        if (!boardPanel) return;
+        requestAnimationFrame(() => {
+            boardPanel.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
     }
 
     function closeWinnerModal() {
@@ -561,7 +614,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const moveResult = engine.applyMove(col);
             animateDisc(moveResult.row, moveResult.col, currentPl);
-            resetTurnClock();
+            captureTurnElapsed(currentPl);
+            if (engine.winner() !== null) freezeTurnClock = true;
+            else resetTurnClock();
             updateStatusUI();
             if (currentHoverColumn !== null) highlightColumn(currentHoverColumn, true);
             if (!checkTerminalStatus()) {
@@ -583,7 +638,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const col = agent.getMove(engine);
             const result = engine.applyMove(col);
             animateDisc(result.row, result.col, currentPl);
-            resetTurnClock();
+            captureTurnElapsed(currentPl);
+            if (engine.winner() !== null) freezeTurnClock = true;
+            else resetTurnClock();
             updateStatusUI();
             if (!checkTerminalStatus()) {
                 const nextAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
@@ -879,6 +936,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     connect4Board.addEventListener('mouseleave', () => highlightColumn(null, false));
 
+    connect4Board.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse') return;
+        const cell = e.target.closest('.board-cell');
+        if (cell) highlightColumn(parseInt(cell.dataset.col, 10), true);
+    });
+
     dropIndicators.addEventListener('click', (e) => {
         const indicator = e.target.closest('.indicator');
         if (indicator) handleColumnSelection(parseInt(indicator.dataset.col, 10));
@@ -891,6 +954,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     dropIndicators.addEventListener('mouseleave', () => highlightColumn(null, false));
+
+    dropIndicators.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse') return;
+        const indicator = e.target.closest('.indicator');
+        if (indicator) highlightColumn(parseInt(indicator.dataset.col, 10), true);
+    });
 
     bindTooltips();
     showScreen('settings');

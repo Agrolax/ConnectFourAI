@@ -97,12 +97,15 @@ header {
     color: var(--text-primary);
     cursor: pointer;
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
 
 .icon-btn:hover,
 .icon-btn:focus-visible,
-.icon-btn.is-tooltip-open {
+.icon-btn.is-tooltip-open,
+.icon-btn:active {
     background-color: #1e293b;
     border-color: #475569;
 }
@@ -158,7 +161,8 @@ header {
     border: 1px solid var(--card-border);
 }
 
-.btn-ghost:hover {
+.btn-ghost:hover,
+.btn-ghost:active {
     background: rgba(255, 255, 255, 0.04);
     border-color: #475569;
 }
@@ -202,6 +206,8 @@ header {
     border: none;
     text-decoration: none;
     text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .btn-primary {
@@ -209,7 +215,8 @@ header {
     color: white;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:active {
     background-color: #1d4ed8;
 }
 
@@ -223,9 +230,14 @@ header {
     border: 1px solid var(--card-border);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-secondary:active {
     background-color: rgba(255, 255, 255, 0.04);
     border-color: #475569;
+}
+
+.btn-secondary:active {
+    transform: scale(0.98);
 }
 
 .btn-block {
@@ -357,15 +369,18 @@ header {
     color: inherit;
     font: inherit;
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-.player-option-card:hover {
+.player-option-card:hover,
+.player-option-card:active {
     background-color: #1f2937;
     border-color: #475569;
 }
 
 .player-option-card:active {
-    transform: scale(0.99);
+    transform: scale(0.98);
 }
 
 .player-option-card.selected {
@@ -433,15 +448,16 @@ header {
 .vs-divider span {
     font-size: 11px;
     font-weight: 700;
-    color: var(--text-secondary);
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
+    color: #fff;
+    background-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
     width: 36px;
     height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 .settings-inactive {
@@ -668,7 +684,7 @@ input[type="range"] {
 }
 
 #player1-card.active .player-status-text {
-    color: var(--accent-color);
+    color: var(--p1-color);
 }
 
 #player2-card.active {
@@ -678,7 +694,7 @@ input[type="range"] {
 }
 
 #player2-card.active .player-status-text {
-    color: var(--accent-color);
+    color: var(--p2-color);
 }
 
 .player-card.result-won {
@@ -751,6 +767,7 @@ input[type="range"] {
     font-size: 12px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .turn-clock.p1 {
@@ -872,6 +889,9 @@ input[type="range"] {
     border-radius: 50%;
     position: absolute;
     z-index: 2;
+}
+
+.board-disc.dropping {
     animation: dropDisc 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
@@ -885,21 +905,14 @@ input[type="range"] {
     box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Last move: high-contrast double ring using each player's turn-box color */
-.board-disc.last-move.p1 {
-    box-shadow:
-        inset 0 -3px 8px rgba(0, 0, 0, 0.4),
-        0 0 0 2px #0f172a,
-        0 0 0 5px var(--p1-color),
-        0 0 18px rgba(225, 29, 72, 0.55);
+/* Last move: slow continuous opacity pulse (no outline ring) */
+.board-disc.last-move:not(.dropping) {
+    animation: lastMovePulse 2.4s ease-in-out infinite;
 }
 
-.board-disc.last-move.p2 {
-    box-shadow:
-        inset 0 -3px 8px rgba(0, 0, 0, 0.4),
-        0 0 0 2px #0f172a,
-        0 0 0 5px var(--p2-color),
-        0 0 18px rgba(6, 182, 212, 0.55);
+@keyframes lastMovePulse {
+    0%, 100% { opacity: 0.28; }
+    50% { opacity: 1; }
 }
 
 /* Landing-slot hover preview (where the disc will drop) */
@@ -997,6 +1010,10 @@ input[type="range"] {
     animation: winningPulse 1.2s infinite ease-in-out;
 }
 
+.winning-cell .board-disc.last-move {
+    opacity: 1;
+}
+
 @keyframes bouncePop {
     0% { transform: scale(0); opacity: 0; }
     70% { transform: scale(1.12); }
@@ -1037,9 +1054,9 @@ footer .members {
     :root {
         --board-gap: 5px;
         --board-padding: 10px;
-        /* 4% page gutters ×2 + board card padding/borders (14px sides) */
-        --board-gutter: calc(8vw + 52px);
-        --cell-size: min(56px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
+        /* Tighter gutter so phone cells can grow */
+        --board-gutter: calc(6vw + 20px);
+        --cell-size: min(68px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
         --disc-size: calc(var(--cell-size) * 0.82);
     }
 
@@ -1048,10 +1065,11 @@ footer .members {
     }
 
     .container {
-        padding: 20px 4% 28px;
+        padding: 20px 3% 28px;
     }
 
     .match-board-view {
+        position: relative;
         flex-direction: column;
         align-items: center;
         gap: 16px;
@@ -1076,9 +1094,22 @@ footer .members {
         margin-bottom: 0;
     }
 
+    /* Result card overlays the board so layout does not jump */
+    #winner-modal:not(.hidden) {
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        bottom: 12px;
+        z-index: 30;
+        width: auto;
+        max-width: 520px;
+        margin-inline: auto;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    }
+
     .board-container {
         width: 100%;
-        padding: 12px 14px 14px;
+        padding: 12px 10px 14px;
     }
 
     .board-toolbar {
@@ -1113,12 +1144,11 @@ footer .members {
 
 @media (max-width: 500px) {
     :root {
-        --board-gap: 3px;
-        --board-padding: 6px;
-        /* Match 4% container gutters + 14px board card sides so 7 columns never clip */
-        --board-gutter: calc(8vw + 52px);
+        --board-gap: 4px;
+        --board-padding: 8px;
+        --board-gutter: calc(4vw + 16px);
         --board-frame: calc((2 * var(--board-padding)) + 4px + (6 * var(--board-gap)));
-        --cell-size: min(48px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
+        --cell-size: min(58px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
         --disc-size: calc(var(--cell-size) * 0.8);
     }
 
@@ -1131,7 +1161,7 @@ footer .members {
     }
 
     .container {
-        padding: 14px 4% 24px;
+        padding: 14px 2% 24px;
     }
 
     .extra-settings {
@@ -1172,7 +1202,7 @@ footer .members {
     }
 
     .board-container {
-        padding: 10px 14px 12px;
+        padding: 10px 8px 12px;
         border-radius: 16px;
     }
 
@@ -1404,7 +1434,8 @@ footer .members {
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.eval-tab:hover {
+.eval-tab:hover,
+.eval-tab:active {
     color: var(--text-primary);
     background: rgba(148, 163, 184, 0.12);
 }
