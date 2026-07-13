@@ -23,6 +23,15 @@ class ConnectFourEngine {
         return moves;
     }
 
+    // Lowest empty row in a column, or -1 if full (engine coords: 0 = bottom)
+    getLandingRow(col) {
+        if (col < 0 || col > 6) return -1;
+        for (let r = 0; r < 6; r++) {
+            if (this.board[r][col] === 0) return r;
+        }
+        return -1;
+    }
+
     applyMove(col) {
         if (col < 0 || col > 6) {
             throw new Error(`Column ${col} is out of bounds (must be 0-6).`);

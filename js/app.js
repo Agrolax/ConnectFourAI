@@ -43,10 +43,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnModalReplay = document.getElementById('btn-modal-replay');
     const btnModalClose = document.getElementById('btn-modal-close');
     const floatingTooltip = document.getElementById('floating-tooltip');
+    const resultsModal = document.getElementById('results-modal');
+    const resultsCharts = document.getElementById('results-charts');
+    const btnOpenResults = document.getElementById('btn-open-results');
+    const btnOpenResultsLobby = document.getElementById('btn-open-results-lobby');
+    const btnCloseResults = document.getElementById('btn-close-results');
+
+    const TYPE_ICONS = {
+        human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
+        random: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M9 15h6"/></svg>',
+        rule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></svg>',
+        minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3v4M8 21l4-8 4 8M5 10h14"/><circle cx="12" cy="9" r="2"/></svg>'
+    };
 
     const WIN_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 6H5a3 3 0 003 5M17 6h2a3 3 0 01-3 5"/></svg>';
     const LOSS_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>';
     const DRAW_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/><path d="M11 12h2"/></svg>';
+
+    const EVAL_SUMMARY = [
+        {
+            title: 'Random vs Rule-Based',
+            agents: [
+                { name: 'Random', wins: 1, draws: 0, avgMs: 0.0012 },
+                { name: 'Rule-Based', wins: 29, draws: 0, avgMs: 0.2555 }
+            ]
+        },
+        {
+            title: 'Rule-Based vs Minimax',
+            agents: [
+                { name: 'Rule-Based', wins: 3, draws: 1, avgMs: 0.2719 },
+                { name: 'Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
+            ]
+        },
+        {
+            title: 'Minimax vs Random',
+            agents: [
+                { name: 'Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
+                { name: 'Random', wins: 0, draws: 0, avgMs: 0.0021 }
+            ]
+        }
+    ];
 
     function formatClock(ms) {
         const totalSec = Math.max(0, Math.floor(ms / 1000));
@@ -93,18 +129,29 @@ document.addEventListener('DOMContentLoaded', () => {
         updateClocks();
     }
 
-    // Mobile-friendly tooltips (hover + focus + tap)
     let tooltipHideTimer = null;
 
     function positionTooltip(anchor) {
         const rect = anchor.getBoundingClientRect();
         const tipWidth = Math.min(240, window.innerWidth - 16);
+        floatingTooltip.style.maxWidth = `${tipWidth}px`;
+        floatingTooltip.hidden = false;
+
+        const tipHeight = floatingTooltip.offsetHeight || 36;
+        const spaceAbove = rect.top;
+        const placeBelow = spaceAbove < tipHeight + 16;
+
         let left = rect.left + rect.width / 2;
         left = Math.max(8 + tipWidth / 2, Math.min(left, window.innerWidth - 8 - tipWidth / 2));
-        const top = Math.max(8, rect.top - 10);
-        floatingTooltip.style.maxWidth = `${tipWidth}px`;
         floatingTooltip.style.left = `${left}px`;
-        floatingTooltip.style.top = `${top}px`;
+
+        if (placeBelow) {
+            floatingTooltip.classList.add('below');
+            floatingTooltip.style.top = `${rect.bottom + 10}px`;
+        } else {
+            floatingTooltip.classList.remove('below');
+            floatingTooltip.style.top = `${rect.top - 10}px`;
+        }
     }
 
     function showTooltip(anchor, { sticky = false } = {}) {
@@ -131,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         floatingTooltip.hidden = true;
         floatingTooltip.textContent = '';
+        floatingTooltip.classList.remove('below');
         document.querySelectorAll('.is-tooltip-open').forEach((el) => el.classList.remove('is-tooltip-open'));
     }
 
@@ -146,18 +194,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (el.classList.contains('tooltip-trigger')) {
                 el.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if (el.classList.contains('is-tooltip-open')) {
-                        hideTooltip();
-                    } else {
-                        showTooltip(el, { sticky: true });
-                    }
+                    if (el.classList.contains('is-tooltip-open')) hideTooltip();
+                    else showTooltip(el, { sticky: true });
                 });
             } else if (el.classList.contains('icon-btn')) {
-                // Phone: brief label on press; desktop: hover/focus already covers it
                 el.addEventListener('pointerdown', (e) => {
-                    if (e.pointerType === 'touch') {
-                        showTooltip(el, { sticky: true });
-                    }
+                    if (e.pointerType === 'touch') showTooltip(el, { sticky: true });
                 });
             }
         });
@@ -170,6 +212,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('scroll', hideTooltip, true);
         window.addEventListener('resize', hideTooltip);
+    }
+
+    function renderResultsCharts() {
+        resultsCharts.innerHTML = EVAL_SUMMARY.map((pair, pairIndex) => {
+            const rows = pair.agents.map((agent, i) => {
+                const pct = (agent.wins / 30) * 100;
+                const fillClass = i === 0 ? '' : 'alt';
+                return `
+                    <div class="bar-row">
+                        <span class="bar-label">${agent.name}</span>
+                        <div class="bar-track"><div class="bar-fill ${fillClass}" style="width:${pct}%"></div></div>
+                        <span class="bar-value">${agent.wins}/30 · ${pct.toFixed(0)}%</span>
+                    </div>
+                `;
+            }).join('');
+
+            const draws = pair.agents[0].draws;
+            const drawRow = draws > 0
+                ? `<div class="bar-row">
+                        <span class="bar-label">Draws</span>
+                        <div class="bar-track"><div class="bar-fill soft" style="width:${(draws / 30) * 100}%"></div></div>
+                        <span class="bar-value">${draws}/30</span>
+                   </div>`
+                : '';
+
+            const times = pair.agents.map((a) =>
+                `<span class="time-chip">${a.name}: ${a.avgMs.toFixed(4)} ms/move</span>`
+            ).join('');
+
+            return `
+                <article class="pair-card">
+                    <h3>${pair.title}</h3>
+                    ${rows}
+                    ${drawRow}
+                    <div class="pair-times">${times}</div>
+                </article>
+            `;
+        }).join('');
+    }
+
+    function openResults() {
+        hideTooltip();
+        renderResultsCharts();
+        resultsModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeResults() {
+        resultsModal.classList.add('hidden');
+        document.body.style.overflow = '';
     }
 
     function showScreen(screen) {
@@ -196,13 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getHTMLCellIndex(rEngine, cEngine) {
-        const rHtml = 5 - rEngine;
-        return rHtml * 7 + cEngine;
+        return (5 - rEngine) * 7 + cEngine;
     }
 
     function getHTMLCell(rEngine, cEngine) {
-        const index = getHTMLCellIndex(rEngine, cEngine);
-        return connect4Board.children[index];
+        return connect4Board.children[getHTMLCellIndex(rEngine, cEngine)];
     }
 
     function clearLastMoveHighlight() {
@@ -225,56 +315,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function clearDropPreviews() {
+        connect4Board.querySelectorAll('.board-cell.drop-preview').forEach((cell) => {
+            cell.classList.remove('drop-preview', 'p1', 'p2');
+        });
+    }
+
     function updateStatusUI() {
         if (!engine) return;
-
         moveCountVal.textContent = engine.moveCount;
-
         const nextPlayer = engine.currentPlayer();
 
         if (nextPlayer === 1) {
             player1Card.classList.add('active', 'p1');
             player1Card.querySelector('.player-status-text').textContent = 'Next move';
-
             player2Card.classList.remove('active', 'p2');
             player2Card.querySelector('.player-status-text').textContent = 'Waiting';
         } else {
             player2Card.classList.add('active', 'p2');
             player2Card.querySelector('.player-status-text').textContent = 'Next move';
-
             player1Card.classList.remove('active', 'p1');
             player1Card.querySelector('.player-status-text').textContent = 'Waiting';
         }
-
         updateClocks();
     }
 
     function highlightColumn(col, isHovering) {
         currentHoverColumn = isHovering ? col : null;
+        clearDropPreviews();
 
         const indicators = dropIndicators.children;
         for (let c = 0; c < 7; c++) {
             indicators[c].classList.remove('hover-p1', 'hover-p2');
         }
 
-        if (isHovering && isGameActive && engine && !engine.isTerminal()) {
-            const activePlayer = engine.currentPlayer();
-            const activeAgent = activePlayer === 1 ? agent1 : agent2;
-            const isHumanTurn = (activeAgent === null);
+        const cells = connect4Board.children;
+        for (let i = 0; i < 42; i++) {
+            cells[i].classList.remove('highlighted-column');
+        }
 
-            if (isHumanTurn) {
-                indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
+        if (!isHovering || !isGameActive || !engine || engine.isTerminal()) return;
+
+        const activePlayer = engine.currentPlayer();
+        const activeAgent = activePlayer === 1 ? agent1 : agent2;
+        const isHumanTurn = activeAgent === null;
+        if (!isHumanTurn) return;
+
+        const landingRow = engine.getLandingRow(col);
+        if (landingRow < 0) return;
+
+        indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
+
+        for (let i = 0; i < 42; i++) {
+            if (parseInt(cells[i].dataset.col, 10) === col) {
+                cells[i].classList.add('highlighted-column');
             }
         }
 
-        const cells = connect4Board.children;
-        for (let i = 0; i < 42; i++) {
-            const cellCol = parseInt(cells[i].dataset.col, 10);
-            if (cellCol === col && isHovering) {
-                cells[i].classList.add('highlighted-column');
-            } else {
-                cells[i].classList.remove('highlighted-column');
-            }
+        const landingCell = getHTMLCell(landingRow, col);
+        if (landingCell) {
+            landingCell.classList.add('drop-preview', activePlayer === 1 ? 'p1' : 'p2');
         }
     }
 
@@ -287,16 +387,15 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 42; i++) {
             cells[i].classList.remove('highlighted-column');
         }
+        clearDropPreviews();
     }
 
     function animateDisc(rEngine, cEngine, player) {
         const cell = getHTMLCell(rEngine, cEngine);
         if (!cell) return;
-
         cell.innerHTML = '';
         const disc = document.createElement('div');
-        disc.classList.add('board-disc');
-        disc.classList.add(player === 1 ? 'p1' : 'p2');
+        disc.classList.add('board-disc', player === 1 ? 'p1' : 'p2');
         cell.appendChild(disc);
         markLastMove(rEngine, cEngine);
     }
@@ -304,16 +403,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function highlightWinningDiscs(winningCells) {
         winningCells.forEach(([r, c]) => {
             const cell = getHTMLCell(r, c);
-            if (cell) {
-                cell.classList.add('winning-cell');
-            }
+            if (cell) cell.classList.add('winning-cell');
         });
     }
 
     function showWinnerModal(title, msg, winnerType) {
         winnerCelebrationTitle.textContent = title;
         winnerCelebrationMsg.innerHTML = msg;
-
         const winnerIcon = document.getElementById('winner-icon');
 
         if (winnerType === 1 || winnerType === 2) {
@@ -323,15 +419,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (winnerIcon) {
                 const p1Agent = agent1 !== null;
                 const p2Agent = agent2 !== null;
-
                 let iconHtml = WIN_ICON;
-                if (!p1Agent && !p2Agent) {
-                    iconHtml = WIN_ICON;
-                } else if (!p1Agent || !p2Agent) {
+                if ((p1Agent || p2Agent) && !(p1Agent && p2Agent)) {
                     const humanWinner = (winnerType === 1 && !p1Agent) || (winnerType === 2 && !p2Agent);
                     iconHtml = humanWinner ? WIN_ICON : LOSS_ICON;
                 }
-
                 winnerIcon.innerHTML = iconHtml;
                 winnerIcon.style.filter = `drop-shadow(0 0 12px ${glowColor})`;
                 winnerIcon.style.color = winnerType === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
@@ -363,103 +455,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkTerminalStatus() {
         const result = engine.winner();
-        if (result !== null) {
-            isGameActive = false;
-            stopLoops();
+        if (result === null) return false;
 
-            const winVal = result.player;
-            if (winVal === 0) {
-                showWinnerModal('Match draw', 'The board is full and there is no winner. Well played.', 0);
-            } else {
-                highlightWinningDiscs(result.cells);
+        isGameActive = false;
+        stopLoops();
 
-                const p1Agent = agent1 !== null;
-                const p2Agent = agent2 !== null;
-
-                if (!p1Agent && !p2Agent) {
-                    showWinnerModal('Victory', `Player ${winVal} (Human) connected four and won the match.`, winVal);
-                } else if (!p1Agent || !p2Agent) {
-                    const humanWinner = (winVal === 1 && !p1Agent) || (winVal === 2 && !p2Agent);
-                    const agentName = getPlayerLabel(winVal === 1 ? 2 : 1);
-
-                    if (humanWinner) {
-                        showWinnerModal('Victory', `You connected four and defeated the ${agentName}.`, winVal);
-                    } else {
-                        showWinnerModal('Defeat', `The ${agentName} connected four and won the match.`, winVal);
-                    }
-                } else {
-                    const winnerColor = winVal === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
-                    const winnerLabel = getPlayerLabel(winVal);
-                    const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">${winnerLabel} (Player ${winVal})</span>`;
-                    showWinnerModal('Match over', `${winnerHTML} has connected four and won.`, winVal);
-                }
-            }
+        const winVal = result.player;
+        if (winVal === 0) {
+            showWinnerModal('Match draw', 'The board is full and there is no winner. Well played.', 0);
             return true;
         }
-        return false;
+
+        highlightWinningDiscs(result.cells);
+        const p1Agent = agent1 !== null;
+        const p2Agent = agent2 !== null;
+
+        if (!p1Agent && !p2Agent) {
+            showWinnerModal('Victory', `Player ${winVal} (Human) connected four and won the match.`, winVal);
+        } else if (!p1Agent || !p2Agent) {
+            const humanWinner = (winVal === 1 && !p1Agent) || (winVal === 2 && !p2Agent);
+            if (humanWinner) {
+                const defeatedName = getPlayerLabel(winVal === 1 ? 2 : 1);
+                showWinnerModal('Victory', `You connected four and defeated the ${defeatedName}.`, winVal);
+            } else {
+                // AI won: name the winning agent, not the human loser
+                const winnerName = getPlayerLabel(winVal);
+                showWinnerModal('Defeat', `The ${winnerName} connected four and won the match.`, winVal);
+            }
+        } else {
+            const winnerColor = winVal === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
+            const winnerLabel = getPlayerLabel(winVal);
+            const winnerHTML = `<span style="color: ${winnerColor}; font-weight: bold;">${winnerLabel} (Player ${winVal})</span>`;
+            showWinnerModal('Match over', `${winnerHTML} has connected four and won.`, winVal);
+        }
+        return true;
     }
 
     function handleColumnSelection(col) {
-        if (!isGameActive || !engine) return;
-        if (engine.isTerminal()) return;
-
+        if (!isGameActive || !engine || engine.isTerminal()) return;
         const currentPl = engine.currentPlayer();
         const activeAgent = currentPl === 1 ? agent1 : agent2;
+        if (activeAgent !== null) return;
 
-        if (activeAgent === null) {
-            try {
-                const moveResult = engine.applyMove(col);
-                animateDisc(moveResult.row, moveResult.col, currentPl);
-                resetTurnClock();
-                updateStatusUI();
-
-                if (currentHoverColumn !== null) {
-                    highlightColumn(currentHoverColumn, true);
-                }
-
-                if (!checkTerminalStatus()) {
-                    const nextPlayer = engine.currentPlayer();
-                    const nextAgent = nextPlayer === 1 ? agent1 : agent2;
-                    if (nextAgent !== null) {
-                        scheduleAIMove();
-                    }
-                }
-            } catch (err) {
-                console.warn('Invalid move: ', err.message);
+        try {
+            const moveResult = engine.applyMove(col);
+            animateDisc(moveResult.row, moveResult.col, currentPl);
+            resetTurnClock();
+            updateStatusUI();
+            if (currentHoverColumn !== null) highlightColumn(currentHoverColumn, true);
+            if (!checkTerminalStatus()) {
+                const nextAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
+                if (nextAgent !== null) scheduleAIMove();
             }
+        } catch (err) {
+            console.warn('Invalid move: ', err.message);
         }
     }
 
     function executeAIMove() {
         if (!isGameActive || !engine || engine.isTerminal()) return;
-
         const currentPl = engine.currentPlayer();
-        let agent = null;
+        const agent = currentPl === 1 ? agent1 : agent2;
+        if (!agent) return;
 
-        if (currentPl === 1 && agent1) {
-            agent = agent1;
-        } else if (currentPl === 2 && agent2) {
-            agent = agent2;
-        }
-
-        if (agent) {
-            try {
-                const col = agent.getMove(engine);
-                const result = engine.applyMove(col);
-                animateDisc(result.row, result.col, currentPl);
-                resetTurnClock();
-                updateStatusUI();
-
-                if (!checkTerminalStatus()) {
-                    const nextPlayer = engine.currentPlayer();
-                    const nextAgent = nextPlayer === 1 ? agent1 : agent2;
-                    if (nextAgent !== null) {
-                        scheduleAIMove();
-                    }
-                }
-            } catch (err) {
-                console.error('AI Error:', err);
+        try {
+            const col = agent.getMove(engine);
+            const result = engine.applyMove(col);
+            animateDisc(result.row, result.col, currentPl);
+            resetTurnClock();
+            updateStatusUI();
+            if (!checkTerminalStatus()) {
+                const nextAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
+                if (nextAgent !== null) scheduleAIMove();
             }
+        } catch (err) {
+            console.error('AI Error:', err);
         }
     }
 
@@ -479,16 +549,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateMatchModeIndicator() {
-        const p1 = getPlayerLabel(1);
-        const p2 = getPlayerLabel(2);
+        const p1Type = selectedPlayer1;
+        const p2Type = selectedPlayer2;
         const p1Val = document.getElementById('player1-type-val');
         const p2Val = document.getElementById('player2-type-val');
-        if (p1Val) p1Val.textContent = p1;
-        if (p2Val) p2Val.textContent = p2;
+        const p1Icon = document.getElementById('player1-type-icon');
+        const p2Icon = document.getElementById('player2-type-icon');
+        if (p1Val) p1Val.textContent = getPlayerLabel(1);
+        if (p2Val) p2Val.textContent = getPlayerLabel(2);
+        if (p1Icon) p1Icon.innerHTML = TYPE_ICONS[p1Type] || TYPE_ICONS.human;
+        if (p2Icon) p2Icon.innerHTML = TYPE_ICONS[p2Type] || TYPE_ICONS.human;
     }
 
     function handleModeChange() {
-        const hasAI = (selectedPlayer1 !== 'human' || selectedPlayer2 !== 'human');
+        const hasAI = selectedPlayer1 !== 'human' || selectedPlayer2 !== 'human';
         const seedInput = document.getElementById('random-seed');
         const delayInput = document.getElementById('simulation-delay');
         const seedGroup = seedInput.closest('.control-group');
@@ -507,58 +581,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createAgents() {
-        const p1Type = selectedPlayer1;
-        const p2Type = selectedPlayer2;
         let seedVal = null;
         if (randomSeedInput.value.trim() !== '') {
             seedVal = parseInt(randomSeedInput.value, 10);
         }
-
         const seed1 = seedVal !== null ? seedVal : null;
         const seed2 = seedVal !== null ? seedVal + 1000 : null;
 
-        if (p1Type === 'human') {
-            agent1 = null;
-        } else if (p1Type === 'random') {
-            agent1 = new RandomAgent(seed1);
-        } else if (p1Type === 'rule') {
-            agent1 = new RuleBasedAgent(seed1);
-        } else if (p1Type === 'minimax') {
-            agent1 = new MinimaxAgent(4, seed1);
-        }
+        const make = (type, seed) => {
+            if (type === 'human') return null;
+            if (type === 'random') return new RandomAgent(seed);
+            if (type === 'rule') return new RuleBasedAgent(seed);
+            if (type === 'minimax') return new MinimaxAgent(4, seed);
+            return null;
+        };
 
-        if (p2Type === 'human') {
-            agent2 = null;
-        } else if (p2Type === 'random') {
-            agent2 = new RandomAgent(seed2);
-        } else if (p2Type === 'rule') {
-            agent2 = new RuleBasedAgent(seed2);
-        } else if (p2Type === 'minimax') {
-            agent2 = new MinimaxAgent(4, seed2);
-        }
+        agent1 = make(selectedPlayer1, seed1);
+        agent2 = make(selectedPlayer2, seed2);
     }
 
     function resetBoard() {
         stopLoops();
         closeWinnerModal();
         hideTooltip();
-
         engine = new ConnectFourEngine();
         createAgents();
-
         isGameActive = true;
-
         initializeBoardUI();
         updateStatusUI();
         resetHighlights();
         updateMatchModeIndicator();
         startClocks();
-
-        const currentPl = engine.currentPlayer();
-        const activeAgent = currentPl === 1 ? agent1 : agent2;
-        if (activeAgent !== null) {
-            scheduleAIMove();
-        }
+        const activeAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
+        if (activeAgent !== null) scheduleAIMove();
     }
 
     function backToSettings() {
@@ -567,32 +622,23 @@ document.addEventListener('DOMContentLoaded', () => {
         closeWinnerModal();
         hideTooltip();
         isGameActive = false;
-
         playerOptionLists.forEach((el) => el.classList.remove('match-active'));
         showScreen('settings');
     }
 
     function startMatch() {
         initializeBoardUI();
-
         engine = new ConnectFourEngine();
         createAgents();
-
         isGameActive = true;
         playerOptionLists.forEach((el) => el.classList.add('match-active'));
-
         showScreen('board');
-
         updateStatusUI();
         resetHighlights();
         updateMatchModeIndicator();
         startClocks();
-
-        const currentPl = engine.currentPlayer();
-        const activeAgent = currentPl === 1 ? agent1 : agent2;
-        if (activeAgent !== null) {
-            scheduleAIMove();
-        }
+        const activeAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
+        if (activeAgent !== null) scheduleAIMove();
     }
 
     p1OptionCards.forEach((card) => {
@@ -620,7 +666,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnStart.addEventListener('click', startMatch);
-
     if (btnReset) btnReset.addEventListener('click', resetBoard);
     if (btnBack) btnBack.addEventListener('click', backToSettings);
     if (btnResetIcon) btnResetIcon.addEventListener('click', resetBoard);
@@ -635,45 +680,41 @@ document.addEventListener('DOMContentLoaded', () => {
         backToSettings();
     });
 
+    if (btnOpenResults) btnOpenResults.addEventListener('click', openResults);
+    if (btnOpenResultsLobby) btnOpenResultsLobby.addEventListener('click', openResults);
+    if (btnCloseResults) btnCloseResults.addEventListener('click', closeResults);
+    resultsModal.addEventListener('click', (e) => {
+        if (e.target === resultsModal) closeResults();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !resultsModal.classList.contains('hidden')) closeResults();
+    });
+
     connect4Board.addEventListener('click', (e) => {
         const cell = e.target.closest('.board-cell');
-        if (cell) {
-            handleColumnSelection(parseInt(cell.dataset.col, 10));
-        }
+        if (cell) handleColumnSelection(parseInt(cell.dataset.col, 10));
     });
 
     connect4Board.addEventListener('mousemove', (e) => {
         const cell = e.target.closest('.board-cell');
-        if (cell) {
-            highlightColumn(parseInt(cell.dataset.col, 10), true);
-        } else {
-            highlightColumn(null, false);
-        }
+        if (cell) highlightColumn(parseInt(cell.dataset.col, 10), true);
+        else highlightColumn(null, false);
     });
 
-    connect4Board.addEventListener('mouseleave', () => {
-        highlightColumn(null, false);
-    });
+    connect4Board.addEventListener('mouseleave', () => highlightColumn(null, false));
 
     dropIndicators.addEventListener('click', (e) => {
         const indicator = e.target.closest('.indicator');
-        if (indicator) {
-            handleColumnSelection(parseInt(indicator.dataset.col, 10));
-        }
+        if (indicator) handleColumnSelection(parseInt(indicator.dataset.col, 10));
     });
 
     dropIndicators.addEventListener('mousemove', (e) => {
         const indicator = e.target.closest('.indicator');
-        if (indicator) {
-            highlightColumn(parseInt(indicator.dataset.col, 10), true);
-        } else {
-            highlightColumn(null, false);
-        }
+        if (indicator) highlightColumn(parseInt(indicator.dataset.col, 10), true);
+        else highlightColumn(null, false);
     });
 
-    dropIndicators.addEventListener('mouseleave', () => {
-        highlightColumn(null, false);
-    });
+    dropIndicators.addEventListener('mouseleave', () => highlightColumn(null, false));
 
     bindTooltips();
     showScreen('settings');

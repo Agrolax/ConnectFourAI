@@ -83,21 +83,42 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
 
 ### Requirement 3: Experimental Evaluation [25% marks]
 - **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
-- **Evaluation Report:** [evaluation_results.md](./evaluation_results.md)
-- **Detailed Work Done:**
-  - `[x]` Run head-to-head matches for pairings: Random vs Rule-Based, Rule-Based vs Minimax, Minimax vs Random.
-  - `[x]` Play 30 games per pairing (alternating starting turns, ~15 times each way).
-  - `[x]` Log win rate, draw rate, and average decision time per move per agent.
-- **Evaluation Runner Script:** [evaluate.py](./evaluate.py) - records and outputs decision times using high-precision `time.perf_counter()`.
+- **Evaluation Report:** [evaluation_results.md](./evaluation_results.md) · [evaluation_results.json](./evaluation_results.json) · [Report PDF](./assets/report.pdf)
+- **Live charts:** open the site and tap **Results** / **View evaluation**
+- **Protocol:** 30 games per pairing, alternating first player (~15 each way), seeded agents, decision time = mean `get_move` wall-clock (ms)
+
+#### Case study A - Random vs Rule-Based
+| Agent | Wins | Win rate | Draws | Avg decision time |
+|---|---:|---:|---:|---:|
+| Random | 1/30 | 3.33% | 0 | 0.0012 ms |
+| Rule-Based | 29/30 | 96.67% | 0 | 0.2555 ms |
+
+**Takeaway:** immediate win/block + centre preference already crush uniform random play.
+
+#### Case study B - Rule-Based vs Minimax
+| Agent | Wins | Win rate | Draws | Avg decision time |
+|---|---:|---:|---:|---:|
+| Rule-Based | 3/30 | 10.00% | 1 | 0.2719 ms |
+| Minimax (depth 4) | 26/30 | 86.67% | 1 | 33.4204 ms |
+
+**Takeaway:** depth-4 adversarial search dominates heuristic rules, at ~100× higher move cost.
+
+#### Case study C - Minimax vs Random
+| Agent | Wins | Win rate | Draws | Avg decision time |
+|---|---:|---:|---:|---:|
+| Minimax (depth 4) | 30/30 | 100.00% | 0 | 42.5260 ms |
+| Random | 0/30 | 0.00% | 0 | 0.0021 ms |
+
+**Takeaway:** strength order holds as Random &lt; Rule-Based &lt; Minimax. Minimax is slower vs Random than vs Rule-Based because sparse play leaves wider trees for alpha-beta.
+
+- **Evaluation Runner Script:** [evaluate.py](./evaluate.py) - records decision times with `time.perf_counter()`.
 
 ---
 
 ### Requirement 4: Report [12.5% marks]
-- **Status:** ![Pending](https://img.shields.io/badge/Status-Pending-yellow?style=flat-square)
-- **What needs to be done:**
-  - Compile a `Report.pdf` containing introduction, system design (engine & agent architecture), agent details, experimental results, and discussion (interpretations, improvement proposals like MCTS).
-- **How to do it:**
-  - Draft report in markdown or LaTeX, and compile to PDF.
+- **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
+- **Report:** [assets/report.pdf](./assets/report.pdf) (also [CP468 Assignment 2 Report.pdf](./CP468%20Assignment%202%20Report.pdf))
+- Covers introduction, engine/agent design, experimental results, and discussion.
 
 ---
 
