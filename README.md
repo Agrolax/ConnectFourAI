@@ -84,7 +84,7 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
 ### Requirement 3: Experimental Evaluation [25% marks]
 - **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 - **Evaluation Report:** [evaluation_results.md](./evaluation_results.md) · [evaluation_results.json](./evaluation_results.json) · [Report PDF](./assets/report.pdf)
-- **Live charts:** open the site and tap **Results** / **View evaluation**
+- **Live charts:** open the site and tap **View evaluation**
 - **Protocol:** 30 games per pairing, alternating first player (~15 each way), seeded agents, decision time = mean `get_move` wall-clock (ms)
 
 #### Case study A - Random vs Rule-Based

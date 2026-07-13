@@ -463,14 +463,17 @@ header {
 .extra-settings {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     gap: 18px;
     margin-bottom: 20px;
     width: 100%;
 }
 
 .extra-settings .control-group {
-    flex: 1;
+    flex: 1 1 260px;
+    min-width: min(100%, 260px);
     margin-bottom: 0;
+    width: 100%;
 }
 
 .control-group {
@@ -1168,7 +1171,15 @@ footer .members {
 
     .extra-settings {
         flex-direction: column;
+        flex-wrap: nowrap;
         gap: 12px;
+        align-items: stretch;
+    }
+
+    .extra-settings .control-group {
+        flex: 1 1 100%;
+        min-width: 100%;
+        width: 100%;
     }
 
     .player-option-card {

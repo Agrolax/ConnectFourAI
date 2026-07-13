@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const floatingTooltip = document.getElementById('floating-tooltip');
     const resultsModal = document.getElementById('results-modal');
     const resultsCharts = document.getElementById('results-charts');
-    const btnOpenResults = document.getElementById('btn-open-results');
     const btnOpenResultsLobby = document.getElementById('btn-open-results-lobby');
     const btnCloseResults = document.getElementById('btn-close-results');
 
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
         random: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M9 15h6"/></svg>',
         rule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></svg>',
-        minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3v4M8 21l4-8 4 8M5 10h14"/><circle cx="12" cy="9" r="2"/></svg>'
+        minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>'
     };
 
     const WIN_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 6H5a3 3 0 003 5M17 6h2a3 3 0 01-3 5"/></svg>';
@@ -680,7 +679,6 @@ document.addEventListener('DOMContentLoaded', () => {
         backToSettings();
     });
 
-    if (btnOpenResults) btnOpenResults.addEventListener('click', openResults);
     if (btnOpenResultsLobby) btnOpenResultsLobby.addEventListener('click', openResults);
     if (btnCloseResults) btnCloseResults.addEventListener('click', closeResults);
     resultsModal.addEventListener('click', (e) => {
