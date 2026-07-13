@@ -1,0 +1,10 @@
+# Agent / skill tooling — never commit or push these
+.agents/
+.claude/
+.cursor/
+skills-lock.json
+
+# OS / editor
+.DS_Store
+*.swp
+*~

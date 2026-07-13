@@ -11,11 +11,16 @@
     <meta property="og:description" content="An interactive, search-driven Connect Four game engine and simulator powered by adversarial AI agents. Built for CP468 Artificial Intelligence.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agrolax.github.io/ConnectFourAI/">
+    <meta property="og:image" content="https://agrolax.github.io/ConnectFourAI/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ConnectFourAI - Interactive Web Simulator">
     <meta name="twitter:description" content="An interactive, search-driven Connect Four game engine and simulator powered by adversarial AI agents. Built for CP468 Artificial Intelligence.">
+    <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/og-image.png">
 
-    <link rel="stylesheet" href="css/style.css?v=1.2">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+    <link rel="stylesheet" href="css/style.css?v=1.3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,8 +28,8 @@
 <body>
 
     <header>
-        <div class="logo">
-            <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <a href="./" class="logo" aria-label="ConnectFourAI home">
+            <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <rect x="2" y="2" width="20" height="20" rx="4" fill="var(--accent-color)" />
                 <circle cx="7" cy="7" r="1.8" fill="#0f172a" />
                 <circle cx="12" cy="7" r="1.8" fill="#0f172a" />
@@ -37,156 +42,207 @@
                 <circle cx="17" cy="17" r="1.8" fill="#06b6d4" />
             </svg>
             <h1>ConnectFour<span>AI</span></h1>
-        </div>
+        </a>
         <div class="repo-links">
-            <a href="https://github.com/Agrolax/ConnectFourAI" target="_blank" class="btn btn-secondary">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                GitHub Repo
+            <a href="https://github.com/Agrolax/ConnectFourAI" target="_blank" rel="noopener noreferrer" class="icon-btn" data-tooltip="View on GitHub" aria-label="View on GitHub">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
             </a>
         </div>
     </header>
 
-    <!-- Main Screens Wrapper -->
     <div id="screens-container" class="container">
         
-        <!-- SCREEN 1: LANDING / CONFIGURATION -->
-        <section id="settings-screen" class="glass-card settings-landing">
-            <h2>Configure Match</h2>
-            
-            <div class="player-selectors">
-                <!-- Player 1 Column -->
-                <div class="selector-column p1-selector">
-                    <div class="column-header">
-                        <span class="token token-p1-small"></span>
-                        <h3>Player 1 (Pink)</h3>
+        <!-- SCREEN 1: LANDING / LOBBY -->
+        <section id="settings-screen" class="lobby-screen">
+            <div class="lobby-hero">
+                <p class="lobby-eyebrow">CP468 · Adversarial Search</p>
+                <h2 class="lobby-title">Set up a match</h2>
+                <p class="lobby-subtitle">Pick two contenders — human or AI — then drop discs on a classic 7×6 board. Minimax looks four plies ahead; rule-based agents follow heuristic priorities.</p>
+            </div>
+
+            <div class="glass-card lobby-card">
+                <div class="lobby-card-header">
+                    <h3>Match configuration</h3>
+                    <p>Choose who plays pink and cyan</p>
+                </div>
+
+                <div class="player-selectors">
+                    <div class="selector-column p1-selector">
+                        <div class="column-header">
+                            <span class="token token-p1-small"></span>
+                            <h3>Player 1 <span class="label-muted">(Pink)</span></h3>
+                        </div>
+                        <div class="player-options" data-player="1">
+                            <button type="button" class="player-option-card selected" data-value="human">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Human</span>
+                                    <span class="option-desc">You play by tapping columns</span>
+                                </span>
+                            </button>
+                            <button type="button" class="player-option-card" data-value="random">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M9 15h6"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Random AI</span>
+                                    <span class="option-desc">Uniform random legal moves</span>
+                                </span>
+                            </button>
+                            <button type="button" class="player-option-card" data-value="rule">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Rule-Based AI</span>
+                                    <span class="option-desc">Heuristic priority policies</span>
+                                </span>
+                            </button>
+                            <button type="button" class="player-option-card" data-value="minimax">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3v4M8 21l4-8 4 8M5 10h14"/><circle cx="12" cy="9" r="2"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Minimax AI</span>
+                                    <span class="option-desc">Depth-4 adversarial search</span>
+                                </span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="player-options" data-player="1">
-                        <div class="player-option-card selected" data-value="human">
-                            <div class="option-icon">👤</div>
-                            <div class="option-details">
-                                <div class="option-label">Human (You)</div>
-                                <div class="option-desc">Play manually by clicking slots.</div>
-                            </div>
+
+                    <div class="vs-divider" aria-hidden="true">
+                        <span>VS</span>
+                    </div>
+
+                    <div class="selector-column p2-selector">
+                        <div class="column-header">
+                            <span class="token token-p2-small"></span>
+                            <h3>Player 2 <span class="label-muted">(Cyan)</span></h3>
                         </div>
-                        <div class="player-option-card" data-value="random">
-                            <div class="option-icon">🤖</div>
-                            <div class="option-details">
-                                <div class="option-label">Random AI</div>
-                                <div class="option-desc">Uniformly distributed random moves.</div>
-                            </div>
-                        </div>
-                        <div class="player-option-card" data-value="rule">
-                            <div class="option-icon">📋</div>
-                            <div class="option-details">
-                                <div class="option-label">Rule-Based AI</div>
-                                <div class="option-desc">Plays using heuristic priorities.</div>
-                            </div>
-                        </div>
-                        <div class="player-option-card" data-value="minimax">
-                            <div class="option-icon">🧠</div>
-                            <div class="option-details">
-                                <div class="option-label">Minimax AI</div>
-                                <div class="option-desc">Adversarial search depth 4 look-ahead.</div>
-                            </div>
+                        <div class="player-options" data-player="2">
+                            <button type="button" class="player-option-card" data-value="human">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Human</span>
+                                    <span class="option-desc">Play manually on the board</span>
+                                </span>
+                            </button>
+                            <button type="button" class="player-option-card selected" data-value="random">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M9 15h6"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Random AI</span>
+                                    <span class="option-desc">Uniform random legal moves</span>
+                                </span>
+                            </button>
+                            <button type="button" class="player-option-card" data-value="rule">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Rule-Based AI</span>
+                                    <span class="option-desc">Heuristic priority policies</span>
+                                </span>
+                            </button>
+                            <button type="button" class="player-option-card" data-value="minimax">
+                                <span class="option-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3v4M8 21l4-8 4 8M5 10h14"/><circle cx="12" cy="9" r="2"/></svg>
+                                </span>
+                                <span class="option-details">
+                                    <span class="option-label">Minimax AI</span>
+                                    <span class="option-desc">Depth-4 adversarial search</span>
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- VS Divider -->
-                <div class="vs-divider">
-                    <span>VS</span>
+                <div class="extra-settings">
+                    <div class="control-group">
+                        <label class="label-with-tooltip" for="random-seed">
+                            <span>Seed <span class="label-muted">(optional)</span></span>
+                            <button type="button" class="tooltip-trigger" data-tooltip="Forces AI agents to make identical, reproducible choices across runs." aria-label="About seed">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7.5v.5"/></svg>
+                            </button>
+                        </label>
+                        <input type="number" id="random-seed" placeholder="e.g. 42" min="0">
+                    </div>
+
+                    <div class="control-group" id="speed-control-group">
+                        <label class="label-with-tooltip" for="simulation-delay">
+                            <span>Move pace</span>
+                            <button type="button" class="tooltip-trigger" data-tooltip="Delay between AI moves. Higher values make matches easier to follow." aria-label="About move pace">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7.5v.5"/></svg>
+                            </button>
+                            <span id="delay-val" class="range-value">0.5s</span>
+                        </label>
+                        <input type="range" id="simulation-delay" min="0.1" max="2.0" step="0.1" value="0.5">
+                    </div>
                 </div>
 
-                <!-- Player 2 Column -->
-                <div class="selector-column p2-selector">
-                    <div class="column-header">
-                        <span class="token token-p2-small"></span>
-                        <h3>Player 2 (Cyan)</h3>
+                <button id="btn-start" class="btn btn-primary btn-block btn-start">Start match</button>
+            </div>
+
+            <div class="lobby-features">
+                <div class="lobby-feature">
+                    <span class="lobby-feature-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>
+                    </span>
+                    <div>
+                        <strong>Search-driven agents</strong>
+                        <p>Random, rule-based, and minimax opponents in one lobby</p>
                     </div>
-                    <div class="player-options" data-player="2">
-                        <div class="player-option-card" data-value="human">
-                            <div class="option-icon">👤</div>
-                            <div class="option-details">
-                                <div class="option-label">Human</div>
-                                <div class="option-desc">Play manually by clicking slots.</div>
-                            </div>
-                        </div>
-                        <div class="player-option-card selected" data-value="random">
-                            <div class="option-icon">🤖</div>
-                            <div class="option-details">
-                                <div class="option-label">Random AI</div>
-                                <div class="option-desc">Uniformly distributed random moves.</div>
-                            </div>
-                        </div>
-                        <div class="player-option-card" data-value="rule">
-                            <div class="option-icon">📋</div>
-                            <div class="option-details">
-                                <div class="option-label">Rule-Based AI</div>
-                                <div class="option-desc">Plays using heuristic priorities.</div>
-                            </div>
-                        </div>
-                        <div class="player-option-card" data-value="minimax">
-                            <div class="option-icon">🧠</div>
-                            <div class="option-details">
-                                <div class="option-label">Minimax AI</div>
-                                <div class="option-desc">Adversarial search depth 4 look-ahead.</div>
-                            </div>
-                        </div>
+                </div>
+                <div class="lobby-feature">
+                    <span class="lobby-feature-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    </span>
+                    <div>
+                        <strong>Reproducible runs</strong>
+                        <p>Optional seeds lock AI choice sequences for demos</p>
+                    </div>
+                </div>
+                <div class="lobby-feature">
+                    <span class="lobby-feature-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+                    </span>
+                    <div>
+                        <strong>Live board UI</strong>
+                        <p>Drop animations, turn timers, and last-move highlights</p>
                     </div>
                 </div>
             </div>
-
-            <div class="extra-settings">
-                <div class="control-group">
-                    <label class="label-with-tooltip">
-                        <span>Seed (Optional)</span>
-                        <span class="tooltip-container">
-                            <span class="tooltip-icon">?</span>
-                            <span class="tooltip-text">Forces the AI to generate identical, reproducible choices.</span>
-                        </span>
-                    </label>
-                    <input type="number" id="random-seed" placeholder="e.g. 42" min="0">
-                </div>
-
-                <div class="control-group" id="speed-control-group">
-                    <label for="simulation-delay">
-                        AI Speed (Delay)
-                        <span id="delay-val">0.5s</span>
-                    </label>
-                    <input type="range" id="simulation-delay" min="0.1" max="2.0" step="0.1" value="0.5">
-                </div>
-            </div>
-
-            <button id="btn-start" class="btn btn-primary btn-block">Start Match</button>
         </section>
 
-        <!-- SCREEN 2: ACTIVE MATCH BOARD (Hidden initially) -->
+        <!-- SCREEN 2: ACTIVE MATCH -->
         <section id="game-screen" class="match-board-view hidden">
-            <!-- Sidebar column wrapper -->
             <div class="sidebar-panel">
-                <!-- Sidebar stats panel -->
                 <div class="game-sidebar glass-card">
-                    <h2>Active Match</h2>
+                    <h2 class="sidebar-title">Active match</h2>
                     
                     <div class="status-info">
                         <div class="status-cards-vert">
-                            <!-- Two split player cards for both players -->
                             <div class="player-turn-boxes">
                                 <div class="player-card active p1" id="player1-card">
                                     <div class="player-card-details">
                                         <div class="player-card-header">
                                             <span class="token token-p1-small"></span>
-                                            <span class="player-name">Player 1 (Pink)</span>
+                                            <span class="player-name">Player 1 <span class="label-muted">(Pink)</span></span>
                                         </div>
                                         <span class="player-type-label" id="player1-type-val">Human</span>
                                     </div>
-                                    <span class="player-status-text">Next Turn</span>
+                                    <span class="player-status-text">Next move</span>
                                 </div>
                                 <div class="player-card" id="player2-card">
                                     <div class="player-card-details">
                                         <div class="player-card-header">
                                             <span class="token token-p2-small"></span>
-                                            <span class="player-name">Player 2 (Cyan)</span>
+                                            <span class="player-name">Player 2 <span class="label-muted">(Cyan)</span></span>
                                         </div>
                                         <span class="player-type-label" id="player2-type-val">Random AI</span>
                                     </div>
@@ -194,35 +250,55 @@
                                 </div>
                             </div>
                             
-                            <div class="status-card">
-                                <span class="card-label">Total Moves</span>
-                                <span class="card-value" id="move-count-val">0</span>
+                            <div class="match-stat-row">
+                                <div class="status-card" id="time-elapsed-card">
+                                    <span class="card-label">Time elapsed</span>
+                                    <div class="card-value-row">
+                                        <span class="card-value" id="time-elapsed-val">0:00</span>
+                                        <span class="turn-clock" id="turn-clock-val" hidden>0:00</span>
+                                    </div>
+                                </div>
+                                <div class="status-card">
+                                    <span class="card-label">Total moves</span>
+                                    <span class="card-value" id="move-count-val">0</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="game-controls">
-                        <button id="btn-reset" class="btn btn-primary btn-block">Reset Board</button>
-                        <button id="btn-back" class="btn btn-secondary btn-block">Back to Settings</button>
+                    <div class="game-controls desktop-only-controls">
+                        <button id="btn-reset" class="btn btn-primary btn-block" type="button">Reset board</button>
+                        <button id="btn-back" class="btn btn-secondary btn-block" type="button">Back to settings</button>
                     </div>
                 </div>
 
-                <!-- SUCCESS MODAL (Rendered under the match details box) -->
                 <div id="winner-modal" class="winner-card glass-card hidden">
-                    <div class="winner-icon" id="winner-icon">🏆</div>
-                    <h2 id="winner-celebration-title">Victory!</h2>
+                    <div class="winner-icon" id="winner-icon" aria-hidden="true">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 6H5a3 3 0 003 5M17 6h2a3 3 0 01-3 5"/></svg>
+                    </div>
+                    <h2 id="winner-celebration-title">Victory</h2>
                     <p id="winner-celebration-msg">Player 1 wins the match.</p>
                     <div class="modal-buttons">
-                        <button id="btn-modal-replay" class="btn btn-primary">Play Again</button>
-                        <button id="btn-modal-close" class="btn btn-secondary">Close Board</button>
+                        <button id="btn-modal-replay" class="btn btn-primary" type="button">Play again</button>
+                        <button id="btn-modal-close" class="btn btn-secondary" type="button">Close board</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Board Area -->
             <div class="board-panel">
                 <div class="board-container glass-card">
-                    <!-- Drop indicators at the top of the columns -->
+                    <div class="board-toolbar">
+                        <span class="board-toolbar-label">Board</span>
+                        <div class="board-toolbar-actions">
+                            <button type="button" id="btn-reset-icon" class="icon-btn" data-tooltip="Reset board" aria-label="Reset board">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9"/><path d="M3 5v4h4"/></svg>
+                            </button>
+                            <button type="button" id="btn-back-icon" class="icon-btn" data-tooltip="Match settings" aria-label="Match settings">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="drop-indicators" id="drop-indicators">
                         <div class="indicator" data-col="0"></div>
                         <div class="indicator" data-col="1"></div>
@@ -233,24 +309,20 @@
                         <div class="indicator" data-col="6"></div>
                     </div>
 
-                    <!-- Connect 4 Grid -->
-                    <div class="connect4-board" id="connect4-board">
-                        <!-- slots generated by JS -->
-                    </div>
+                    <div class="connect4-board" id="connect4-board"></div>
                 </div>
             </div>
         </section>
     </div>
 
     <footer>
-        <div class="footer-content">
-            <p class="members">Project Members: <strong>Safdar, Farhan, Noah, Morad, Manahil</strong></p>
-        </div>
+        <p class="members">Safdar · Farhan · Noah · Morad · Manahil</p>
     </footer>
 
-    <!-- Scripts -->
-    <script src="js/engine.js?v=1.2"></script>
-    <script src="js/agents.js?v=1.2"></script>
-    <script src="js/app.js?v=1.2"></script>
+    <div id="floating-tooltip" class="floating-tooltip" role="tooltip" hidden></div>
+
+    <script src="js/engine.js?v=1.3"></script>
+    <script src="js/agents.js?v=1.3"></script>
+    <script src="js/app.js?v=1.3"></script>
 </body>
 </html>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 24 24" fill="none" role="img" aria-label="ConnectFourAI mark">
+  <rect width="24" height="24" rx="4" fill="#0f172a"/>
+  <rect x="2" y="2" width="20" height="20" rx="4" fill="#2563eb"/>
+  <circle cx="7" cy="7" r="1.8" fill="#0f172a"/>
+  <circle cx="12" cy="7" r="1.8" fill="#0f172a"/>
+  <circle cx="17" cy="7" r="1.8" fill="#0f172a"/>
+  <circle cx="7" cy="12" r="1.8" fill="#0f172a"/>
+  <circle cx="12" cy="12" r="1.8" fill="#e11d48"/>
+  <circle cx="17" cy="12" r="1.8" fill="#0f172a"/>
+  <circle cx="7" cy="17" r="1.8" fill="#0f172a"/>
+  <circle cx="12" cy="17" r="1.8" fill="#0f172a"/>
+  <circle cx="17" cy="17" r="1.8" fill="#06b6d4"/>
+</svg>

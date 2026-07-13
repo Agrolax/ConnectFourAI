@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none" role="img" aria-label="ConnectFourAI Open Graph template">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <g transform="translate(444, 135)">
+    <rect x="0" y="0" width="312" height="312" rx="52" fill="#2563eb"/>
+    <circle cx="78" cy="78" r="28" fill="#0f172a"/>
+    <circle cx="156" cy="78" r="28" fill="#0f172a"/>
+    <circle cx="234" cy="78" r="28" fill="#0f172a"/>
+    <circle cx="78" cy="156" r="28" fill="#0f172a"/>
+    <circle cx="156" cy="156" r="28" fill="#e11d48"/>
+    <circle cx="234" cy="156" r="28" fill="#0f172a"/>
+    <circle cx="78" cy="234" r="28" fill="#0f172a"/>
+    <circle cx="156" cy="234" r="28" fill="#0f172a"/>
+    <circle cx="234" cy="234" r="28" fill="#06b6d4"/>
+  </g>
+  <text x="600" y="520" text-anchor="middle" font-family="Outfit, Arial, sans-serif" font-size="48" font-weight="350" fill="#f8fafc">ConnectFour<tspan fill="#2563eb" font-weight="600">AI</tspan></text>
+</svg>
