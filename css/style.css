@@ -17,10 +17,13 @@
     --board-border: #1d4ed8;
     --slot-bg: #0f172a;
     
-    --cell-size: 60px;
-    --disc-size: 50px;
+    /* Fluid board: shrink cells so 7 columns always fit the viewport */
     --board-gap: 8px;
     --board-padding: 16px;
+    --board-frame: calc((2 * var(--board-padding)) + 6px + (6 * var(--board-gap)));
+    --board-gutter: 56px; /* page + card horizontal chrome */
+    --cell-size: min(60px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
+    --disc-size: calc(var(--cell-size) * 0.833);
 }
 
 * {
@@ -815,7 +818,14 @@ input[type="range"] {
 .game-controls {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
+}
+
+.game-controls .btn {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: min(100%, 140px);
 }
 
 .token {
@@ -837,6 +847,8 @@ input[type="range"] {
     align-items: stretch;
     justify-content: center;
     min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .board-container {
@@ -849,6 +861,9 @@ input[type="range"] {
     border-radius: 20px;
     height: 100%;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .board-toolbar {
@@ -856,7 +871,10 @@ input[type="range"] {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: calc(7 * var(--cell-size) + 6 * var(--board-gap) + 2 * var(--board-padding));
+    max-width: min(
+        100%,
+        calc(7 * var(--cell-size) + 6 * var(--board-gap) + 2 * var(--board-padding))
+    );
     margin-bottom: 4px;
 }
 
@@ -920,6 +938,7 @@ input[type="range"] {
     padding: var(--board-padding);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
     overflow: hidden;
+    max-width: 100%;
 }
 
 .board-cell {
@@ -1040,9 +1059,16 @@ input[type="range"] {
 
 .modal-buttons {
     display: flex;
-    justify-content: center;
-    gap: 12px;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 10px;
     flex-wrap: wrap;
+    width: 100%;
+}
+
+.modal-buttons .btn {
+    flex: 1 1 140px;
+    min-width: min(100%, 140px);
 }
 
 @keyframes winningPulse {
@@ -1093,6 +1119,14 @@ footer .members {
 }
 
 @media (max-width: 900px) {
+    :root {
+        --board-gap: 5px;
+        --board-padding: 10px;
+        --board-gutter: 40px;
+        --cell-size: min(56px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
+        --disc-size: calc(var(--cell-size) * 0.82);
+    }
+
     .container {
         padding: 20px 4% 28px;
     }
@@ -1101,12 +1135,13 @@ footer .members {
         flex-direction: column;
         align-items: center;
         gap: 16px;
+        max-width: 100%;
     }
 
     .sidebar-panel,
     .board-panel {
         width: 100%;
-        max-width: 520px;
+        max-width: min(520px, 100%);
     }
 
     .sidebar-title {
@@ -1131,6 +1166,7 @@ footer .members {
 
     .board-container {
         width: 100%;
+        padding: 12px 8px 14px;
     }
 
     .connect4-board,
@@ -1158,10 +1194,11 @@ footer .members {
 
 @media (max-width: 500px) {
     :root {
-        --cell-size: min(42px, 11.5vw);
-        --disc-size: min(34px, 9.2vw);
-        --board-gap: 4px;
-        --board-padding: 8px;
+        --board-gap: 3px;
+        --board-padding: 6px;
+        --board-gutter: 28px;
+        --cell-size: min(48px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
+        --disc-size: calc(var(--cell-size) * 0.8);
     }
 
     header {
@@ -1173,11 +1210,11 @@ footer .members {
     }
 
     .container {
-        padding: 14px 10px 24px;
+        padding: 14px 8px 24px;
     }
 
     .glass-card {
-        padding: 16px 14px;
+        padding: 16px 12px;
     }
 
     .lobby-hero {
@@ -1226,11 +1263,17 @@ footer .members {
     }
 
     .board-container {
-        padding: 12px 10px 14px;
+        padding: 10px 6px 12px;
+        border-radius: 16px;
     }
 
     .board-toolbar {
         max-width: 100%;
+    }
+
+    .connect4-board {
+        border-radius: 14px;
+        border-width: 2px;
     }
 
     .agent-roster-grid {
@@ -1240,6 +1283,15 @@ footer .members {
     .results-panel {
         padding: 18px 14px;
         max-height: 92dvh;
+    }
+
+    .winner-card {
+        padding: 18px 14px;
+    }
+
+    .modal-buttons .btn {
+        flex-basis: 100%;
+        width: 100%;
     }
 }
 
