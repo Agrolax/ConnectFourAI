@@ -68,24 +68,24 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'Random vs Rule-Based',
             short: 'Random vs Rule',
             agents: [
-                { name: 'Random', wins: 1, draws: 0, avgMs: 0.0012 },
-                { name: 'Rule-Based', wins: 29, draws: 0, avgMs: 0.2555 }
+                { key: 'random', name: 'Random', wins: 1, draws: 0, avgMs: 0.0012 },
+                { key: 'rule', name: 'Rule-Based', wins: 29, draws: 0, avgMs: 0.2555 }
             ]
         },
         {
             title: 'Rule-Based vs Minimax',
             short: 'Rule vs Minimax',
             agents: [
-                { name: 'Rule-Based', wins: 3, draws: 1, avgMs: 0.2719 },
-                { name: 'Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
+                { key: 'rule', name: 'Rule-Based', wins: 3, draws: 1, avgMs: 0.2719 },
+                { key: 'minimax', name: 'Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
             ]
         },
         {
             title: 'Minimax vs Random',
             short: 'Minimax vs Random',
             agents: [
-                { name: 'Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
-                { name: 'Random', wins: 0, draws: 0, avgMs: 0.0021 }
+                { key: 'minimax', name: 'Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
+                { key: 'random', name: 'Random', wins: 0, draws: 0, avgMs: 0.0021 }
             ]
         }
     ];
@@ -225,10 +225,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const pair = EVAL_SUMMARY[selectedEvalPair] || EVAL_SUMMARY[0];
         const cards = pair.agents.map((agent, i) => {
             const pct = (agent.wins / 30) * 100;
+            const icon = TYPE_ICONS[agent.key] || TYPE_ICONS.random;
             return `
                 <article class="eval-agent ${i === 1 ? 'alt' : ''}">
                     <div class="eval-agent-head">
-                        <h3>${agent.name}</h3>
+                        <div class="eval-agent-title">
+                            <span class="eval-agent-icon" aria-hidden="true">${icon}</span>
+                            <h3>${agent.name}</h3>
+                        </div>
                         <span class="eval-winrate">${pct.toFixed(0)}%</span>
                     </div>
                     <div class="eval-bar-track"><div class="eval-bar-fill" style="width:${pct}%"></div></div>
