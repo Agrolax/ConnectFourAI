@@ -905,43 +905,39 @@ input[type="range"] {
     box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Last move: subtle opacity pulse + soft scale/glow */
+/* Last move: subtle opacity shimmer + soft player-colored glow (no size change) */
 .board-disc.last-move.p1:not(.dropping) {
-    animation: lastMovePulseP1 2.2s ease-in-out infinite;
+    animation: lastMoveShimmerP1 2.2s ease-in-out infinite;
 }
 
 .board-disc.last-move.p2:not(.dropping) {
-    animation: lastMovePulseP2 2.2s ease-in-out infinite;
+    animation: lastMoveShimmerP2 2.2s ease-in-out infinite;
 }
 
-@keyframes lastMovePulseP1 {
+@keyframes lastMoveShimmerP1 {
     0%, 100% {
         opacity: 0.82;
-        transform: scale(1);
         box-shadow:
             inset 0 -3px 8px rgba(0, 0, 0, 0.4),
             0 0 0 0 rgba(225, 29, 72, 0);
     }
     50% {
         opacity: 1;
-        transform: scale(1.05);
         box-shadow:
             inset 0 -3px 8px rgba(0, 0, 0, 0.4),
             0 0 14px 3px rgba(225, 29, 72, 0.5);
     }
 }
 
-@keyframes lastMovePulseP2 {
+@keyframes lastMoveShimmerP2 {
     0%, 100% {
         opacity: 0.82;
-        transform: scale(1);
         box-shadow:
             inset 0 -3px 8px rgba(0, 0, 0, 0.4),
             0 0 0 0 rgba(6, 182, 212, 0);
     }
     50% {
         opacity: 1;
-        transform: scale(1.05);
         box-shadow:
             inset 0 -3px 8px rgba(0, 0, 0, 0.4),
             0 0 14px 3px rgba(6, 182, 212, 0.5);
@@ -1045,7 +1041,6 @@ input[type="range"] {
 
 .winning-cell .board-disc.last-move {
     opacity: 1;
-    transform: none;
 }
 
 @keyframes bouncePop {
