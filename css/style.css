@@ -756,7 +756,7 @@ input[type="range"] {
 }
 
 .player-card.result-lost {
-    opacity: 0.55;
+    opacity: 1;
 }
 
 .player-card.result-draw {
