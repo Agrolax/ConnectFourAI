@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/ogimage.png">
 
     <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
-    <link rel="stylesheet" href="css/style.css?v=1.19">
+    <link rel="stylesheet" href="css/style.css?v=1.20">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -58,7 +58,6 @@
             <div class="lobby-top">
                 <p class="lobby-eyebrow">CP468 · Adversarial Search</p>
                 <h2 class="lobby-title">Set up a match</h2>
-                <p class="lobby-subtitle">Pick two contenders - human or AI - then drop discs on a classic 7×6 board. Minimax looks four plies ahead; rule-based agents follow heuristic priorities.</p>
             </div>
 
             <div class="glass-card lobby-card">
@@ -391,6 +390,8 @@
                 <button type="button" class="toggle-switch toggle-mute" id="audio-mute-toggle" role="switch" aria-checked="false" aria-label="Mute all audio"></button>
             </div>
 
+            <div class="sound-divider" aria-hidden="true"></div>
+
             <div class="sound-body" id="sound-body">
                 <div class="sound-section">
                     <div class="sound-row">
@@ -401,10 +402,6 @@
                         <button type="button" class="toggle-switch toggle-enable" id="audio-sfx-toggle" role="switch" aria-checked="true" aria-label="Toggle game sounds"></button>
                     </div>
                     <div class="sound-subsettings" id="sound-sfx-settings">
-                        <div class="sound-slider bare">
-                            <label for="audio-sfx-vol">Volume <span id="audio-sfx-vol-val">70%</span></label>
-                            <input type="range" id="audio-sfx-vol" min="0" max="100" value="70">
-                        </div>
                         <div class="sound-row">
                             <span class="sound-row-label">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 5v14"/></svg>
@@ -415,12 +412,18 @@
                         <div class="sound-row">
                             <span class="sound-row-label">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/></svg>
-                                Win / lose / draw
+                                Match results
                             </span>
                             <input type="checkbox" id="audio-result" checked>
                         </div>
+                        <div class="sound-slider bare">
+                            <label for="audio-sfx-vol">Game sounds volume <span id="audio-sfx-vol-val">70%</span></label>
+                            <input type="range" id="audio-sfx-vol" min="0" max="100" value="70">
+                        </div>
                     </div>
                 </div>
+
+                <div class="sound-divider" aria-hidden="true"></div>
 
                 <div class="sound-section">
                     <div class="sound-row">
@@ -432,7 +435,7 @@
                     </div>
                     <div class="sound-subsettings" id="sound-music-settings">
                         <div class="sound-slider bare">
-                            <label for="audio-music-vol">Volume <span id="audio-music-vol-val">35%</span></label>
+                            <label for="audio-music-vol">Music volume <span id="audio-music-vol-val">35%</span></label>
                             <input type="range" id="audio-music-vol" min="0" max="100" value="35">
                         </div>
                     </div>
@@ -443,9 +446,9 @@
 
     <div id="floating-tooltip" class="floating-tooltip" role="tooltip" hidden></div>
 
-    <script src="js/engine.js?v=1.19"></script>
-    <script src="js/agents.js?v=1.19"></script>
-    <script src="js/audio.js?v=1.19"></script>
-    <script src="js/app.js?v=1.19"></script>
+    <script src="js/engine.js?v=1.20"></script>
+    <script src="js/agents.js?v=1.20"></script>
+    <script src="js/audio.js?v=1.20"></script>
+    <script src="js/app.js?v=1.20"></script>
 </body>
 </html>

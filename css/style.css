@@ -285,14 +285,6 @@ header {
     min-width: 0;
 }
 
-.lobby-subtitle {
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--text-secondary);
-    width: 100%;
-    max-width: none;
-}
-
 .lobby-card-header {
     margin-bottom: 22px;
     padding-bottom: 14px;
@@ -1135,10 +1127,6 @@ footer .members {
         padding: 14px 4% 24px;
     }
 
-    .lobby-subtitle {
-        font-size: 14px;
-    }
-
     .extra-settings {
         flex-direction: column;
         flex-wrap: nowrap;
@@ -1572,7 +1560,20 @@ footer .members {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 4px 0 8px;
+    padding: 4px 0;
+}
+
+.sound-divider {
+    height: 1px;
+    background: rgba(51, 65, 85, 0.7);
+    margin: 14px 0;
+}
+
+.sound-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: opacity 0.2s ease;
 }
 
 .toggle-switch {
@@ -1610,13 +1611,6 @@ footer .members {
 
 .toggle-switch.toggle-enable[aria-checked="true"] {
     background: var(--accent-color);
-}
-
-.sound-body {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    transition: opacity 0.2s ease;
 }
 
 .sound-body.is-disabled {
