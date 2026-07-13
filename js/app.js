@@ -59,13 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
         minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>'
     };
 
-    const WIN_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 21h8v-1.5h-2.2V17H17a5 5 0 005-5V8h-2.5A2.5 2.5 0 0017 5.5h-1V4H8v1.5H7A2.5 2.5 0 004.5 8H2v4a5 5 0 005 5h3.2V19.5H8V21zm1.5-8.2H7a2.5 2.5 0 01-2.5-2.5V9.5H7A4 4 0 009.5 12.8zm5 0A4 4 0 0017 9.5h2.5V10.3a2.5 2.5 0 01-2.5 2.5h-2.5z"/></svg>';
-    const LOSS_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.7 13.3a1 1 0 01-1.4 1.4L12 13.4l-2.3 2.3a1 1 0 01-1.4-1.4l2.3-2.3-2.3-2.3a1 1 0 011.4-1.4l2.3 2.3 2.3-2.3a1 1 0 011.4 1.4L13.4 12l2.3 2.3z"/></svg>';
-    const DRAW_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 9.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm9 0a3.5 3.5 0 100 7 3.5 3.5 0 000-7zM10.8 13h2.4a1 1 0 010 2h-2.4a1 1 0 010-2z"/></svg>';
+    const WIN_ICON = '<svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>';
+    const LOSS_ICON = '<svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 12.1a1 1 0 01-1.4 1.4L12 13.4l-2.1 2.1a1 1 0 01-1.4-1.4l2.1-2.1-2.1-2.1a1 1 0 011.4-1.4l2.1 2.1 2.1-2.1a1 1 0 011.4 1.4L13.4 12l2.1 2.1z"/></svg>';
+    const DRAW_ICON = '<svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10a1 1 0 010 2H7a1 1 0 010-2zm0 6h10a1 1 0 010 2H7a1 1 0 010-2z"/></svg>';
 
     const EVAL_SUMMARY = [
         {
             title: 'Random vs Rule-Based',
+            short: 'Random vs Rule',
             agents: [
                 { name: 'Random', wins: 1, draws: 0, avgMs: 0.0012 },
                 { name: 'Rule-Based', wins: 29, draws: 0, avgMs: 0.2555 }
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: 'Rule-Based vs Minimax',
+            short: 'Rule vs Minimax',
             agents: [
                 { name: 'Rule-Based', wins: 3, draws: 1, avgMs: 0.2719 },
                 { name: 'Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
@@ -80,12 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: 'Minimax vs Random',
+            short: 'Minimax vs Random',
             agents: [
                 { name: 'Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
                 { name: 'Random', wins: 0, draws: 0, avgMs: 0.0021 }
             ]
         }
     ];
+    let selectedEvalPair = 0;
 
     function formatClock(ms) {
         const totalSec = Math.max(0, Math.floor(ms / 1000));
@@ -218,46 +222,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderResultsCharts() {
-        resultsCharts.innerHTML = EVAL_SUMMARY.map((pair, pairIndex) => {
-            const rows = pair.agents.map((agent, i) => {
-                const pct = (agent.wins / 30) * 100;
-                const fillClass = i === 0 ? '' : 'alt';
-                return `
-                    <div class="bar-row">
-                        <span class="bar-label">${agent.name}</span>
-                        <div class="bar-track"><div class="bar-fill ${fillClass}" style="width:${pct}%"></div></div>
-                        <span class="bar-value">${agent.wins}/30 · ${pct.toFixed(0)}%</span>
-                    </div>
-                `;
-            }).join('');
-
-            const draws = pair.agents[0].draws;
-            const drawRow = draws > 0
-                ? `<div class="bar-row">
-                        <span class="bar-label">Draws</span>
-                        <div class="bar-track"><div class="bar-fill soft" style="width:${(draws / 30) * 100}%"></div></div>
-                        <span class="bar-value">${draws}/30</span>
-                   </div>`
-                : '';
-
-            const times = pair.agents.map((a) =>
-                `<span class="time-chip">${a.name}: ${a.avgMs.toFixed(4)} ms/move</span>`
-            ).join('');
-
+        const pair = EVAL_SUMMARY[selectedEvalPair] || EVAL_SUMMARY[0];
+        const cards = pair.agents.map((agent, i) => {
+            const pct = (agent.wins / 30) * 100;
             return `
-                <article class="pair-card">
-                    <h3>${pair.title}</h3>
-                    ${rows}
-                    ${drawRow}
-                    <div class="pair-times">${times}</div>
+                <article class="eval-agent ${i === 1 ? 'alt' : ''}">
+                    <div class="eval-agent-head">
+                        <h3>${agent.name}</h3>
+                        <span class="eval-winrate">${pct.toFixed(0)}%</span>
+                    </div>
+                    <div class="eval-bar-track"><div class="eval-bar-fill" style="width:${pct}%"></div></div>
+                    <div class="eval-stats">
+                        <div class="eval-stat"><span>Wins</span><strong>${agent.wins}/30</strong></div>
+                        <div class="eval-stat"><span>Draws</span><strong>${agent.draws}/30</strong></div>
+                        <div class="eval-stat"><span>Avg ms</span><strong>${agent.avgMs.toFixed(2)}</strong></div>
+                    </div>
                 </article>
             `;
         }).join('');
+        resultsCharts.innerHTML = `<div class="eval-compare">${cards}</div>`;
+    }
+
+    function setEvalPair(index) {
+        selectedEvalPair = index;
+        document.querySelectorAll('.eval-tab').forEach((tab) => {
+            const active = parseInt(tab.dataset.pair, 10) === index;
+            tab.classList.toggle('active', active);
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        renderResultsCharts();
     }
 
     function openResults() {
         hideTooltip();
-        renderResultsCharts();
+        if (btnOpenResultsLobby) btnOpenResultsLobby.classList.add('is-pressed');
+        setEvalPair(selectedEvalPair);
         resultsModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
@@ -265,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeResults() {
         resultsModal.classList.add('hidden');
         document.body.style.overflow = '';
+        if (btnOpenResultsLobby) btnOpenResultsLobby.classList.remove('is-pressed');
     }
 
     function showScreen(screen) {
@@ -407,8 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const landingRow = engine.getLandingRow(col);
         if (landingRow < 0) return;
-
-        indicators[col].classList.add(activePlayer === 1 ? 'hover-p1' : 'hover-p2');
 
         for (let i = 0; i < 42; i++) {
             if (parseInt(cells[i].dataset.col, 10) === col) {
@@ -734,7 +732,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnStart.addEventListener('click', startMatch);
     function syncSoundControls() {
         const s = gameAudio.getSettings();
-        const master = document.getElementById('audio-master');
+        const muted = !s.masterEnabled;
+        const muteToggle = document.getElementById('audio-mute-toggle');
+        const soundBody = document.getElementById('sound-body');
         const sfx = document.getElementById('audio-sfx');
         const drop = document.getElementById('audio-drop');
         const result = document.getElementById('audio-result');
@@ -743,7 +743,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const musicVol = document.getElementById('audio-music-vol');
         const sfxVal = document.getElementById('audio-sfx-vol-val');
         const musicVal = document.getElementById('audio-music-vol-val');
-        if (master) master.checked = s.masterEnabled;
+
+        if (muteToggle) muteToggle.setAttribute('aria-checked', muted ? 'true' : 'false');
+        if (soundBody) soundBody.classList.toggle('is-disabled', muted);
         if (sfx) sfx.checked = s.sfxEnabled;
         if (drop) drop.checked = s.dropEnabled;
         if (result) result.checked = s.resultEnabled;
@@ -796,13 +798,27 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('change', handler);
     }
 
-    bindAudioControl('audio-master', 'masterEnabled', false);
     bindAudioControl('audio-sfx', 'sfxEnabled', false);
     bindAudioControl('audio-drop', 'dropEnabled', false);
     bindAudioControl('audio-result', 'resultEnabled', false);
     bindAudioControl('audio-music', 'musicEnabled', false);
     bindAudioControl('audio-sfx-vol', 'sfxVolume', true);
     bindAudioControl('audio-music-vol', 'musicVolume', true);
+
+    const muteToggle = document.getElementById('audio-mute-toggle');
+    if (muteToggle) {
+        muteToggle.addEventListener('click', () => {
+            const muted = muteToggle.getAttribute('aria-checked') === 'true';
+            gameAudio.updateSettings({ masterEnabled: muted }); // currently muted -> unmute
+            syncSoundControls();
+        });
+    }
+
+    document.querySelectorAll('.eval-tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            setEvalPair(parseInt(tab.dataset.pair, 10));
+        });
+    });
 
     btnModalReplay.addEventListener('click', () => {
         closeWinnerModal();
