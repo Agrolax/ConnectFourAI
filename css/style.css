@@ -1275,7 +1275,7 @@ footer .members {
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--text-secondary);
+    color: var(--accent-color);
 }
 
 .strength-order-note {
@@ -1336,27 +1336,38 @@ footer .members {
 .results-meta {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: 6px 8px;
+    align-items: center;
+    gap: 6px 10px;
     margin-bottom: 16px;
     font-size: 12px;
     line-height: 1.45;
-    color: var(--text-muted);
 }
 
 .meta-item {
-    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.meta-item > svg {
+    flex-shrink: 0;
+    color: var(--accent-color);
+    opacity: 0.9;
 }
 
 .meta-key {
+    color: var(--text-secondary);
+    margin-right: 2px;
+}
+
+.meta-val {
     color: var(--text-muted);
-    opacity: 0.75;
-    margin-right: 4px;
+    opacity: 0.72;
 }
 
 .meta-sep {
     color: var(--text-muted);
-    opacity: 0.55;
+    opacity: 0.4;
 }
 
 .eval-switcher {
@@ -1368,7 +1379,7 @@ footer .members {
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--text-secondary);
+    color: var(--accent-color);
     margin-bottom: 8px;
 }
 
