@@ -1037,8 +1037,8 @@ footer .members {
     :root {
         --board-gap: 5px;
         --board-padding: 10px;
-        /* 4% page gutters ×2 + board card padding/borders */
-        --board-gutter: calc(8vw + 40px);
+        /* 4% page gutters ×2 + board card padding/borders (14px sides) */
+        --board-gutter: calc(8vw + 52px);
         --cell-size: min(56px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
         --disc-size: calc(var(--cell-size) * 0.82);
     }
@@ -1078,7 +1078,14 @@ footer .members {
 
     .board-container {
         width: 100%;
-        padding: 12px 8px 14px;
+        padding: 12px 14px 14px;
+    }
+
+    .board-toolbar {
+        width: 100%;
+        max-width: 100%;
+        padding-inline: 0;
+        box-sizing: border-box;
     }
 
     .connect4-board,
@@ -1108,8 +1115,8 @@ footer .members {
     :root {
         --board-gap: 3px;
         --board-padding: 6px;
-        /* Match 4% container gutters so 7 columns never clip */
-        --board-gutter: calc(8vw + 36px);
+        /* Match 4% container gutters + 14px board card sides so 7 columns never clip */
+        --board-gutter: calc(8vw + 52px);
         --board-frame: calc((2 * var(--board-padding)) + 4px + (6 * var(--board-gap)));
         --cell-size: min(48px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
         --disc-size: calc(var(--cell-size) * 0.8);
@@ -1165,12 +1172,13 @@ footer .members {
     }
 
     .board-container {
-        padding: 10px 6px 12px;
+        padding: 10px 14px 12px;
         border-radius: 16px;
     }
 
     .board-toolbar {
         max-width: 100%;
+        width: 100%;
     }
 
     .connect4-board {
