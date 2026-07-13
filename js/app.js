@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let matchStartMs = null;
     let turnStartMs = null;
     let clockIntervalId = null;
-    let lastMoveCell = null;
+    let lastMoveCells = { 1: null, 2: null };
 
     const settingsScreen = document.getElementById('settings-screen');
     const gameScreen = document.getElementById('game-screen');
@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnBack = document.getElementById('btn-back');
     const btnResetIcon = document.getElementById('btn-reset-icon');
     const btnBackIcon = document.getElementById('btn-back-icon');
+    const btnSoundIcon = document.getElementById('btn-sound-icon');
+    const soundModal = document.getElementById('sound-modal');
+    const btnCloseSound = document.getElementById('btn-close-sound');
+    const gameAudio = new GameAudio();
     const player1Card = document.getElementById('player1-card');
     const player2Card = document.getElementById('player2-card');
     const moveCountVal = document.getElementById('move-count-val');
@@ -55,9 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
         minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>'
     };
 
-    const WIN_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 6H5a3 3 0 003 5M17 6h2a3 3 0 01-3 5"/></svg>';
-    const LOSS_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>';
-    const DRAW_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/><path d="M11 12h2"/></svg>';
+    const WIN_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 21h8v-1.5h-2.2V17H17a5 5 0 005-5V8h-2.5A2.5 2.5 0 0017 5.5h-1V4H8v1.5H7A2.5 2.5 0 004.5 8H2v4a5 5 0 005 5h3.2V19.5H8V21zm1.5-8.2H7a2.5 2.5 0 01-2.5-2.5V9.5H7A4 4 0 009.5 12.8zm5 0A4 4 0 0017 9.5h2.5V10.3a2.5 2.5 0 01-2.5 2.5h-2.5z"/></svg>';
+    const LOSS_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.7 13.3a1 1 0 01-1.4 1.4L12 13.4l-2.3 2.3a1 1 0 01-1.4-1.4l2.3-2.3-2.3-2.3a1 1 0 011.4-1.4l2.3 2.3 2.3-2.3a1 1 0 011.4 1.4L13.4 12l2.3 2.3z"/></svg>';
+    const DRAW_ICON = '<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 9.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm9 0a3.5 3.5 0 100 7 3.5 3.5 0 000-7zM10.8 13h2.4a1 1 0 010 2h-2.4a1 1 0 010-2z"/></svg>';
 
     const EVAL_SUMMARY = [
         {
@@ -275,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeBoardUI() {
         connect4Board.innerHTML = '';
-        lastMoveCell = null;
+        lastMoveCells = { 1: null, 2: null };
         for (let i = 0; i < 42; i++) {
             const cell = document.createElement('div');
             cell.classList.add('board-cell');
@@ -294,23 +298,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return connect4Board.children[getHTMLCellIndex(rEngine, cEngine)];
     }
 
-    function clearLastMoveHighlight() {
-        if (lastMoveCell) {
-            const disc = lastMoveCell.querySelector('.board-disc');
-            if (disc) disc.classList.remove('last-move');
-            lastMoveCell = null;
+    function clearLastMoveHighlight(player) {
+        if (player) {
+            const cell = lastMoveCells[player];
+            if (cell) {
+                const disc = cell.querySelector('.board-disc');
+                if (disc) disc.classList.remove('last-move');
+                lastMoveCells[player] = null;
+            }
+            return;
         }
-        connect4Board.querySelectorAll('.board-disc.last-move').forEach((d) => d.classList.remove('last-move'));
+        [1, 2].forEach((p) => clearLastMoveHighlight(p));
     }
 
-    function markLastMove(rEngine, cEngine) {
-        clearLastMoveHighlight();
+    function markLastMove(rEngine, cEngine, player) {
+        clearLastMoveHighlight(player);
         const cell = getHTMLCell(rEngine, cEngine);
         if (!cell) return;
         const disc = cell.querySelector('.board-disc');
         if (disc) {
             disc.classList.add('last-move');
-            lastMoveCell = cell;
+            lastMoveCells[player] = cell;
         }
     }
 
@@ -396,7 +404,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const disc = document.createElement('div');
         disc.classList.add('board-disc', player === 1 ? 'p1' : 'p2');
         cell.appendChild(disc);
-        markLastMove(rEngine, cEngine);
+        markLastMove(rEngine, cEngine, player);
+        gameAudio.playDrop();
     }
 
     function highlightWinningDiscs(winningCells) {
@@ -438,6 +447,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         stopClocks();
+        if (winnerType === 0) gameAudio.playDraw();
+        else {
+            const p1Agent = agent1 !== null;
+            const p2Agent = agent2 !== null;
+            const humanVsAi = (p1Agent || p2Agent) && !(p1Agent && p2Agent);
+            if (humanVsAi) {
+                const humanWinner = (winnerType === 1 && !p1Agent) || (winnerType === 2 && !p2Agent);
+                if (humanWinner) gameAudio.playWin();
+                else gameAudio.playLose();
+            } else {
+                gameAudio.playWin();
+            }
+        }
         winnerModal.classList.remove('hidden');
     }
 
@@ -611,6 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resetHighlights();
         updateMatchModeIndicator();
         startClocks();
+        gameAudio.enterGamePage();
         const activeAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
         if (activeAgent !== null) scheduleAIMove();
     }
@@ -619,8 +642,10 @@ document.addEventListener('DOMContentLoaded', () => {
         stopLoops();
         stopClocks();
         closeWinnerModal();
+        closeSoundModal();
         hideTooltip();
         isGameActive = false;
+        gameAudio.leaveGamePage();
         playerOptionLists.forEach((el) => el.classList.remove('match-active'));
         showScreen('settings');
     }
@@ -636,6 +661,8 @@ document.addEventListener('DOMContentLoaded', () => {
         resetHighlights();
         updateMatchModeIndicator();
         startClocks();
+        gameAudio.enterGamePage();
+        syncSoundIcon();
         const activeAgent = engine.currentPlayer() === 1 ? agent1 : agent2;
         if (activeAgent !== null) scheduleAIMove();
     }
@@ -665,10 +692,77 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnStart.addEventListener('click', startMatch);
+    function syncSoundControls() {
+        const s = gameAudio.getSettings();
+        const master = document.getElementById('audio-master');
+        const sfx = document.getElementById('audio-sfx');
+        const drop = document.getElementById('audio-drop');
+        const result = document.getElementById('audio-result');
+        const music = document.getElementById('audio-music');
+        const sfxVol = document.getElementById('audio-sfx-vol');
+        const musicVol = document.getElementById('audio-music-vol');
+        const sfxVal = document.getElementById('audio-sfx-vol-val');
+        const musicVal = document.getElementById('audio-music-vol-val');
+        if (master) master.checked = s.masterEnabled;
+        if (sfx) sfx.checked = s.sfxEnabled;
+        if (drop) drop.checked = s.dropEnabled;
+        if (result) result.checked = s.resultEnabled;
+        if (music) music.checked = s.musicEnabled;
+        if (sfxVol) sfxVol.value = Math.round(s.sfxVolume * 100);
+        if (musicVol) musicVol.value = Math.round(s.musicVolume * 100);
+        if (sfxVal) sfxVal.textContent = `${Math.round(s.sfxVolume * 100)}%`;
+        if (musicVal) musicVal.textContent = `${Math.round(s.musicVolume * 100)}%`;
+        syncSoundIcon();
+    }
+
+    function syncSoundIcon() {
+        if (!btnSoundIcon) return;
+        const s = gameAudio.getSettings();
+        btnSoundIcon.classList.toggle('is-muted', !s.masterEnabled);
+    }
+
+    function openSoundModal() {
+        hideTooltip();
+        syncSoundControls();
+        soundModal.classList.remove('hidden');
+    }
+
+    function closeSoundModal() {
+        soundModal.classList.add('hidden');
+    }
+
     if (btnReset) btnReset.addEventListener('click', resetBoard);
     if (btnBack) btnBack.addEventListener('click', backToSettings);
     if (btnResetIcon) btnResetIcon.addEventListener('click', resetBoard);
     if (btnBackIcon) btnBackIcon.addEventListener('click', backToSettings);
+    if (btnSoundIcon) btnSoundIcon.addEventListener('click', openSoundModal);
+    if (btnCloseSound) btnCloseSound.addEventListener('click', closeSoundModal);
+    soundModal.addEventListener('click', (e) => {
+        if (e.target === soundModal) closeSoundModal();
+    });
+
+    function bindAudioControl(id, key, isVolume) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const handler = () => {
+            if (isVolume) {
+                gameAudio.updateSettings({ [key]: parseInt(el.value, 10) / 100 });
+            } else {
+                gameAudio.updateSettings({ [key]: el.checked });
+            }
+            syncSoundControls();
+        };
+        el.addEventListener('input', handler);
+        el.addEventListener('change', handler);
+    }
+
+    bindAudioControl('audio-master', 'masterEnabled', false);
+    bindAudioControl('audio-sfx', 'sfxEnabled', false);
+    bindAudioControl('audio-drop', 'dropEnabled', false);
+    bindAudioControl('audio-result', 'resultEnabled', false);
+    bindAudioControl('audio-music', 'musicEnabled', false);
+    bindAudioControl('audio-sfx-vol', 'sfxVolume', true);
+    bindAudioControl('audio-music-vol', 'musicVolume', true);
 
     btnModalReplay.addEventListener('click', () => {
         closeWinnerModal();
@@ -685,7 +779,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === resultsModal) closeResults();
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !resultsModal.classList.contains('hidden')) closeResults();
+        if (e.key !== 'Escape') return;
+        if (!resultsModal.classList.contains('hidden')) closeResults();
+        if (!soundModal.classList.contains('hidden')) closeSoundModal();
     });
 
     connect4Board.addEventListener('click', (e) => {

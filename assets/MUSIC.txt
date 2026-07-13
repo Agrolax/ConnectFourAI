@@ -1,0 +1,11 @@
+Background music
+================
+Place your looped track here as:
+
+  assets/music.mp3
+
+Supported by the browser Audio element (MP3 works everywhere).
+Keep it reasonably quiet and loop-friendly (fade edges help).
+
+If this file is missing, the game uses a soft procedural pad instead.
+To point at a different filename, edit MUSIC_SRC in js/audio.js.
