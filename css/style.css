@@ -1069,7 +1069,8 @@ footer .members {
     :root {
         --board-gap: 5px;
         --board-padding: 10px;
-        --board-gutter: 40px;
+        /* 4% page gutters ×2 + board card padding/borders */
+        --board-gutter: calc(8vw + 40px);
         --cell-size: min(56px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
         --disc-size: calc(var(--cell-size) * 0.82);
     }
@@ -1143,7 +1144,9 @@ footer .members {
     :root {
         --board-gap: 3px;
         --board-padding: 6px;
-        --board-gutter: 28px;
+        /* Match 4% container gutters so 7 columns never clip */
+        --board-gutter: calc(8vw + 36px);
+        --board-frame: calc((2 * var(--board-padding)) + 4px + (6 * var(--board-gap)));
         --cell-size: min(48px, calc((100vw - var(--board-gutter) - var(--board-frame)) / 7));
         --disc-size: calc(var(--cell-size) * 0.8);
     }
@@ -1685,7 +1688,7 @@ footer .members {
 }
 
 .sound-slider.bare {
-    padding: 2px 0 8px 28px;
+    padding: 2px 0 8px;
 }
 
 .sound-slider label {
