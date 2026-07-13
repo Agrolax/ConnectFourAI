@@ -254,17 +254,19 @@ header {
 
 .lobby-top {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
 }
 
-.lobby-hero {
-    text-align: left;
-    max-width: 720px;
-    flex: 1;
-    min-width: 260px;
+.lobby-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .btn-results-cta {
@@ -272,6 +274,7 @@ header {
     align-items: center;
     gap: 8px;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .btn-results-cta:active,
@@ -288,7 +291,6 @@ header {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--accent-color);
-    margin-bottom: 10px;
 }
 
 .lobby-title {
@@ -296,15 +298,18 @@ header {
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.15;
-    margin-bottom: 12px;
     text-wrap: balance;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .lobby-subtitle {
     font-size: 15px;
     line-height: 1.55;
     color: var(--text-secondary);
-    max-width: 54ch;
+    width: 100%;
+    max-width: none;
 }
 
 .lobby-card-header {
@@ -1200,10 +1205,6 @@ footer .members {
 
     .glass-card {
         padding: 16px 12px;
-    }
-
-    .lobby-hero {
-        text-align: left;
     }
 
     .lobby-subtitle {

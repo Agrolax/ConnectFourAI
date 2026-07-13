@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/ogimage.png">
 
     <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
-    <link rel="stylesheet" href="css/style.css?v=1.9">
+    <link rel="stylesheet" href="css/style.css?v=1.10">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -53,15 +53,15 @@
         
         <section id="settings-screen" class="lobby-screen">
             <div class="lobby-top">
-                <div class="lobby-hero">
-                    <p class="lobby-eyebrow">CP468 · Adversarial Search</p>
+                <p class="lobby-eyebrow">CP468 · Adversarial Search</p>
+                <div class="lobby-heading-row">
                     <h2 class="lobby-title">Set up a match</h2>
-                    <p class="lobby-subtitle">Pick two contenders - human or AI - then drop discs on a classic 7×6 board. Minimax looks four plies ahead; rule-based agents follow heuristic priorities.</p>
+                    <button type="button" id="btn-open-results-lobby" class="btn btn-secondary btn-results-cta">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>
+                        View evaluation
+                    </button>
                 </div>
-                <button type="button" id="btn-open-results-lobby" class="btn btn-secondary btn-results-cta">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>
-                    View evaluation
-                </button>
+                <p class="lobby-subtitle">Pick two contenders - human or AI - then drop discs on a classic 7×6 board. Minimax looks four plies ahead; rule-based agents follow heuristic priorities.</p>
             </div>
 
             <div class="glass-card lobby-card">
