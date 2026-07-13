@@ -4,13 +4,13 @@
       "Random": {
         "wins": 1,
         "draws": 0,
-        "total_time": 0.00019387899999999403,
+        "total_time": 0.00022565399194718339,
         "total_moves": 193
       },
       "RuleBased": {
         "wins": 29,
         "draws": 0,
-        "total_time": 0.05795157999999996,
+        "total_time": 0.05288672400274663,
         "total_moves": 207
       }
     },
@@ -262,13 +262,13 @@
       "RuleBased": {
         "wins": 3,
         "draws": 1,
-        "total_time": 0.06771058299999702,
+        "total_time": 0.06932925902947318,
         "total_moves": 255
       },
       "Minimax": {
         "wins": 26,
         "draws": 1,
-        "total_time": 8.281697499999996,
+        "total_time": 8.923249384039082,
         "total_moves": 267
       }
     },
@@ -520,13 +520,13 @@
       "Minimax": {
         "wins": 30,
         "draws": 0,
-        "total_time": 8.200311294000011,
+        "total_time": 8.377616812005726,
         "total_moves": 197
       },
       "Random": {
         "wins": 0,
         "draws": 0,
-        "total_time": 0.0002760460000050813,
+        "total_time": 0.00038212699291761965,
         "total_moves": 182
       }
     },
