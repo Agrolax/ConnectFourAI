@@ -789,9 +789,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const handler = () => {
             if (isVolume) {
                 gameAudio.updateSettings({ [key]: parseInt(el.value, 10) / 100 });
-            } else {
-                gameAudio.updateSettings({ [key]: el.checked });
+                // Update label immediately without resetting the slider mid-drag
+                if (key === 'sfxVolume') {
+                    const sfxVal = document.getElementById('audio-sfx-vol-val');
+                    if (sfxVal) sfxVal.textContent = `${el.value}%`;
+                }
+                if (key === 'musicVolume') {
+                    const musicVal = document.getElementById('audio-music-vol-val');
+                    if (musicVal) musicVal.textContent = `${el.value}%`;
+                }
+                syncSoundIcon();
+                return;
             }
+            gameAudio.updateSettings({ [key]: el.checked });
             syncSoundControls();
         };
         el.addEventListener('input', handler);

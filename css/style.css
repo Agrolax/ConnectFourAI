@@ -1117,6 +1117,10 @@ footer .members {
         --disc-size: calc(var(--cell-size) * 0.82);
     }
 
+    header {
+        padding: 14px 4%;
+    }
+
     .container {
         padding: 20px 4% 28px;
     }
@@ -1200,15 +1204,32 @@ footer .members {
     }
 
     .container {
-        padding: 14px 8px 24px;
+        padding: 14px 4% 24px;
     }
 
-    .glass-card {
-        padding: 16px 12px;
+    .lobby-heading-row {
+        display: contents;
+    }
+
+    .lobby-eyebrow {
+        order: 0;
+    }
+
+    .lobby-title {
+        order: 1;
+        width: 100%;
+        flex: none;
     }
 
     .lobby-subtitle {
+        order: 2;
         font-size: 14px;
+    }
+
+    .btn-results-cta {
+        order: 3;
+        width: 100%;
+        justify-content: center;
     }
 
     .extra-settings {

@@ -1,8 +1,10 @@
 /**
- * Game audio: Web Audio SFX + optional looped music from assets/music.mp3
+ * Game audio: Web Audio SFX + looped music from assets/music.mp3
  *
- * To change background music: replace assets/music.mp3 with your own track
- * (MP3 or rename and update MUSIC_SRC below). Keep it short/loop-friendly.
+ * Music volume is routed through Web Audio GainNode so it works on iOS
+ * (HTMLAudioElement.volume is ignored there).
+ *
+ * To change background music: replace assets/music.mp3
  */
 (function (global) {
     const STORAGE_KEY = 'connectfourai-audio-v1';
@@ -40,7 +42,9 @@
             this.ctx = null;
             this.masterGain = null;
             this.sfxGain = null;
+            this.musicGain = null;
             this.musicEl = null;
+            this.musicSource = null;
             this.musicReady = false;
             this.musicFailed = false;
             this.startedOnGamePage = false;
@@ -54,7 +58,9 @@
             this.ctx = new AC();
             this.masterGain = this.ctx.createGain();
             this.sfxGain = this.ctx.createGain();
+            this.musicGain = this.ctx.createGain();
             this.sfxGain.connect(this.masterGain);
+            this.musicGain.connect(this.masterGain);
             this.masterGain.connect(this.ctx.destination);
             this.applyGains();
         }
@@ -66,6 +72,11 @@
             }
         }
 
+        musicTargetGain() {
+            if (!this.settings.masterEnabled || !this.settings.musicEnabled) return 0;
+            return Math.max(0, Math.min(1, this.settings.musicVolume));
+        }
+
         applyGains() {
             if (this.masterGain) {
                 this.masterGain.gain.value = this.settings.masterEnabled ? 1 : 0;
@@ -75,30 +86,33 @@
                     ? Math.max(0, Math.min(1, this.settings.sfxVolume))
                     : 0;
             }
+            const musicVol = this.musicTargetGain();
+            if (this.musicGain) {
+                this.musicGain.gain.value = musicVol;
+            }
+            // Keep element volume at 1; real level comes from musicGain (iOS-safe)
             if (this.musicEl) {
-                this.musicEl.volume = this.settings.masterEnabled && this.settings.musicEnabled
-                    ? Math.max(0, Math.min(1, this.settings.musicVolume))
-                    : 0;
+                try { this.musicEl.volume = 1; } catch (_) { /* ignore */ }
             }
             if (this.proceduralMusicNodes && this.proceduralMusicNodes.gain) {
-                this.proceduralMusicNodes.gain.gain.value =
-                    this.settings.masterEnabled && this.settings.musicEnabled
-                        ? Math.max(0, Math.min(1, this.settings.musicVolume)) * 0.22
-                        : 0;
+                this.proceduralMusicNodes.gain.gain.value = musicVol * 0.22;
             }
         }
 
         updateSettings(partial) {
+            const prevWantMusic = this.settings.masterEnabled && this.settings.musicEnabled;
             this.settings = { ...this.settings, ...partial };
             saveSettings(this.settings);
             this.applyGains();
-            if (this.startedOnGamePage) {
-                if (this.settings.masterEnabled && this.settings.musicEnabled) {
-                    this.playMusic();
-                } else {
-                    this.pauseMusic();
-                }
+
+            if (!this.startedOnGamePage) return;
+            const wantMusic = this.settings.masterEnabled && this.settings.musicEnabled;
+            if (wantMusic && !prevWantMusic) {
+                this.playMusic();
+            } else if (!wantMusic && prevWantMusic) {
+                this.pauseMusic();
             }
+            // Volume-only changes: applyGains already handled it
         }
 
         getSettings() {
@@ -126,7 +140,6 @@
             await this.resume();
             if (!this.ctx) return;
             const t = this.ctx.currentTime;
-            // soft falling whoosh + thud
             this.tone(520, 0.08, 'triangle', 0.18, t);
             this.tone(180, 0.12, 'sine', 0.28, t + 0.07);
             this.tone(90, 0.16, 'sine', 0.16, t + 0.1);
@@ -167,7 +180,8 @@
             const audio = new Audio(MUSIC_SRC);
             audio.loop = true;
             audio.preload = 'auto';
-            audio.volume = this.settings.musicVolume;
+            audio.crossOrigin = 'anonymous';
+            audio.volume = 1;
             audio.addEventListener('canplaythrough', () => {
                 this.musicReady = true;
             }, { once: true });
@@ -175,17 +189,34 @@
                 this.musicFailed = true;
                 this.musicReady = false;
                 this.musicEl = null;
+                this.musicSource = null;
             }, { once: true });
             this.musicEl = audio;
+        }
+
+        ensureMusicGraph() {
+            this.ensureContext();
+            this.ensureMusicElement();
+            if (!this.ctx || !this.musicEl || this.musicFailed || this.musicSource) return;
+            try {
+                if (!this.musicGain) {
+                    this.musicGain = this.ctx.createGain();
+                    this.musicGain.connect(this.masterGain);
+                }
+                this.musicSource = this.ctx.createMediaElementSource(this.musicEl);
+                this.musicSource.connect(this.musicGain);
+                this.applyGains();
+            } catch (_) {
+                // Some browsers block MediaElementSource; fall back to element volume
+                this.musicSource = null;
+            }
         }
 
         startProceduralMusic() {
             this.ensureContext();
             if (!this.ctx || this.proceduralMusicNodes) return;
             const gain = this.ctx.createGain();
-            gain.gain.value = this.settings.masterEnabled && this.settings.musicEnabled
-                ? this.settings.musicVolume * 0.22
-                : 0;
+            gain.gain.value = this.musicTargetGain() * 0.22;
             gain.connect(this.masterGain);
 
             const freqs = [110, 164.81, 220];
@@ -219,10 +250,17 @@
             }
             await this.resume();
             this.ensureMusicElement();
+            this.ensureMusicGraph();
 
             if (this.musicEl && !this.musicFailed) {
                 this.stopProceduralMusic();
                 this.applyGains();
+                // If Web Audio graph isn't available, use element volume as fallback
+                if (!this.musicSource) {
+                    try {
+                        this.musicEl.volume = this.musicTargetGain();
+                    } catch (_) { /* ignore */ }
+                }
                 try {
                     await this.musicEl.play();
                     return;
@@ -231,7 +269,6 @@
                 }
             }
 
-            // Fallback soft pad if assets/music.mp3 is missing
             this.startProceduralMusic();
             this.applyGains();
         }
