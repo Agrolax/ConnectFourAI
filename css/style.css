@@ -111,6 +111,12 @@ header {
     transform: scale(0.96);
 }
 
+.icon-btn.is-pressed {
+    background-color: rgba(37, 99, 235, 0.16);
+    border-color: var(--accent-color);
+    color: var(--text-primary);
+}
+
 .icon-btn:focus-visible {
     outline: 2px solid var(--accent-color);
     outline-offset: 2px;
@@ -258,31 +264,6 @@ header {
     align-items: stretch;
     gap: 10px;
     width: 100%;
-}
-
-.lobby-heading-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    width: 100%;
-}
-
-.btn-results-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.btn-results-cta:active,
-.btn-results-cta.is-pressed {
-    transform: scale(0.97);
-    background-color: rgba(37, 99, 235, 0.16);
-    border-color: var(--accent-color);
-    color: var(--text-primary);
 }
 
 .lobby-eyebrow {
@@ -1163,29 +1144,8 @@ footer .members {
         padding: 14px 4% 24px;
     }
 
-    .lobby-heading-row {
-        display: contents;
-    }
-
-    .lobby-eyebrow {
-        order: 0;
-    }
-
-    .lobby-title {
-        order: 1;
-        width: 100%;
-        flex: none;
-    }
-
     .lobby-subtitle {
-        order: 2;
         font-size: 14px;
-    }
-
-    .btn-results-cta {
-        order: 3;
-        width: 100%;
-        justify-content: center;
     }
 
     .extra-settings {

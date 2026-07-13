@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const floatingTooltip = document.getElementById('floating-tooltip');
     const resultsModal = document.getElementById('results-modal');
     const resultsCharts = document.getElementById('results-charts');
-    const btnOpenResultsLobby = document.getElementById('btn-open-results-lobby');
+    const btnOpenResults = document.getElementById('btn-open-results');
     const btnCloseResults = document.getElementById('btn-close-results');
 
     const TYPE_ICONS = {
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openResults() {
         hideTooltip();
-        if (btnOpenResultsLobby) btnOpenResultsLobby.classList.add('is-pressed');
+        if (btnOpenResults) btnOpenResults.classList.add('is-pressed');
         setEvalPair(selectedEvalPair);
         resultsModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeResults() {
         resultsModal.classList.add('hidden');
         document.body.style.overflow = '';
-        if (btnOpenResultsLobby) btnOpenResultsLobby.classList.remove('is-pressed');
+        if (btnOpenResults) btnOpenResults.classList.remove('is-pressed');
     }
 
     function showScreen(screen) {
@@ -843,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backToSettings();
     });
 
-    if (btnOpenResultsLobby) btnOpenResultsLobby.addEventListener('click', openResults);
+    if (btnOpenResults) btnOpenResults.addEventListener('click', openResults);
     if (btnCloseResults) btnCloseResults.addEventListener('click', closeResults);
     resultsModal.addEventListener('click', (e) => {
         if (e.target === resultsModal) closeResults();
