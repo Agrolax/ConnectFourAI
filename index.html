@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/ogimage.png">
 
     <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
-    <link rel="stylesheet" href="css/style.css?v=1.14">
+    <link rel="stylesheet" href="css/style.css?v=1.15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -233,11 +233,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="game-controls desktop-only-controls">
-                        <button id="btn-reset" class="btn btn-primary btn-block" type="button">Reset board</button>
-                        <button id="btn-back" class="btn btn-secondary btn-block" type="button">Back to settings</button>
-                    </div>
                 </div>
 
                 <div id="winner-modal" class="winner-card glass-card hidden">
@@ -336,22 +331,13 @@
             </div>
 
             <div class="results-meta">
-                <div class="meta-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h3v3H8zM13 8h3v3h-3zM8 13h3v3H8zM13 13h3v3h-3z"/></svg>
-                    <span>CPU</span> i7-13620H
-                </div>
-                <div class="meta-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="3.5" y="5" width="17" height="12" rx="2"/><path d="M8 19h8M12 17v2"/></svg>
-                    <span>OS</span> Ubuntu 22.04
-                </div>
-                <div class="meta-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M8 4l-4 8 4 8M16 4l4 8-4 8M11 18l2-12"/></svg>
-                    <span>Python</span> 3.10.12
-                </div>
-                <div class="meta-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>
-                    <span>Depth</span> Minimax 4
-                </div>
+                <span class="meta-item"><span class="meta-key">CPU</span> i7-13620H</span>
+                <span class="meta-sep" aria-hidden="true">·</span>
+                <span class="meta-item"><span class="meta-key">OS</span> Ubuntu 22.04</span>
+                <span class="meta-sep" aria-hidden="true">·</span>
+                <span class="meta-item"><span class="meta-key">Python</span> 3.10.12</span>
+                <span class="meta-sep" aria-hidden="true">·</span>
+                <span class="meta-item"><span class="meta-key">Depth</span> Minimax 4</span>
             </div>
 
             <div class="eval-tabs" id="eval-tabs" role="tablist" aria-label="Matchup">
@@ -441,9 +427,9 @@
 
     <div id="floating-tooltip" class="floating-tooltip" role="tooltip" hidden></div>
 
-    <script src="js/engine.js?v=1.14"></script>
-    <script src="js/agents.js?v=1.14"></script>
-    <script src="js/audio.js?v=1.14"></script>
-    <script src="js/app.js?v=1.14"></script>
+    <script src="js/engine.js?v=1.15"></script>
+    <script src="js/agents.js?v=1.15"></script>
+    <script src="js/audio.js?v=1.15"></script>
+    <script src="js/app.js?v=1.15"></script>
 </body>
 </html>

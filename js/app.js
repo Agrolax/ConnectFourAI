@@ -25,8 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const speedControlGroup = document.getElementById('speed-control-group');
     const btnStart = document.getElementById('btn-start');
 
-    const btnReset = document.getElementById('btn-reset');
-    const btnBack = document.getElementById('btn-back');
     const btnResetIcon = document.getElementById('btn-reset-icon');
     const btnBackIcon = document.getElementById('btn-back-icon');
     const btnSoundIcon = document.getElementById('btn-sound-icon');
@@ -777,8 +775,6 @@ document.addEventListener('DOMContentLoaded', () => {
         soundModal.classList.add('hidden');
     }
 
-    if (btnReset) btnReset.addEventListener('click', resetBoard);
-    if (btnBack) btnBack.addEventListener('click', backToSettings);
     if (btnResetIcon) btnResetIcon.addEventListener('click', resetBoard);
     if (btnBackIcon) btnBackIcon.addEventListener('click', backToSettings);
     if (btnSoundIcon) btnSoundIcon.addEventListener('click', openSoundModal);

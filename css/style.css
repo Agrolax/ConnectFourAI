@@ -769,19 +769,6 @@ input[type="range"] {
     color: var(--p2-color);
 }
 
-.game-controls {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.game-controls .btn {
-    flex: 1 1 100%;
-    width: 100%;
-    min-width: min(100%, 140px);
-}
-
 .token {
     width: 12px;
     height: 12px;
@@ -1081,10 +1068,6 @@ footer .members {
         display: none;
     }
 
-    .desktop-only-controls {
-        display: none;
-    }
-
     .game-sidebar {
         padding: 14px;
     }
@@ -1345,30 +1328,27 @@ footer .members {
 .results-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    align-items: baseline;
+    gap: 6px 8px;
     margin-bottom: 16px;
-}
-
-.meta-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
     font-size: 12px;
-    color: var(--text-primary);
-    background: #111827;
-    border: 1px solid var(--card-border);
-    border-radius: 999px;
-    padding: 6px 12px;
+    line-height: 1.45;
+    color: var(--text-muted);
 }
 
-.meta-pill > svg {
-    flex-shrink: 0;
-    color: var(--accent-color);
+.meta-item {
+    color: var(--text-muted);
 }
 
-.meta-pill span {
-    color: var(--text-secondary);
-    margin-right: 2px;
+.meta-key {
+    color: var(--text-muted);
+    opacity: 0.75;
+    margin-right: 4px;
+}
+
+.meta-sep {
+    color: var(--text-muted);
+    opacity: 0.55;
 }
 
 .eval-tabs {
