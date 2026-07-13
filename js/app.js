@@ -541,15 +541,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         winnerModal.classList.remove('hidden');
-        scrollBoardIntoViewOnMobile();
+        scrollEndgameIntoViewOnMobile();
     }
 
-    function scrollBoardIntoViewOnMobile() {
+    function scrollEndgameIntoViewOnMobile() {
         if (window.matchMedia('(min-width: 901px)').matches) return;
-        const boardPanel = document.querySelector('.board-panel');
-        if (!boardPanel) return;
         requestAnimationFrame(() => {
-            boardPanel.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            winnerModal.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     }
 
