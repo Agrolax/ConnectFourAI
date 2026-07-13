@@ -737,10 +737,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const muted = !s.masterEnabled;
         const muteToggle = document.getElementById('audio-mute-toggle');
         const soundBody = document.getElementById('sound-body');
-        const sfx = document.getElementById('audio-sfx');
+        const sfxToggle = document.getElementById('audio-sfx-toggle');
+        const musicToggle = document.getElementById('audio-music-toggle');
+        const sfxSettings = document.getElementById('sound-sfx-settings');
+        const musicSettings = document.getElementById('sound-music-settings');
         const drop = document.getElementById('audio-drop');
         const result = document.getElementById('audio-result');
-        const music = document.getElementById('audio-music');
         const sfxVol = document.getElementById('audio-sfx-vol');
         const musicVol = document.getElementById('audio-music-vol');
         const sfxVal = document.getElementById('audio-sfx-vol-val');
@@ -748,10 +750,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (muteToggle) muteToggle.setAttribute('aria-checked', muted ? 'true' : 'false');
         if (soundBody) soundBody.classList.toggle('is-disabled', muted);
-        if (sfx) sfx.checked = s.sfxEnabled;
+        if (sfxToggle) sfxToggle.setAttribute('aria-checked', s.sfxEnabled ? 'true' : 'false');
+        if (musicToggle) musicToggle.setAttribute('aria-checked', s.musicEnabled ? 'true' : 'false');
+        if (sfxSettings) sfxSettings.classList.toggle('is-disabled', !s.sfxEnabled);
+        if (musicSettings) musicSettings.classList.toggle('is-disabled', !s.musicEnabled);
         if (drop) drop.checked = s.dropEnabled;
         if (result) result.checked = s.resultEnabled;
-        if (music) music.checked = s.musicEnabled;
         if (sfxVol) sfxVol.value = Math.round(s.sfxVolume * 100);
         if (musicVol) musicVol.value = Math.round(s.musicVolume * 100);
         if (sfxVal) sfxVal.textContent = `${Math.round(s.sfxVolume * 100)}%`;
@@ -808,12 +812,23 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('change', handler);
     }
 
-    bindAudioControl('audio-sfx', 'sfxEnabled', false);
     bindAudioControl('audio-drop', 'dropEnabled', false);
     bindAudioControl('audio-result', 'resultEnabled', false);
-    bindAudioControl('audio-music', 'musicEnabled', false);
     bindAudioControl('audio-sfx-vol', 'sfxVolume', true);
     bindAudioControl('audio-music-vol', 'musicVolume', true);
+
+    function bindEnableToggle(id, key) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('click', () => {
+            const enabled = el.getAttribute('aria-checked') === 'true';
+            gameAudio.updateSettings({ [key]: !enabled });
+            syncSoundControls();
+        });
+    }
+
+    bindEnableToggle('audio-sfx-toggle', 'sfxEnabled');
+    bindEnableToggle('audio-music-toggle', 'musicEnabled');
 
     const muteToggle = document.getElementById('audio-mute-toggle');
     if (muteToggle) {
