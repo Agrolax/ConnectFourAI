@@ -48,6 +48,7 @@
             this.musicReady = false;
             this.musicFailed = false;
             this.startedOnGamePage = false;
+            this.musicSession = 0;
             this.proceduralMusicNodes = null;
         }
 
@@ -73,6 +74,7 @@
         }
 
         musicTargetGain() {
+            if (!this.startedOnGamePage) return 0;
             if (!this.settings.masterEnabled || !this.settings.musicEnabled) return 0;
             return Math.max(0, Math.min(1, this.settings.musicVolume));
         }
@@ -90,9 +92,11 @@
             if (this.musicGain) {
                 this.musicGain.gain.value = musicVol;
             }
-            // Keep element volume at 1; real level comes from musicGain (iOS-safe)
+            // Keep element volume at 1 when routed through Web Audio; otherwise use element volume
             if (this.musicEl) {
-                try { this.musicEl.volume = 1; } catch (_) { /* ignore */ }
+                try {
+                    this.musicEl.volume = this.musicSource ? 1 : musicVol;
+                } catch (_) { /* ignore */ }
             }
             if (this.proceduralMusicNodes && this.proceduralMusicNodes.gain) {
                 this.proceduralMusicNodes.gain.gain.value = musicVol * 0.22;
@@ -256,18 +260,32 @@
         }
 
         async playMusic() {
+            if (!this.startedOnGamePage) {
+                this.pauseMusic();
+                return;
+            }
             if (!this.settings.masterEnabled || !this.settings.musicEnabled) {
                 this.pauseMusic();
                 return;
             }
+
+            const session = this.musicSession;
             await this.resume();
+            if (!this.startedOnGamePage || session !== this.musicSession) {
+                this.pauseMusic();
+                return;
+            }
+
             this.ensureMusicElement();
             this.ensureMusicGraph();
+            if (!this.startedOnGamePage || session !== this.musicSession) {
+                this.pauseMusic();
+                return;
+            }
 
             if (this.musicEl && !this.musicFailed) {
                 this.stopProceduralMusic();
                 this.applyGains();
-                // If Web Audio graph isn't available, use element volume as fallback
                 if (!this.musicSource) {
                     try {
                         this.musicEl.volume = this.musicTargetGain();
@@ -275,10 +293,19 @@
                 }
                 try {
                     await this.musicEl.play();
+                    // Stale enterGamePage finished after user left the board
+                    if (!this.startedOnGamePage || session !== this.musicSession) {
+                        this.pauseMusic();
+                    }
                     return;
                 } catch (_) {
                     // Autoplay or missing file - fall through to procedural
                 }
+            }
+
+            if (!this.startedOnGamePage || session !== this.musicSession) {
+                this.pauseMusic();
+                return;
             }
 
             this.startProceduralMusic();
@@ -286,21 +313,33 @@
         }
 
         pauseMusic() {
+            if (this.musicGain) {
+                try { this.musicGain.gain.value = 0; } catch (_) { /* ignore */ }
+            }
             if (this.musicEl) {
-                try { this.musicEl.pause(); } catch (_) { /* ignore */ }
+                try {
+                    this.musicEl.pause();
+                    this.musicEl.currentTime = 0;
+                } catch (_) { /* ignore */ }
+                try { this.musicEl.volume = 0; } catch (_) { /* ignore */ }
             }
             this.stopProceduralMusic();
         }
 
         async enterGamePage() {
             this.startedOnGamePage = true;
+            this.musicSession += 1;
+            const session = this.musicSession;
             await this.resume();
+            if (!this.startedOnGamePage || session !== this.musicSession) return;
             await this.playMusic();
         }
 
         leaveGamePage() {
             this.startedOnGamePage = false;
+            this.musicSession += 1;
             this.pauseMusic();
+            this.applyGains();
         }
     }
 
