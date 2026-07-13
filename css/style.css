@@ -1351,11 +1351,27 @@ footer .members {
     opacity: 0.55;
 }
 
-.eval-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+.eval-switcher {
     margin-bottom: 16px;
+}
+
+.eval-switcher-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.eval-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border-radius: 14px;
+    background: #0b1220;
+    border: 1px solid #475569;
 }
 
 .eval-tab {
@@ -1364,26 +1380,35 @@ footer .members {
     font-weight: 600;
     color: var(--text-secondary);
     background: transparent;
-    border: 1px solid var(--card-border);
-    border-radius: 999px;
-    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 10px 8px;
     cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    text-align: center;
+    line-height: 1.25;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .eval-tab:hover {
-    border-color: #475569;
     color: var(--text-primary);
+    background: rgba(148, 163, 184, 0.12);
 }
 
 .eval-tab.active {
-    background: rgba(37, 99, 235, 0.16);
+    background: var(--accent-color);
     border-color: var(--accent-color);
-    color: var(--text-primary);
+    color: #f8fafc;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
 
 .eval-tab:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
+}
+
+@media (max-width: 560px) {
+    .eval-tabs {
+        grid-template-columns: 1fr;
+    }
 }
 
 .results-grid {

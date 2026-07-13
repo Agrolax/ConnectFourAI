@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/ogimage.png">
 
     <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
-    <link rel="stylesheet" href="css/style.css?v=1.15">
+    <link rel="stylesheet" href="css/style.css?v=1.16">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -340,10 +340,13 @@
                 <span class="meta-item"><span class="meta-key">Depth</span> Minimax 4</span>
             </div>
 
-            <div class="eval-tabs" id="eval-tabs" role="tablist" aria-label="Matchup">
-                <button type="button" class="eval-tab active" role="tab" aria-selected="true" data-pair="0">Random vs Rule</button>
-                <button type="button" class="eval-tab" role="tab" aria-selected="false" data-pair="1">Rule vs Minimax</button>
-                <button type="button" class="eval-tab" role="tab" aria-selected="false" data-pair="2">Minimax vs Random</button>
+            <div class="eval-switcher">
+                <p class="eval-switcher-label">Matchup</p>
+                <div class="eval-tabs" id="eval-tabs" role="tablist" aria-label="Matchup">
+                    <button type="button" class="eval-tab active" role="tab" aria-selected="true" data-pair="0">Random vs Rule</button>
+                    <button type="button" class="eval-tab" role="tab" aria-selected="false" data-pair="1">Rule vs Minimax</button>
+                    <button type="button" class="eval-tab" role="tab" aria-selected="false" data-pair="2">Minimax vs Random</button>
+                </div>
             </div>
 
             <div class="results-grid" id="results-charts"></div>
@@ -427,9 +430,9 @@
 
     <div id="floating-tooltip" class="floating-tooltip" role="tooltip" hidden></div>
 
-    <script src="js/engine.js?v=1.15"></script>
-    <script src="js/agents.js?v=1.15"></script>
-    <script src="js/audio.js?v=1.15"></script>
-    <script src="js/app.js?v=1.15"></script>
+    <script src="js/engine.js?v=1.16"></script>
+    <script src="js/agents.js?v=1.16"></script>
+    <script src="js/audio.js?v=1.16"></script>
+    <script src="js/app.js?v=1.16"></script>
 </body>
 </html>
