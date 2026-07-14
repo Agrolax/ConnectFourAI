@@ -31,7 +31,7 @@ Computers cannot generate truly random numbers; they use **Pseudo-Random Number 
 
 ---
 
-## Assignment Requirements & Progress
+## Technical Requirements
 
 ### Requirement 1: Game Engine [1.5 marks]
 - **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
