@@ -1067,8 +1067,8 @@ input[type="range"] {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: calc(var(--cell-size) + 8px);
-    height: calc(var(--cell-size) + 8px);
+    width: calc(var(--cell-size) + 2px);
+    height: calc(var(--cell-size) + 2px);
     transform: translate(-50%, -50%);
     border: 2px dotted currentColor;
     border-radius: 50%;
