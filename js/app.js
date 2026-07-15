@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomSeedInput = document.getElementById('random-seed');
 
     let selectedPlayer1 = 'human';
-    let selectedPlayer2 = 'random';
+    let selectedPlayer2 = 'minimax';
     const simulationDelayInput = document.getElementById('simulation-delay');
     const delayValLabel = document.getElementById('delay-val');
     const speedControlGroup = document.getElementById('speed-control-group');
@@ -52,6 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsCharts = document.getElementById('results-charts');
     const btnOpenResults = document.getElementById('btn-open-results');
     const btnCloseResults = document.getElementById('btn-close-results');
+    const githubModal = document.getElementById('github-modal');
+    const btnOpenGithub = document.getElementById('btn-open-github');
+    const btnCloseGithub = document.getElementById('btn-close-github');
+    const btnCancelGithub = document.getElementById('btn-cancel-github');
 
     const TYPE_ICONS = {
         human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
@@ -59,10 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         rule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></svg>',
         minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>'
     };
-
-    const WIN_ICON = '<svg width="88" height="88" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>';
-    const LOSS_ICON = '<svg width="88" height="88" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 12.1a1 1 0 01-1.4 1.4L12 13.4l-2.1 2.1a1 1 0 01-1.4-1.4l2.1-2.1-2.1-2.1a1 1 0 011.4-1.4l2.1 2.1 2.1-2.1a1 1 0 011.4 1.4L13.4 12l2.1 2.1z"/></svg>';
-    const DRAW_ICON = '<svg width="88" height="88" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10a1 1 0 010 2H7a1 1 0 010-2zm0 6h10a1 1 0 010 2H7a1 1 0 010-2z"/></svg>';
 
     const EVAL_SUMMARY = [
         {
@@ -308,6 +308,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnOpenResults) btnOpenResults.classList.remove('is-pressed');
     }
 
+    function openGithubModal() {
+        hideTooltip();
+        githubModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => btnCloseGithub.focus());
+    }
+
+    function closeGithubModal() {
+        githubModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        btnOpenGithub.focus();
+    }
+
     function showScreen(screen) {
         if (screen === 'settings') {
             settingsScreen.classList.remove('hidden');
@@ -497,32 +510,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function showWinnerModal(title, msg, winnerType) {
         winnerCelebrationTitle.textContent = title;
         winnerCelebrationMsg.innerHTML = msg;
-        const winnerIcon = document.getElementById('winner-icon');
 
         if (winnerType === 1 || winnerType === 2) {
             const glowColor = winnerType === 1 ? 'rgba(225, 29, 72, 0.6)' : 'rgba(6, 182, 212, 0.6)';
             winnerCelebrationTitle.style.color = winnerType === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
             winnerCelebrationTitle.style.textShadow = `0 0 16px ${glowColor}`;
-            if (winnerIcon) {
-                const p1Agent = agent1 !== null;
-                const p2Agent = agent2 !== null;
-                let iconHtml = WIN_ICON;
-                if ((p1Agent || p2Agent) && !(p1Agent && p2Agent)) {
-                    const humanWinner = (winnerType === 1 && !p1Agent) || (winnerType === 2 && !p2Agent);
-                    iconHtml = humanWinner ? WIN_ICON : LOSS_ICON;
-                }
-                winnerIcon.innerHTML = iconHtml;
-                winnerIcon.style.filter = `drop-shadow(0 0 12px ${glowColor})`;
-                winnerIcon.style.color = winnerType === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
-            }
         } else {
             winnerCelebrationTitle.style.color = 'var(--text-secondary)';
             winnerCelebrationTitle.style.textShadow = 'none';
-            if (winnerIcon) {
-                winnerIcon.innerHTML = DRAW_ICON;
-                winnerIcon.style.filter = 'none';
-                winnerIcon.style.color = 'var(--text-secondary)';
-            }
         }
 
         stopClocks();
@@ -915,8 +910,18 @@ document.addEventListener('DOMContentLoaded', () => {
     resultsModal.addEventListener('click', (e) => {
         if (e.target === resultsModal) closeResults();
     });
+    btnOpenGithub.addEventListener('click', openGithubModal);
+    btnCloseGithub.addEventListener('click', closeGithubModal);
+    btnCancelGithub.addEventListener('click', closeGithubModal);
+    githubModal.addEventListener('click', (e) => {
+        if (e.target === githubModal) closeGithubModal();
+    });
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
+        if (!githubModal.classList.contains('hidden')) {
+            closeGithubModal();
+            return;
+        }
         if (!resultsModal.classList.contains('hidden')) closeResults();
         if (!soundModal.classList.contains('hidden')) closeSoundModal();
     });
