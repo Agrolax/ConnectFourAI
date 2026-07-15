@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnResetIcon = document.getElementById('btn-reset-icon');
     const btnBackIcon = document.getElementById('btn-back-icon');
     const btnSoundIcon = document.getElementById('btn-sound-icon');
+    const btnMuteAll = document.getElementById('btn-mute-all');
     const soundModal = document.getElementById('sound-modal');
     const btnCloseSound = document.getElementById('btn-close-sound');
     const gameAudio = new GameAudio();
@@ -68,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
         win: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4"/></svg>',
         loss: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg>',
         draw: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 10h8M8 14h8"/></svg>'
+    };
+
+    const AUDIO_ICONS = {
+        sound: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4z"/><path d="M16 9a3.5 3.5 0 0 1 0 6"/><path d="M18.2 7a6 6 0 0 1 0 10"/></svg>',
+        muted: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4z"/><path d="m16 9 5 6m0-6-5 6"/></svg>'
     };
 
     const EVAL_SUMMARY = [
@@ -800,7 +806,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function syncSoundControls() {
         const s = gameAudio.getSettings();
         const muted = !s.masterEnabled;
-        const muteToggle = document.getElementById('audio-mute-toggle');
         const soundBody = document.getElementById('sound-body');
         const sfxToggle = document.getElementById('audio-sfx-toggle');
         const musicToggle = document.getElementById('audio-music-toggle');
@@ -813,7 +818,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const sfxVal = document.getElementById('audio-sfx-vol-val');
         const musicVal = document.getElementById('audio-music-vol-val');
 
-        if (muteToggle) muteToggle.setAttribute('aria-checked', muted ? 'true' : 'false');
         if (soundBody) soundBody.classList.toggle('is-disabled', muted);
         if (sfxToggle) sfxToggle.setAttribute('aria-checked', s.sfxEnabled ? 'true' : 'false');
         if (musicToggle) musicToggle.setAttribute('aria-checked', s.musicEnabled ? 'true' : 'false');
@@ -829,24 +833,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function syncSoundIcon() {
-        if (!btnSoundIcon) return;
+        if (!btnMuteAll) return;
         const s = gameAudio.getSettings();
-        btnSoundIcon.classList.toggle('is-muted', !s.masterEnabled);
+        const muted = !s.masterEnabled;
+        btnMuteAll.innerHTML = muted ? AUDIO_ICONS.muted : AUDIO_ICONS.sound;
+        btnMuteAll.classList.toggle('is-muted', muted);
+        btnMuteAll.setAttribute('aria-pressed', muted ? 'true' : 'false');
+        btnMuteAll.setAttribute('aria-label', muted ? 'Unmute all sounds' : 'Mute all sounds');
+        btnMuteAll.setAttribute('data-tooltip', muted ? 'Unmute all sounds' : 'Mute all sounds');
     }
 
     function openSoundModal() {
         hideTooltip();
         syncSoundControls();
+        btnSoundIcon.classList.add('is-pressed');
         soundModal.classList.remove('hidden');
     }
 
     function closeSoundModal() {
         soundModal.classList.add('hidden');
+        btnSoundIcon.classList.remove('is-pressed');
     }
 
     if (btnResetIcon) btnResetIcon.addEventListener('click', resetBoard);
     if (btnBackIcon) btnBackIcon.addEventListener('click', backToSettings);
     if (btnSoundIcon) btnSoundIcon.addEventListener('click', openSoundModal);
+    if (btnMuteAll) {
+        btnMuteAll.addEventListener('click', () => {
+            const muted = !gameAudio.getSettings().masterEnabled;
+            gameAudio.updateSettings({ masterEnabled: muted });
+            syncSoundControls();
+            hideTooltip();
+        });
+    }
     if (btnCloseSound) btnCloseSound.addEventListener('click', closeSoundModal);
     soundModal.addEventListener('click', (e) => {
         if (e.target === soundModal) closeSoundModal();
@@ -894,15 +913,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bindEnableToggle('audio-sfx-toggle', 'sfxEnabled');
     bindEnableToggle('audio-music-toggle', 'musicEnabled');
-
-    const muteToggle = document.getElementById('audio-mute-toggle');
-    if (muteToggle) {
-        muteToggle.addEventListener('click', () => {
-            const muted = muteToggle.getAttribute('aria-checked') === 'true';
-            gameAudio.updateSettings({ masterEnabled: muted }); // currently muted -> unmute
-            syncSoundControls();
-        });
-    }
 
     document.querySelectorAll('.eval-tab').forEach((tab) => {
         tab.addEventListener('click', () => {
