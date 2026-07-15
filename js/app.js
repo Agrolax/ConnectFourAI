@@ -17,8 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameScreen = document.getElementById('game-screen');
 
     const playerOptionLists = document.querySelectorAll('.player-options');
-    const p1OptionCards = document.querySelectorAll('.player-options[data-player="1"] .player-option-card');
-    const p2OptionCards = document.querySelectorAll('.player-options[data-player="2"] .player-option-card');
     const randomSeedInput = document.getElementById('random-seed');
 
     let selectedPlayer1 = 'human';
@@ -762,6 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startMatch() {
+        closePlayerDropdowns();
         initializeBoardUI();
         engine = new ConnectFourEngine();
         createAgents();
@@ -778,24 +777,105 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeAgent !== null) scheduleAIMove();
     }
 
-    p1OptionCards.forEach((card) => {
-        card.addEventListener('click', () => {
-            if (isGameActive) return;
-            p1OptionCards.forEach((c) => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedPlayer1 = card.dataset.value;
-            handleModeChange();
+    function setPlayerDropdownOpen(list, open) {
+        if (isGameActive && open) return;
+        list.classList.toggle('open', open);
+        const trigger = list.querySelector('.player-select-trigger');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    function closePlayerDropdowns(except = null) {
+        playerOptionLists.forEach((list) => {
+            if (list !== except) setPlayerDropdownOpen(list, false);
         });
+    }
+
+    function syncPlayerDropdown(list) {
+        const selectedCard = list.querySelector('.player-option-card.selected');
+        const trigger = list.querySelector('.player-select-trigger');
+        const selectedContent = trigger.querySelector('.selected-option-content');
+        if (!selectedCard) return;
+
+        selectedContent.innerHTML = selectedCard.innerHTML;
+        const optionName = selectedCard.querySelector('.option-label')?.textContent || 'player type';
+        trigger.setAttribute('aria-label', `Player ${list.dataset.player}: ${optionName}`);
+        list.querySelectorAll('.player-option-card').forEach((card) => {
+            card.setAttribute('aria-selected', card === selectedCard ? 'true' : 'false');
+        });
+    }
+
+    function selectPlayerOption(list, card) {
+        if (isGameActive) return;
+        list.querySelectorAll('.player-option-card').forEach((option) => {
+            option.classList.toggle('selected', option === card);
+        });
+
+        if (list.dataset.player === '1') selectedPlayer1 = card.dataset.value;
+        else selectedPlayer2 = card.dataset.value;
+
+        syncPlayerDropdown(list);
+        setPlayerDropdownOpen(list, false);
+        list.querySelector('.player-select-trigger').focus();
+        handleModeChange();
+    }
+
+    playerOptionLists.forEach((list) => {
+        const trigger = list.querySelector('.player-select-trigger');
+        const cards = Array.from(list.querySelectorAll('.player-option-card'));
+
+        cards.forEach((card, index) => {
+            card.setAttribute('role', 'option');
+            card.id = `player-${list.dataset.player}-option-${card.dataset.value}`;
+            card.addEventListener('click', () => selectPlayerOption(list, card));
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    setPlayerDropdownOpen(list, false);
+                    trigger.focus();
+                    return;
+                }
+
+                let nextIndex = null;
+                if (e.key === 'ArrowDown') nextIndex = (index + 1) % cards.length;
+                if (e.key === 'ArrowUp') nextIndex = (index - 1 + cards.length) % cards.length;
+                if (e.key === 'Home') nextIndex = 0;
+                if (e.key === 'End') nextIndex = cards.length - 1;
+                if (nextIndex !== null) {
+                    e.preventDefault();
+                    cards[nextIndex].focus();
+                }
+            });
+        });
+
+        trigger.addEventListener('click', () => {
+            const willOpen = !list.classList.contains('open');
+            closePlayerDropdowns(list);
+            setPlayerDropdownOpen(list, willOpen);
+        });
+
+        trigger.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                closePlayerDropdowns(list);
+                setPlayerDropdownOpen(list, true);
+                const selectedIndex = Math.max(0, cards.findIndex((card) => card.classList.contains('selected')));
+                cards[e.key === 'ArrowDown' ? selectedIndex : (selectedIndex - 1 + cards.length) % cards.length].focus();
+            } else if (e.key === 'Escape') {
+                setPlayerDropdownOpen(list, false);
+            }
+        });
+
+        list.addEventListener('focusout', () => {
+            requestAnimationFrame(() => {
+                if (!list.contains(document.activeElement)) setPlayerDropdownOpen(list, false);
+            });
+        });
+
+        syncPlayerDropdown(list);
     });
 
-    p2OptionCards.forEach((card) => {
-        card.addEventListener('click', () => {
-            if (isGameActive) return;
-            p2OptionCards.forEach((c) => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedPlayer2 = card.dataset.value;
-            handleModeChange();
-        });
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.player-options')) closePlayerDropdowns();
     });
 
     simulationDelayInput.addEventListener('input', () => {

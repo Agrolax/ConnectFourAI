@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/ogimage.png">
 
     <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
-    <link rel="stylesheet" href="css/style.css?v=1.33">
+    <link rel="stylesheet" href="css/style.css?v=1.34">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -73,6 +73,11 @@
                             <h3>Player 1 <span class="label-muted">(Pink)</span></h3>
                         </div>
                         <div class="player-options" data-player="1">
+                            <button type="button" class="player-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="player1-options">
+                                <span class="selected-option-content"></span>
+                                <svg class="select-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                            <div class="player-options-menu" id="player1-options" role="listbox" aria-label="Player 1 type">
                             <button type="button" class="player-option-card selected" data-value="human">
                                 <span class="option-icon" aria-hidden="true">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>
@@ -111,6 +116,7 @@
                                 </span>
                                 <span class="ai-strength ai-strength-strong">Strongest AI</span>
                             </button>
+                            </div>
                         </div>
                     </div>
 
@@ -122,6 +128,11 @@
                             <h3>Player 2 <span class="label-muted">(Cyan)</span></h3>
                         </div>
                         <div class="player-options" data-player="2">
+                            <button type="button" class="player-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="player2-options">
+                                <span class="selected-option-content"></span>
+                                <svg class="select-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                            <div class="player-options-menu" id="player2-options" role="listbox" aria-label="Player 2 type">
                             <button type="button" class="player-option-card" data-value="human">
                                 <span class="option-icon" aria-hidden="true">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>
@@ -160,6 +171,7 @@
                                 </span>
                                 <span class="ai-strength ai-strength-strong">Strongest AI</span>
                             </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -385,13 +397,13 @@
     <div id="github-modal" class="results-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="github-modal-title" aria-describedby="github-modal-description">
         <div class="github-panel glass-card">
             <div class="modal-title-row">
-                <h2 id="github-modal-title">You’re about to leave this page</h2>
+                <h2 id="github-modal-title">Continue to GitHub</h2>
                 <button type="button" id="btn-close-github" class="icon-btn" data-tooltip="Close" aria-label="Stay on ConnectFourAI">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
                 </button>
             </div>
             <img class="github-preview" src="assets/ogimage.png" alt="ConnectFourAI — Play Connect 4 against friends or challenge intelligent bots built on adversarial search trees">
-            <p id="github-modal-description" class="results-lead">Continue to GitHub to view the ConnectFourAI source code and project files.</p>
+            <p id="github-modal-description" class="results-lead">You’re about to leave ConnectFourAI. Continue to view the source code and project files on GitHub.</p>
             <div class="github-actions">
                 <a class="btn btn-primary" href="https://github.com/Agrolax/ConnectFourAI" target="_blank" rel="noopener noreferrer">Go to GitHub</a>
             </div>
@@ -463,9 +475,9 @@
 
     <div id="floating-tooltip" class="floating-tooltip" role="tooltip" hidden></div>
 
-    <script src="js/engine.js?v=1.33"></script>
-    <script src="js/agents.js?v=1.33"></script>
-    <script src="js/audio.js?v=1.33"></script>
-    <script src="js/app.js?v=1.33"></script>
+    <script src="js/engine.js?v=1.34"></script>
+    <script src="js/agents.js?v=1.34"></script>
+    <script src="js/audio.js?v=1.34"></script>
+    <script src="js/app.js?v=1.34"></script>
 </body>
 </html>
