@@ -883,6 +883,7 @@ input[type="range"] {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
     overflow: hidden;
     max-width: 100%;
+    cursor: pointer;
 }
 
 .board-cell {
@@ -929,10 +930,15 @@ input[type="range"] {
 .board-disc.last-move:not(.dropping)::after {
     content: '';
     position: absolute;
-    inset: -4px;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--cell-size) + 8px);
+    height: calc(var(--cell-size) + 8px);
+    transform: translate(-50%, -50%);
     border: 2px dotted currentColor;
     border-radius: 50%;
     pointer-events: none;
+    z-index: 3;
     animation: lastMoveMarkerGlimmer 1.8s ease-in-out infinite;
 }
 
@@ -997,10 +1003,33 @@ input[type="range"] {
     animation: slideUpPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+.winner-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.winner-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.winner-icon svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
 .winner-card h2 {
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin: 0;
     line-height: 1.2;
 }
 

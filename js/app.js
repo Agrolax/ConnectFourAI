@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropIndicators = document.getElementById('drop-indicators');
 
     const winnerModal = document.getElementById('winner-modal');
+    const winnerIcon = document.getElementById('winner-icon');
     const winnerCelebrationTitle = document.getElementById('winner-celebration-title');
     const winnerCelebrationMsg = document.getElementById('winner-celebration-msg');
     const btnModalReplay = document.getElementById('btn-modal-replay');
@@ -61,6 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
         random: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M9 15h6"/></svg>',
         rule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></svg>',
         minimax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><circle cx="6" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/><circle cx="3.5" cy="19.5" r="1.5"/><circle cx="8.5" cy="19.5" r="1.5"/><circle cx="15.5" cy="19.5" r="1.5"/><circle cx="20.5" cy="19.5" r="1.5"/><path d="M12 6.3v3.2M12 9.5L6.8 11M12 9.5l5.2 1.5M6 13.8v3.2M18 13.8v3.2"/></svg>'
+    };
+
+    const RESULT_ICONS = {
+        win: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4"/></svg>',
+        loss: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg>',
+        draw: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 10h8M8 14h8"/></svg>'
     };
 
     const EVAL_SUMMARY = [
@@ -509,13 +516,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function showWinnerModal(title, msg, winnerType) {
         winnerCelebrationTitle.textContent = title;
         winnerCelebrationMsg.innerHTML = msg;
+        winnerIcon.innerHTML = winnerType === 0
+            ? RESULT_ICONS.draw
+            : title === 'Defeat'
+                ? RESULT_ICONS.loss
+                : RESULT_ICONS.win;
 
         if (winnerType === 1 || winnerType === 2) {
             const glowColor = winnerType === 1 ? 'rgba(225, 29, 72, 0.6)' : 'rgba(6, 182, 212, 0.6)';
-            winnerCelebrationTitle.style.color = winnerType === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
+            const resultColor = winnerType === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
+            winnerCelebrationTitle.style.color = resultColor;
+            winnerIcon.style.color = resultColor;
             winnerCelebrationTitle.style.textShadow = `0 0 16px ${glowColor}`;
         } else {
             winnerCelebrationTitle.style.color = 'var(--text-secondary)';
+            winnerIcon.style.color = 'var(--text-secondary)';
             winnerCelebrationTitle.style.textShadow = 'none';
         }
 
@@ -924,23 +939,42 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!soundModal.classList.contains('hidden')) closeSoundModal();
     });
 
+    function getBoardColumnAtX(clientX) {
+        const firstRowCells = Array.from(connect4Board.children).slice(0, 7);
+        const boardRect = connect4Board.getBoundingClientRect();
+        if (firstRowCells.length !== 7 || clientX < boardRect.left || clientX > boardRect.right) {
+            return null;
+        }
+
+        let nearestColumn = 0;
+        let nearestDistance = Infinity;
+        firstRowCells.forEach((cell, column) => {
+            const rect = cell.getBoundingClientRect();
+            const distance = Math.abs(clientX - (rect.left + rect.width / 2));
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestColumn = column;
+            }
+        });
+        return nearestColumn;
+    }
+
     connect4Board.addEventListener('click', (e) => {
-        const cell = e.target.closest('.board-cell');
-        if (cell) handleColumnSelection(parseInt(cell.dataset.col, 10));
+        const column = getBoardColumnAtX(e.clientX);
+        if (column !== null) handleColumnSelection(column);
     });
 
     connect4Board.addEventListener('mousemove', (e) => {
-        const cell = e.target.closest('.board-cell');
-        if (cell) highlightColumn(parseInt(cell.dataset.col, 10), true);
-        else highlightColumn(null, false);
+        const column = getBoardColumnAtX(e.clientX);
+        highlightColumn(column, column !== null);
     });
 
     connect4Board.addEventListener('mouseleave', () => highlightColumn(null, false));
 
     connect4Board.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse') return;
-        const cell = e.target.closest('.board-cell');
-        if (cell) highlightColumn(parseInt(cell.dataset.col, 10), true);
+        const column = getBoardColumnAtX(e.clientX);
+        highlightColumn(column, column !== null);
     });
 
     dropIndicators.addEventListener('click', (e) => {

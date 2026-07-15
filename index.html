@@ -19,7 +19,7 @@
     <meta name="twitter:image" content="https://agrolax.github.io/ConnectFourAI/assets/ogimage.png">
 
     <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
-    <link rel="stylesheet" href="css/style.css?v=1.31">
+    <link rel="stylesheet" href="css/style.css?v=1.32">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -239,7 +239,10 @@
                 </div>
 
                 <div id="winner-modal" class="winner-card glass-card hidden">
-                    <h2 id="winner-celebration-title">Victory</h2>
+                    <div class="winner-heading">
+                        <span class="winner-icon" id="winner-icon" aria-hidden="true"></span>
+                        <h2 id="winner-celebration-title">Victory</h2>
+                    </div>
                     <p id="winner-celebration-msg">Player 1 wins the match.</p>
                     <div class="modal-buttons">
                         <button id="btn-modal-replay" class="btn btn-primary" type="button">Play again</button>
@@ -466,9 +469,9 @@
 
     <div id="floating-tooltip" class="floating-tooltip" role="tooltip" hidden></div>
 
-    <script src="js/engine.js?v=1.31"></script>
-    <script src="js/agents.js?v=1.31"></script>
-    <script src="js/audio.js?v=1.31"></script>
-    <script src="js/app.js?v=1.31"></script>
+    <script src="js/engine.js?v=1.32"></script>
+    <script src="js/agents.js?v=1.32"></script>
+    <script src="js/audio.js?v=1.32"></script>
+    <script src="js/app.js?v=1.32"></script>
 </body>
 </html>
