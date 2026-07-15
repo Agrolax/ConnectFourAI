@@ -452,14 +452,10 @@ header {
     white-space: nowrap;
 }
 
-.ai-strength-weak {
-    color: var(--p2-color);
-    background: rgba(6, 182, 212, 0.09);
-}
-
+.ai-strength-weak,
 .ai-strength-strong {
-    color: var(--p1-color);
-    background: rgba(225, 29, 72, 0.09);
+    color: var(--accent-color);
+    background: rgba(37, 99, 235, 0.1);
 }
 
 .vs-divider {
@@ -1294,14 +1290,17 @@ footer .members {
     object-fit: cover;
     border-radius: 14px;
     border: 1px solid var(--card-border);
-    margin-bottom: 20px;
+    margin: 10px 0 20px;
 }
 
 .github-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    flex-wrap: wrap;
+    width: 100%;
+}
+
+.github-actions .btn,
+.results-actions .btn {
+    display: block;
+    width: 100%;
 }
 
 @media (max-width: 500px) {
@@ -1310,11 +1309,7 @@ footer .members {
     }
 
     .github-preview {
-        margin-bottom: 16px;
-    }
-
-    .github-actions .btn {
-        flex: 1 1 100%;
+        margin: 6px 0 16px;
     }
 }
 
@@ -1642,9 +1637,7 @@ footer .members {
 }
 
 .results-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    width: 100%;
 }
 
 @media (min-width: 640px) {

@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const githubModal = document.getElementById('github-modal');
     const btnOpenGithub = document.getElementById('btn-open-github');
     const btnCloseGithub = document.getElementById('btn-close-github');
-    const btnCancelGithub = document.getElementById('btn-cancel-github');
 
     const TYPE_ICONS = {
         human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
@@ -912,7 +911,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     btnOpenGithub.addEventListener('click', openGithubModal);
     btnCloseGithub.addEventListener('click', closeGithubModal);
-    btnCancelGithub.addEventListener('click', closeGithubModal);
     githubModal.addEventListener('click', (e) => {
         if (e.target === githubModal) closeGithubModal();
     });
