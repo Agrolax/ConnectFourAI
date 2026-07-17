@@ -7,6 +7,10 @@ This repository contains a modular Python implementation of a Connect Four game 
 
 ---
 
+## Demonstration Video
+
+[Watch the Demonstration Video](https://drive.google.com/file/d/1y2wWAQm4yup-qS83wxJwfMiI9vDKFCA4/view?usp=sharing)
+
 ## Automated Unit Tests
 
 ([tests/test_engine.py](./tests/test_engine.py) and [tests/test_agents.py](./tests/test_agents.py)) help ensure correctness and prevent regressions.
