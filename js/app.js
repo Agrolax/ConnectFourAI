@@ -64,10 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNextStep = document.getElementById('btn-next-step');
     const demoBoard = document.getElementById('demo-board');
     const demoCaption = document.getElementById('demo-caption');
-    const stepCards = document.querySelectorAll('#how-to-play-modal .step-card');
+    const stepCards = document.querySelectorAll('#how-to-play-modal .step-item');
 
     let currentDemoStep = 1;
     let demoTimeouts = [];
+    let stepperTimeoutId = null;
 
     const TYPE_ICONS = {
         human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
@@ -89,27 +90,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const EVAL_SUMMARY = [
         {
-            title: 'Stochastic vs Heuristic Priority',
-            short: 'Stochastic vs Heuristic',
+            title: 'Random vs Rule-Based',
+            short: 'Random vs Rule',
             agents: [
-                { key: 'random', name: 'Stochastic', wins: 1, draws: 0, avgMs: 0.0012 },
-                { key: 'rule', name: 'Heuristic Priority', wins: 29, draws: 0, avgMs: 0.2555 }
+                { key: 'random', name: 'Random AI', wins: 1, draws: 0, avgMs: 0.0012 },
+                { key: 'rule', name: 'Rule-Based AI', wins: 29, draws: 0, avgMs: 0.2555 }
             ]
         },
         {
-            title: 'Heuristic Priority vs Adversarial Minimax',
-            short: 'Heuristic vs Minimax',
+            title: 'Rule-Based vs Minimax',
+            short: 'Rule vs Minimax',
             agents: [
-                { key: 'rule', name: 'Heuristic Priority', wins: 3, draws: 1, avgMs: 0.2719 },
-                { key: 'minimax', name: 'Adversarial Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
+                { key: 'rule', name: 'Rule-Based AI', wins: 3, draws: 1, avgMs: 0.2719 },
+                { key: 'minimax', name: 'Minimax AI', wins: 26, draws: 1, avgMs: 33.4204 }
             ]
         },
         {
-            title: 'Adversarial Minimax vs Stochastic',
-            short: 'Minimax vs Stochastic',
+            title: 'Minimax vs Random',
+            short: 'Minimax vs Random',
             agents: [
-                { key: 'minimax', name: 'Adversarial Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
-                { key: 'random', name: 'Stochastic', wins: 0, draws: 0, avgMs: 0.0021 }
+                { key: 'minimax', name: 'Minimax AI', wins: 30, draws: 0, avgMs: 42.5260 },
+                { key: 'random', name: 'Random AI', wins: 0, draws: 0, avgMs: 0.0021 }
             ]
         }
     ];
@@ -422,42 +423,6 @@ document.addEventListener('DOMContentLoaded', () => {
             schedule();
 
         } else if (currentDemoStep === 2) {
-            demoCaption.textContent = "Form a horizontal, vertical, or diagonal line of four matching discs.";
-            
-            const schedule = () => {
-                clearDemoBoardDiscs();
-                
-                const staticPieces = [
-                    { r: 0, c: 3, p: 1 },
-                    { r: 1, c: 3, p: 1 },
-                    { r: 2, c: 3, p: 1 },
-                    { r: 0, c: 2, p: 2 },
-                    { r: 0, c: 4, p: 2 }
-                ];
-                
-                staticPieces.forEach(({ r, c, p }) => {
-                    const gridRow = 5 - r;
-                    const cell = demoBoard.children[gridRow * 7 + c];
-                    if (cell) {
-                        const disc = document.createElement('div');
-                        disc.classList.add('demo-disc', p === 1 ? 'p1' : 'p2');
-                        cell.appendChild(disc);
-                    }
-                });
-
-                let id1 = setTimeout(() => {
-                    animateDemoDisc(3, 3, 1, () => {
-                        highlightDemoWinningDiscs([[0,3], [1,3], [2,3], [3,3]]);
-                    });
-                }, 800);
-
-                let idLoop = setTimeout(schedule, 4800);
-                demoTimeouts.push(id1, idLoop);
-            };
-
-            schedule();
-
-        } else if (currentDemoStep === 3) {
             demoCaption.textContent = "Anticipate your opponent's lines and drop a disc to block them.";
 
             const schedule = () => {
@@ -492,24 +457,101 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             schedule();
+
+        } else if (currentDemoStep === 3) {
+            demoCaption.textContent = "Form a horizontal, vertical, or diagonal line of four matching discs.";
+            
+            const schedule = () => {
+                clearDemoBoardDiscs();
+                
+                const staticPieces = [
+                    { r: 0, c: 3, p: 1 },
+                    { r: 1, c: 3, p: 1 },
+                    { r: 2, c: 3, p: 1 },
+                    { r: 0, c: 2, p: 2 },
+                    { r: 0, c: 4, p: 2 }
+                ];
+                
+                staticPieces.forEach(({ r, c, p }) => {
+                    const gridRow = 5 - r;
+                    const cell = demoBoard.children[gridRow * 7 + c];
+                    if (cell) {
+                        const disc = document.createElement('div');
+                        disc.classList.add('demo-disc', p === 1 ? 'p1' : 'p2');
+                        cell.appendChild(disc);
+                    }
+                });
+
+                let id1 = setTimeout(() => {
+                    animateDemoDisc(3, 3, 1, () => {
+                        highlightDemoWinningDiscs([[0,3], [1,3], [2,3], [3,3]]);
+                    });
+                }, 800);
+
+                let idLoop = setTimeout(schedule, 4800);
+                demoTimeouts.push(id1, idLoop);
+            };
+
+            schedule();
+        }
+    }
+
+    function clearStepperAutoPlay() {
+        if (stepperTimeoutId) {
+            clearTimeout(stepperTimeoutId);
+            stepperTimeoutId = null;
+        }
+        const progress = document.getElementById('stepper-progress');
+        if (progress) {
+            progress.classList.remove('animating');
+            progress.style.height = '0%';
+        }
+    }
+
+    function runStepperStep() {
+        const progress = document.getElementById('stepper-progress');
+        const stepItems = document.querySelectorAll('#how-to-play-modal .step-item');
+        
+        stepItems.forEach((item, idx) => {
+            const stepNum = idx + 1;
+            item.classList.remove('active', 'completed');
+            if (stepNum < currentDemoStep) {
+                item.classList.add('completed');
+            } else if (stepNum === currentDemoStep) {
+                item.classList.add('active');
+            }
+        });
+
+        if (!progress) return;
+
+        progress.classList.remove('animating');
+        if (currentDemoStep === 1) {
+            progress.style.height = '0%';
+            void progress.offsetHeight;
+            progress.classList.add('animating');
+            progress.style.height = '50%';
+            
+            stepperTimeoutId = setTimeout(() => {
+                setDemoStep(2);
+            }, 6000);
+        } else if (currentDemoStep === 2) {
+            progress.style.height = '50%';
+            void progress.offsetHeight;
+            progress.classList.add('animating');
+            progress.style.height = '100%';
+            
+            stepperTimeoutId = setTimeout(() => {
+                setDemoStep(3);
+            }, 6000);
+        } else {
+            progress.style.height = '100%';
         }
     }
 
     function setDemoStep(step) {
         currentDemoStep = step;
-        stepCards.forEach((card) => {
-            const active = parseInt(card.dataset.step, 10) === step;
-            card.classList.toggle('active', active);
-        });
-
-        btnPrevStep.disabled = step === 1;
-        if (step === 3) {
-            btnNextStep.textContent = "Got it!";
-        } else {
-            btnNextStep.textContent = "Next";
-        }
-
         runDemoStepAnimation();
+        runStepperStep();
     }
 
     function openHowToPlayModal() {
@@ -522,6 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeHowToPlayModal() {
         stopDemoAnimations();
+        clearStepperAutoPlay();
         howToPlayModal.classList.add('hidden');
         document.body.style.overflow = '';
         clearDemoBoardDiscs();
@@ -880,9 +923,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPlayerLabel(index) {
         const type = index === 1 ? selectedPlayer1 : selectedPlayer2;
         if (type === 'human') return 'Human';
-        if (type === 'random') return 'Stochastic Agent';
-        if (type === 'rule') return 'Heuristic Priority Agent';
-        if (type === 'minimax') return 'Adversarial Minimax Agent';
+        if (type === 'random') return 'Random AI';
+        if (type === 'rule') return 'Rule-Based AI';
+        if (type === 'minimax') return 'Minimax AI';
         return 'Unknown';
     }
 
@@ -1230,26 +1273,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (btnOpenHowToPlay) btnOpenHowToPlay.addEventListener('click', openHowToPlayModal);
     if (btnCloseHowToPlay) btnCloseHowToPlay.addEventListener('click', closeHowToPlayModal);
+    
+    const btnCloseHowToPlayGotit = document.getElementById('btn-close-how-to-play-gotit');
+    if (btnCloseHowToPlayGotit) btnCloseHowToPlayGotit.addEventListener('click', closeHowToPlayModal);
+
     howToPlayModal.addEventListener('click', (e) => {
         if (e.target === howToPlayModal) closeHowToPlayModal();
     });
 
-    btnPrevStep.addEventListener('click', () => {
-        if (currentDemoStep > 1) {
-            setDemoStep(currentDemoStep - 1);
-        }
-    });
+    if (btnPrevStep) {
+        btnPrevStep.addEventListener('click', () => {
+            if (currentDemoStep > 1) {
+                if (stepperTimeoutId) {
+                    clearTimeout(stepperTimeoutId);
+                    stepperTimeoutId = null;
+                }
+                const progress = document.getElementById('stepper-progress');
+                if (progress) progress.classList.remove('animating');
+                setDemoStep(currentDemoStep - 1);
+            }
+        });
+    }
 
-    btnNextStep.addEventListener('click', () => {
-        if (currentDemoStep < 3) {
-            setDemoStep(currentDemoStep + 1);
-        } else {
-            closeHowToPlayModal();
-        }
-    });
+    if (btnNextStep) {
+        btnNextStep.addEventListener('click', () => {
+            if (currentDemoStep < 3) {
+                if (stepperTimeoutId) {
+                    clearTimeout(stepperTimeoutId);
+                    stepperTimeoutId = null;
+                }
+                const progress = document.getElementById('stepper-progress');
+                if (progress) progress.classList.remove('animating');
+                setDemoStep(currentDemoStep + 1);
+            } else {
+                closeHowToPlayModal();
+            }
+        });
+    }
 
     stepCards.forEach((card) => {
         card.addEventListener('click', () => {
+            if (stepperTimeoutId) {
+                clearTimeout(stepperTimeoutId);
+                stepperTimeoutId = null;
+            }
+            const progress = document.getElementById('stepper-progress');
+            if (progress) progress.classList.remove('animating');
             setDemoStep(parseInt(card.dataset.step, 10));
         });
     });
