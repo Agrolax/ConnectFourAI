@@ -532,31 +532,42 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
                 </button>
             </div>
+
+            <!-- Horizontal Stepper Header -->
+            <div class="how-to-play-stepper-row">
+                <div class="stepper-horizontal">
+                    <div class="stepper-horizontal-line-bg">
+                        <div class="stepper-horizontal-line-progress" id="stepper-progress-h"></div>
+                    </div>
+                    <div class="step-dot active" data-step="1">
+                        <span class="step-number">1</span>
+                        <span class="step-dot-label">Take Turns</span>
+                    </div>
+                    <div class="step-dot" data-step="2">
+                        <span class="step-number">2</span>
+                        <span class="step-dot-label">Block Opponents</span>
+                    </div>
+                    <div class="step-dot" data-step="3">
+                        <span class="step-number">3</span>
+                        <span class="step-dot-label">Connect Four</span>
+                    </div>
+                </div>
+            </div>
             
             <div class="how-to-play-body">
                 <div class="how-to-play-info">
-                    <div class="stepper-axis" aria-hidden="true">
-                        <div class="stepper-progress" id="stepper-progress"></div>
-                    </div>
-                    <div class="step-item active" data-step="1">
-                        <span class="step-circle">1</span>
-                        <div class="step-content">
+                    <div class="step-panels-container">
+                        <div class="step-panel active" data-step="1">
                             <h3>Take Turns</h3>
-                            <p class="step-desc">Players alternate turns dropping colored discs from the top. Discs stack from the bottom up.</p>
+                            <p>Players alternate turns dropping colored discs from the top. Discs stack from the bottom up.</p>
                         </div>
-                    </div>
-                    <div class="step-item" data-step="2">
-                        <span class="step-circle">2</span>
-                        <div class="step-content">
+                        <div class="step-panel" data-step="2">
                             <h3>Block Opponents</h3>
-                            <p class="step-desc">Defend your board! Anticipate your opponent's next moves to block their 3-in-a-rows before they can claim victory.</p>
+                            <p>Defend your board! Anticipate your opponent's next moves to block their 3-in-a-rows before they can claim victory.</p>
                         </div>
-                    </div>
-                    <div class="step-item" data-step="3">
-                        <span class="step-circle">3</span>
-                        <div class="step-content">
+                        <div class="step-panel" data-step="3">
                             <h3>Connect Four</h3>
-                            <p class="step-desc">Align 4 of your discs in a continuous line—either horizontally, vertically, or diagonally—to win the match.</p>
+                            <p>Align 4 of your discs in a continuous line—either horizontally, vertically, or diagonally—to win the match.</p>
                         </div>
                     </div>
                 </div>
@@ -568,7 +579,8 @@
             </div>
             
             <div class="how-to-play-actions">
-                <button type="button" class="btn btn-primary btn-block" id="btn-close-how-to-play-gotit">Got it!</button>
+                <button type="button" class="btn btn-secondary" id="btn-prev-step" disabled>Back</button>
+                <button type="button" class="btn btn-primary" id="btn-next-step">Next</button>
             </div>
         </div>
     </div>

@@ -64,11 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNextStep = document.getElementById('btn-next-step');
     const demoBoard = document.getElementById('demo-board');
     const demoCaption = document.getElementById('demo-caption');
-    const stepCards = document.querySelectorAll('#how-to-play-modal .step-item');
+    const stepCards = document.querySelectorAll('#how-to-play-modal .step-dot');
 
     let currentDemoStep = 1;
     let demoTimeouts = [];
-    let stepperTimeoutId = null;
 
     const TYPE_ICONS = {
         human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
@@ -496,62 +495,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function clearStepperAutoPlay() {
-        if (stepperTimeoutId) {
-            clearTimeout(stepperTimeoutId);
-            stepperTimeoutId = null;
-        }
-        const progress = document.getElementById('stepper-progress');
-        if (progress) {
-            progress.classList.remove('animating');
-            progress.style.height = '0%';
-        }
-    }
+    function setDemoStep(step) {
+        currentDemoStep = step;
 
-    function runStepperStep() {
-        const progress = document.getElementById('stepper-progress');
-        const stepItems = document.querySelectorAll('#how-to-play-modal .step-item');
-        
-        stepItems.forEach((item, idx) => {
+        // 1. Update horizontal progress line width
+        const progress = document.getElementById('stepper-progress-h');
+        if (progress) {
+            progress.style.width = ((step - 1) * 50) + '%';
+        }
+
+        // 2. Update dots active/completed state
+        const dots = document.querySelectorAll('#how-to-play-modal .step-dot');
+        dots.forEach((dot, idx) => {
             const stepNum = idx + 1;
-            item.classList.remove('active', 'completed');
-            if (stepNum < currentDemoStep) {
-                item.classList.add('completed');
-            } else if (stepNum === currentDemoStep) {
-                item.classList.add('active');
+            dot.classList.remove('active', 'completed');
+            if (stepNum < step) {
+                dot.classList.add('completed');
+            } else if (stepNum === step) {
+                dot.classList.add('active');
             }
         });
 
-        if (!progress) return;
+        // 3. Update active panel display
+        const panels = document.querySelectorAll('#how-to-play-modal .step-panel');
+        panels.forEach((panel) => {
+            const active = parseInt(panel.dataset.step, 10) === step;
+            panel.classList.toggle('active', active);
+        });
 
-        progress.classList.remove('animating');
-        if (currentDemoStep === 1) {
-            progress.style.height = '0%';
-            void progress.offsetHeight;
-            progress.classList.add('animating');
-            progress.style.height = '50%';
-            
-            stepperTimeoutId = setTimeout(() => {
-                setDemoStep(2);
-            }, 6000);
-        } else if (currentDemoStep === 2) {
-            progress.style.height = '50%';
-            void progress.offsetHeight;
-            progress.classList.add('animating');
-            progress.style.height = '100%';
-            
-            stepperTimeoutId = setTimeout(() => {
-                setDemoStep(3);
-            }, 6000);
-        } else {
-            progress.style.height = '100%';
+        // 4. Update Back and Next buttons state
+        if (btnPrevStep) {
+            btnPrevStep.disabled = step === 1;
         }
-    }
+        if (btnNextStep) {
+            btnNextStep.textContent = step === 3 ? "Got it!" : "Next";
+        }
 
-    function setDemoStep(step) {
-        currentDemoStep = step;
+        // 5. Trigger board demo animation for this step
         runDemoStepAnimation();
-        runStepperStep();
     }
 
     function openHowToPlayModal() {
@@ -564,7 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeHowToPlayModal() {
         stopDemoAnimations();
-        clearStepperAutoPlay();
         howToPlayModal.classList.add('hidden');
         document.body.style.overflow = '';
         clearDemoBoardDiscs();
@@ -1274,9 +1254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnOpenHowToPlay) btnOpenHowToPlay.addEventListener('click', openHowToPlayModal);
     if (btnCloseHowToPlay) btnCloseHowToPlay.addEventListener('click', closeHowToPlayModal);
     
-    const btnCloseHowToPlayGotit = document.getElementById('btn-close-how-to-play-gotit');
-    if (btnCloseHowToPlayGotit) btnCloseHowToPlayGotit.addEventListener('click', closeHowToPlayModal);
-
     howToPlayModal.addEventListener('click', (e) => {
         if (e.target === howToPlayModal) closeHowToPlayModal();
     });
@@ -1284,12 +1261,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnPrevStep) {
         btnPrevStep.addEventListener('click', () => {
             if (currentDemoStep > 1) {
-                if (stepperTimeoutId) {
-                    clearTimeout(stepperTimeoutId);
-                    stepperTimeoutId = null;
-                }
-                const progress = document.getElementById('stepper-progress');
-                if (progress) progress.classList.remove('animating');
                 setDemoStep(currentDemoStep - 1);
             }
         });
@@ -1298,12 +1269,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnNextStep) {
         btnNextStep.addEventListener('click', () => {
             if (currentDemoStep < 3) {
-                if (stepperTimeoutId) {
-                    clearTimeout(stepperTimeoutId);
-                    stepperTimeoutId = null;
-                }
-                const progress = document.getElementById('stepper-progress');
-                if (progress) progress.classList.remove('animating');
                 setDemoStep(currentDemoStep + 1);
             } else {
                 closeHowToPlayModal();
@@ -1313,12 +1278,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     stepCards.forEach((card) => {
         card.addEventListener('click', () => {
-            if (stepperTimeoutId) {
-                clearTimeout(stepperTimeoutId);
-                stepperTimeoutId = null;
-            }
-            const progress = document.getElementById('stepper-progress');
-            if (progress) progress.classList.remove('animating');
             setDemoStep(parseInt(card.dataset.step, 10));
         });
     });

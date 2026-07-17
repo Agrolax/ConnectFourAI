@@ -2081,53 +2081,50 @@ footer .members {
     align-items: stretch;
 }
 
-.how-to-play-info {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    padding-left: 54px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+.how-to-play-stepper-row {
+    width: 100%;
+    margin-bottom: 8px;
 }
 
-.stepper-axis {
+.stepper-horizontal {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.stepper-horizontal-line-bg {
     position: absolute;
-    left: 17px;
-    top: 28px;
-    bottom: 28px;
-    width: 4px;
+    left: 68px;
+    right: 68px;
+    top: 19px; /* Half of circle size (38px) */
+    height: 4px;
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: 2px;
     z-index: 1;
 }
 
-.stepper-progress {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 0%;
+.stepper-horizontal-line-progress {
+    height: 100%;
+    width: 0%;
     background-color: var(--accent-color);
     border-radius: 2px;
-    transition: height 0.4s ease;
+    transition: width 0.4s ease;
 }
 
-.stepper-progress.animating {
-    transition: height 6000ms linear;
-}
-
-.step-item {
+.step-dot {
     position: relative;
     display: flex;
     flex-direction: column;
+    align-items: center;
     cursor: pointer;
+    z-index: 2;
 }
 
-.step-circle {
-    position: absolute;
-    left: -54px;
-    top: -4px;
+.step-number {
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -2139,50 +2136,70 @@ footer .members {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
     transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
 
-.step-item.active .step-circle,
-.step-item.completed .step-circle {
+.step-dot.active .step-number,
+.step-dot.completed .step-number {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
     color: #ffffff;
     box-shadow: 0 0 12px rgba(37, 99, 235, 0.35);
 }
 
-.step-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.step-content h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0;
+.step-dot-label {
+    font-size: 11.5px;
+    font-weight: 550;
     color: var(--text-secondary);
     transition: color 0.3s ease;
+    margin-top: 8px;
+    text-align: center;
+    white-space: nowrap;
 }
 
-.step-item.active .step-content h3 {
+.step-dot.active .step-dot-label {
     color: #ffffff;
+    font-weight: 600;
 }
 
-.step-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.45;
+.step-dot.completed .step-dot-label {
+    color: var(--text-primary);
+}
+
+.how-to-play-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 6px;
+}
+
+.step-panels-container {
+    width: 100%;
+}
+
+.step-panel {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeIn 0.3s ease;
+}
+
+.step-panel.active {
+    display: flex;
+}
+
+.step-panel h3 {
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
     margin: 0;
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin-top 0.3s ease;
 }
 
-.step-item.active .step-desc {
-    max-height: 80px;
-    opacity: 1;
-    margin-top: 6px;
+.step-panel p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
 }
 
 .how-to-play-visual {
@@ -2297,6 +2314,16 @@ footer .members {
         gap: 20px;
     }
     .how-to-play-visual {
-        order: -1;
+        order: 1;
+    }
+    .stepper-horizontal {
+        padding: 0 16px;
+    }
+    .stepper-horizontal-line-bg {
+        left: 36px;
+        right: 36px;
+    }
+    .step-dot-label {
+        font-size: 10px;
     }
 }
