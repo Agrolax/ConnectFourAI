@@ -2155,11 +2155,9 @@ footer .members {
 .how-to-play-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 24px 32px;
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
+    justify-content: space-between;
+    padding: 12px 16px;
+    gap: 24px;
 }
 
 .step-panels-container {
@@ -2274,8 +2272,6 @@ footer .members {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    border-top: 1px solid var(--card-border);
-    padding-top: 18px;
 }
 
 @keyframes demoDropDisc {

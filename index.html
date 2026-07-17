@@ -206,9 +206,8 @@
             <div class="lobby-agents-section">
                 <div class="lobby-agents-header-row">
                     <h3>Choose your play style</h3>
-                    <button type="button" id="btn-open-how-to-play" class="btn btn-secondary icon-text-btn">
+                    <button type="button" id="btn-open-how-to-play" class="icon-btn" data-tooltip="How to play" aria-label="How to play">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
-                        How to play
                     </button>
                 </div>
                 
@@ -575,12 +574,12 @@
                             <p>Align 4 of your discs in a continuous line—either horizontally, vertically, or diagonally—to win the match.</p>
                         </div>
                     </div>
+
+                    <div class="how-to-play-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-prev-step" disabled>Back</button>
+                        <button type="button" class="btn btn-primary" id="btn-next-step">Next</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="how-to-play-actions">
-                <button type="button" class="btn btn-secondary" id="btn-prev-step" disabled>Back</button>
-                <button type="button" class="btn btn-primary" id="btn-next-step">Next</button>
             </div>
         </div>
     </div>
