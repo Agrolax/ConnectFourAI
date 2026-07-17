@@ -130,17 +130,6 @@ python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
 
 ---
 
-## 👥 Team Contributions
-
-**Safdar Md Abdus Shukur:** Developed Requirement 1 (Core Game Engine Logic), designed Agent 1 (reproducible seedable Random Agent architecture), and independently engineered the Open Graph branding, project graphics layout, and full-stack interactive Web GUI sandbox for live agent evaluations.
-
----
-
-## 🔬 Deep-Dive: Deterministic Seeding Theory
+## 🔬 Deterministic Seeding & Test Environment Control
 
 Computers rely on Pseudo-Random Number Generators (PRNGs) which are mathematical algorithms (e.g., Python's Mersenne Twister or JavaScript's Linear Congruential Generator) that compute sequences of numbers starting from an initial integer called a **seed**. Because these algorithms are fully deterministic, using the same seed ensures the exact same sequence of choices is generated every time. 
-
-For artificial intelligence research, this reproducibility is vital:
-1. **Experimental Validation:** Using a fixed seed allows researchers to reproduce head-to-head win, loss, and draw metrics exactly. Anyone running the evaluations with the same seeds will obtain identical results, proving outcomes are not due to random statistical luck.
-2. **Regression Prevention:** Ensures that code optimizations or search prunings can be audited under identical game trees.
-3. **Cross-Platform Verification:** Allows parity verification between our Python-based console codebase and JavaScript Web GUI port by checking if identical seeds yield identical agent match trajectories.
