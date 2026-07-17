@@ -66,7 +66,7 @@ python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
 | :--- | :--- | :--- |
 | **Live Hosted Sandbox** | [GitHub Pages Deployment](https://agrolax.github.io/ConnectFourAI/) | Interactive full-stack web GUI for real-time play and evaluation |
 | **Demonstration Video** | [Google Drive Walkthrough](https://drive.google.com/file/d/1y2wWAQm4yup-qS83wxJwfMiI9vDKFCA4/view?usp=sharing) | Walkthrough demonstrating CLI runs, unit tests, and agent gameplay |
-| **Project Report** | [assets/report.pdf](./assets/report.pdf) · [CP468 Assignment 2 Report.pdf](./CP468%20Assignment%202%20Report.pdf) | Final PDF detailing algorithm designs, evaluations, and analysis |
+| **Project Report** | [assets/report.pdf](./assets/report.pdf) | Algorithm designs, evaluations, and analysis |
 | **Evaluation Data** | [evaluation_results.md](./evaluation_results.md) · [evaluation_results.json](./evaluation_results.json) | Compiled pairing metrics, win rates, and step logs |
 | **Test Suite** | [tests/test_engine.py](./tests/test_engine.py) · [tests/test_agents.py](./tests/test_agents.py) | Unit tests verifying core game rules and agent behaviors |
 
@@ -79,10 +79,9 @@ python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
 
 ---
 
-## 🛠️ Technical Requirements & Implementation Status
+## 🛠️ Technical Requirements 
 
 ### Requirement 1: Game Engine
-* **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 * **Implementation File:** [ConnectFourAI/engine.py](./ConnectFourAI/engine.py)
 * **Details:**
   * **Board Representation:** 6 rows × 7 columns grid (0 = empty, 1 = Player 1, 2 = Player 2).
@@ -90,14 +89,12 @@ python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
   * **API Features:** Out-of-bounds validation, legal moves generator, deep cloning for forecasting, and win scanners in all 4 planes.
 
 ### Requirement 2: AI Agents
-* **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 * **Implementation Files:**
   * [ConnectFourAI/agents/random_agent.py](./ConnectFourAI/agents/random_agent.py) (Agent 1 - Stochastic selection)
   * [ConnectFourAI/agents/rule_based_agent.py](./ConnectFourAI/agents/rule_based_agent.py) (Agent 2 - Heuristic priority matching)
   * [ConnectFourAI/agents/minimax_agent.py](./ConnectFourAI/agents/minimax_agent.py) (Agent 3 - Adversarial tree search)
 
 ### Requirement 3: Experimental Evaluation
-* **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 * **Runner Script:** [evaluate.py](./evaluate.py) (logs decision times using `time.perf_counter()`)
 * **Evaluation Data:** [evaluation_results.md](./evaluation_results.md) · [evaluation_results.json](./evaluation_results.json)
 * **Protocol:** 30 games per pairing, alternating starting player, seeded agents for reproducible actions.
@@ -121,11 +118,9 @@ python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
 | Random | 0/30 | 0.00% | 0 | 0.0021 ms |
 
 ### Requirement 4: Report
-* **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 * **Artifact:** [assets/report.pdf](./assets/report.pdf) (Backup: [CP468 Assignment 2 Report.pdf](./CP468%20Assignment%202%20Report.pdf))
 
 ### Requirement 5: Demonstration Video
-* **Status:** ![Completed](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 * **Walkthrough Link:** [Watch the Walkthrough Video](https://drive.google.com/file/d/1y2wWAQm4yup-qS83wxJwfMiI9vDKFCA4/view?usp=sharing)
 
 ---
