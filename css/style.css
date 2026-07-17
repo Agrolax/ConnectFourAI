@@ -536,16 +536,14 @@ header {
 }
 
 .option-desc {
-    font-size: 11.5px;
-    color: var(--text-secondary);
-    line-height: 1.35;
+    display: none;
 }
 
 .ai-strength {
     flex-shrink: 0;
     margin-left: auto;
-    padding: 4px 7px;
-    border: 1px solid currentColor;
+    padding: 5px 9px;
+    border: none;
     border-radius: 6px;
     font-size: 9px;
     font-weight: 700;
@@ -557,8 +555,8 @@ header {
 
 .ai-strength-weak,
 .ai-strength-strong {
-    color: var(--accent-color);
-    background: rgba(37, 99, 235, 0.1);
+    color: #fff;
+    background: var(--accent-color);
 }
 
 .vs-divider {
@@ -2006,11 +2004,16 @@ footer .members {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
+}
+
+.agent-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .random-icon { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
@@ -2019,14 +2022,14 @@ footer .members {
 .local-icon { color: var(--p1-color); background: rgba(225, 29, 72, 0.1); }
 
 .agent-info-card h4 {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
 }
 
 .agent-info-card p {
-    font-size: 10.5px;
+    font-size: 13px;
     color: var(--text-secondary);
-    line-height: 1.45;
+    line-height: 1.5;
     margin: 0;
 }
 
