@@ -118,7 +118,7 @@ python3 main.py --mode minimax-vs-random --seed 42 --delay 0.5
 | Random | 0/30 | 0.00% | 0 | 0.0021 ms |
 
 ### Requirement 4: Report
-* **Artifact:** [assets/report.pdf](./assets/report.pdf) (Backup: [CP468 Assignment 2 Report.pdf](./CP468%20Assignment%202%20Report.pdf))
+* **Artifact:** [assets/report.pdf](./assets/report.pdf) 
 
 ### Requirement 5: Demonstration Video
 * **Walkthrough Link:** [Watch the Walkthrough Video](https://drive.google.com/file/d/1y2wWAQm4yup-qS83wxJwfMiI9vDKFCA4/view?usp=sharing)
