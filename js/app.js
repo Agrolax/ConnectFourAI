@@ -56,6 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnOpenGithub = document.getElementById('btn-open-github');
     const btnCloseGithub = document.getElementById('btn-close-github');
 
+    // How to Play modal elements
+    const howToPlayModal = document.getElementById('how-to-play-modal');
+    const btnOpenHowToPlay = document.getElementById('btn-open-how-to-play');
+    const btnCloseHowToPlay = document.getElementById('btn-close-how-to-play');
+    const btnPrevStep = document.getElementById('btn-prev-step');
+    const btnNextStep = document.getElementById('btn-next-step');
+    const demoBoard = document.getElementById('demo-board');
+    const demoCaption = document.getElementById('demo-caption');
+    const stepCards = document.querySelectorAll('#how-to-play-modal .step-card');
+
+    let currentDemoStep = 1;
+    let demoTimeouts = [];
+
     const TYPE_ICONS = {
         human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>',
         random: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M9 15h6"/></svg>',
@@ -76,27 +89,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const EVAL_SUMMARY = [
         {
-            title: 'Random vs Rule-Based',
-            short: 'Random vs Rule',
+            title: 'Stochastic vs Heuristic Priority',
+            short: 'Stochastic vs Heuristic',
             agents: [
-                { key: 'random', name: 'Random', wins: 1, draws: 0, avgMs: 0.0012 },
-                { key: 'rule', name: 'Rule-Based', wins: 29, draws: 0, avgMs: 0.2555 }
+                { key: 'random', name: 'Stochastic', wins: 1, draws: 0, avgMs: 0.0012 },
+                { key: 'rule', name: 'Heuristic Priority', wins: 29, draws: 0, avgMs: 0.2555 }
             ]
         },
         {
-            title: 'Rule-Based vs Minimax',
-            short: 'Rule vs Minimax',
+            title: 'Heuristic Priority vs Adversarial Minimax',
+            short: 'Heuristic vs Minimax',
             agents: [
-                { key: 'rule', name: 'Rule-Based', wins: 3, draws: 1, avgMs: 0.2719 },
-                { key: 'minimax', name: 'Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
+                { key: 'rule', name: 'Heuristic Priority', wins: 3, draws: 1, avgMs: 0.2719 },
+                { key: 'minimax', name: 'Adversarial Minimax', wins: 26, draws: 1, avgMs: 33.4204 }
             ]
         },
         {
-            title: 'Minimax vs Random',
-            short: 'Minimax vs Random',
+            title: 'Adversarial Minimax vs Stochastic',
+            short: 'Minimax vs Stochastic',
             agents: [
-                { key: 'minimax', name: 'Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
-                { key: 'random', name: 'Random', wins: 0, draws: 0, avgMs: 0.0021 }
+                { key: 'minimax', name: 'Adversarial Minimax', wins: 30, draws: 0, avgMs: 42.5260 },
+                { key: 'random', name: 'Stochastic', wins: 0, draws: 0, avgMs: 0.0021 }
             ]
         }
     ];
@@ -316,6 +329,202 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsModal.classList.add('hidden');
         document.body.style.overflow = '';
         if (btnOpenResults) btnOpenResults.classList.remove('is-pressed');
+    }
+
+    function initializeDemoBoard() {
+        if (!demoBoard) return;
+        demoBoard.innerHTML = '';
+        for (let i = 0; i < 42; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('demo-cell');
+            cell.dataset.index = i;
+            cell.dataset.col = i % 7;
+            cell.dataset.row = Math.floor(i / 7);
+            demoBoard.appendChild(cell);
+        }
+    }
+
+    function clearDemoBoardDiscs() {
+        if (!demoBoard) return;
+        Array.from(demoBoard.children).forEach((cell) => {
+            cell.innerHTML = '';
+            cell.classList.remove('winning-cell');
+        });
+    }
+
+    function stopDemoAnimations() {
+        demoTimeouts.forEach((id) => clearTimeout(id));
+        demoTimeouts = [];
+    }
+
+    function animateDemoDisc(row, col, player, callback = null) {
+        if (!demoBoard) return;
+        const gridRow = 5 - row;
+        const index = gridRow * 7 + col;
+        const cell = demoBoard.children[index];
+        if (!cell) return;
+
+        cell.innerHTML = '';
+        const disc = document.createElement('div');
+        disc.classList.add('demo-disc', 'dropping', player === 1 ? 'p1' : 'p2');
+        cell.appendChild(disc);
+
+        const endDrop = () => {
+            disc.classList.remove('dropping');
+            if (callback) callback();
+        };
+        disc.addEventListener('animationend', endDrop, { once: true });
+        
+        const safetyId = setTimeout(endDrop, 450);
+        demoTimeouts.push(safetyId);
+    }
+
+    function highlightDemoWinningDiscs(winningCells) {
+        if (!demoBoard) return;
+        winningCells.forEach(([row, col]) => {
+            const gridRow = 5 - row;
+            const index = gridRow * 7 + col;
+            const cell = demoBoard.children[index];
+            if (cell) cell.classList.add('winning-cell');
+        });
+    }
+
+    function runDemoStepAnimation() {
+        stopDemoAnimations();
+        clearDemoBoardDiscs();
+
+        if (currentDemoStep === 1) {
+            demoCaption.textContent = "Take turns dropping discs. They stack from the bottom up.";
+            
+            const schedule = () => {
+                clearDemoBoardDiscs();
+                
+                let id1 = setTimeout(() => {
+                    animateDemoDisc(0, 3, 1);
+                }, 400);
+                
+                let id2 = setTimeout(() => {
+                    animateDemoDisc(0, 2, 2);
+                }, 1400);
+                
+                let id3 = setTimeout(() => {
+                    animateDemoDisc(1, 3, 1);
+                }, 2400);
+                
+                let id4 = setTimeout(() => {
+                    animateDemoDisc(0, 4, 2);
+                }, 3400);
+
+                let idLoop = setTimeout(schedule, 5800);
+                demoTimeouts.push(id1, id2, id3, id4, idLoop);
+            };
+
+            schedule();
+
+        } else if (currentDemoStep === 2) {
+            demoCaption.textContent = "Form a horizontal, vertical, or diagonal line of four matching discs.";
+            
+            const schedule = () => {
+                clearDemoBoardDiscs();
+                
+                const staticPieces = [
+                    { r: 0, c: 3, p: 1 },
+                    { r: 1, c: 3, p: 1 },
+                    { r: 2, c: 3, p: 1 },
+                    { r: 0, c: 2, p: 2 },
+                    { r: 0, c: 4, p: 2 }
+                ];
+                
+                staticPieces.forEach(({ r, c, p }) => {
+                    const gridRow = 5 - r;
+                    const cell = demoBoard.children[gridRow * 7 + c];
+                    if (cell) {
+                        const disc = document.createElement('div');
+                        disc.classList.add('demo-disc', p === 1 ? 'p1' : 'p2');
+                        cell.appendChild(disc);
+                    }
+                });
+
+                let id1 = setTimeout(() => {
+                    animateDemoDisc(3, 3, 1, () => {
+                        highlightDemoWinningDiscs([[0,3], [1,3], [2,3], [3,3]]);
+                    });
+                }, 800);
+
+                let idLoop = setTimeout(schedule, 4800);
+                demoTimeouts.push(id1, idLoop);
+            };
+
+            schedule();
+
+        } else if (currentDemoStep === 3) {
+            demoCaption.textContent = "Anticipate your opponent's lines and drop a disc to block them.";
+
+            const schedule = () => {
+                clearDemoBoardDiscs();
+
+                const staticPieces = [
+                    { r: 0, c: 1, p: 2 },
+                    { r: 0, c: 2, p: 2 },
+                    { r: 0, c: 3, p: 2 },
+                    { r: 0, c: 0, p: 1 }
+                ];
+
+                staticPieces.forEach(({ r, c, p }) => {
+                    const gridRow = 5 - r;
+                    const cell = demoBoard.children[gridRow * 7 + c];
+                    if (cell) {
+                        const disc = document.createElement('div');
+                        disc.classList.add('demo-disc', p === 1 ? 'p1' : 'p2');
+                        cell.appendChild(disc);
+                    }
+                });
+
+                let id1 = setTimeout(() => {
+                    animateDemoDisc(0, 4, 1, () => {
+                        const cell = demoBoard.children[5 * 7 + 4];
+                        if (cell) cell.classList.add('winning-cell');
+                    });
+                }, 800);
+
+                let idLoop = setTimeout(schedule, 4800);
+                demoTimeouts.push(id1, idLoop);
+            };
+
+            schedule();
+        }
+    }
+
+    function setDemoStep(step) {
+        currentDemoStep = step;
+        stepCards.forEach((card) => {
+            const active = parseInt(card.dataset.step, 10) === step;
+            card.classList.toggle('active', active);
+        });
+
+        btnPrevStep.disabled = step === 1;
+        if (step === 3) {
+            btnNextStep.textContent = "Got it!";
+        } else {
+            btnNextStep.textContent = "Next";
+        }
+
+        runDemoStepAnimation();
+    }
+
+    function openHowToPlayModal() {
+        hideTooltip();
+        initializeDemoBoard();
+        howToPlayModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setDemoStep(1);
+    }
+
+    function closeHowToPlayModal() {
+        stopDemoAnimations();
+        howToPlayModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        clearDemoBoardDiscs();
     }
 
     function openGithubModal() {
@@ -671,9 +880,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPlayerLabel(index) {
         const type = index === 1 ? selectedPlayer1 : selectedPlayer2;
         if (type === 'human') return 'Human';
-        if (type === 'random') return 'Random AI';
-        if (type === 'rule') return 'Rule-Based AI';
-        if (type === 'minimax') return 'Minimax AI';
+        if (type === 'random') return 'Stochastic Agent';
+        if (type === 'rule') return 'Heuristic Priority Agent';
+        if (type === 'minimax') return 'Adversarial Minimax Agent';
         return 'Unknown';
     }
 
@@ -1019,14 +1228,50 @@ document.addEventListener('DOMContentLoaded', () => {
     githubModal.addEventListener('click', (e) => {
         if (e.target === githubModal) closeGithubModal();
     });
+    if (btnOpenHowToPlay) btnOpenHowToPlay.addEventListener('click', openHowToPlayModal);
+    if (btnCloseHowToPlay) btnCloseHowToPlay.addEventListener('click', closeHowToPlayModal);
+    howToPlayModal.addEventListener('click', (e) => {
+        if (e.target === howToPlayModal) closeHowToPlayModal();
+    });
+
+    btnPrevStep.addEventListener('click', () => {
+        if (currentDemoStep > 1) {
+            setDemoStep(currentDemoStep - 1);
+        }
+    });
+
+    btnNextStep.addEventListener('click', () => {
+        if (currentDemoStep < 3) {
+            setDemoStep(currentDemoStep + 1);
+        } else {
+            closeHowToPlayModal();
+        }
+    });
+
+    stepCards.forEach((card) => {
+        card.addEventListener('click', () => {
+            setDemoStep(parseInt(card.dataset.step, 10));
+        });
+    });
+
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
         if (!githubModal.classList.contains('hidden')) {
             closeGithubModal();
             return;
         }
-        if (!resultsModal.classList.contains('hidden')) closeResults();
-        if (!soundModal.classList.contains('hidden')) closeSoundModal();
+        if (!resultsModal.classList.contains('hidden')) {
+            closeResults();
+            return;
+        }
+        if (!soundModal.classList.contains('hidden')) {
+            closeSoundModal();
+            return;
+        }
+        if (!howToPlayModal.classList.contains('hidden')) {
+            closeHowToPlayModal();
+            return;
+        }
     });
 
     function getBoardColumnAtX(clientX) {
