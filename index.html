@@ -205,7 +205,7 @@
             <!-- Game Modes Section -->
             <div class="lobby-agents-section">
                 <div class="lobby-agents-header-row">
-                    <h3>Game Modes</h3>
+                    <h3>Choose your play style</h3>
                     <button type="button" id="btn-open-how-to-play" class="btn btn-secondary icon-text-btn">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
                         How to play
@@ -221,7 +221,7 @@
                             </span>
                             <h4>Random AI</h4>
                         </div>
-                        <p>Uniformly random selection of legal moves. Operates with zero search tree lookahead, representing the lower baseline of player intelligence.</p>
+                        <p>Plays random moves. Operates with zero search tree lookahead.</p>
                     </div>
                     
                     <!-- Rule-Based AI -->
@@ -232,7 +232,7 @@
                             </span>
                             <h4>Rule-Based AI</h4>
                         </div>
-                        <p>Applies sequential rule heuristics: plays winning columns, blocks immediate opponent win paths, and prioritizes central board control.</p>
+                        <p>Plays winning moves, blocks opponent wins, and prioritizes central board control.</p>
                     </div>
                     
                     <!-- Minimax AI -->
@@ -243,18 +243,18 @@
                             </span>
                             <h4>Minimax AI</h4>
                         </div>
-                        <p>Evaluates board positions using Minimax search and Alpha-Beta pruning at Depth 4. Formulates optimal counter-play assuming a rational opponent.</p>
+                        <p>Evaluates board states using Depth 4 Minimax search with Alpha-Beta pruning.</p>
                     </div>
 
-                    <!-- Local Pass & Play -->
-                    <div class="agent-info-card special-local-card">
+                    <!-- Play with Friends -->
+                    <div class="agent-info-card">
                         <div class="agent-info-header">
                             <span class="agent-icon local-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.2-3.2 3.5-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg>
                             </span>
-                            <h4>Local Pass & Play</h4>
+                            <h4>Play with Friends</h4>
                         </div>
-                        <p>Challenge a friend locally. Alternate turns manually on the same screen. No AI decision assistance, raw tactical skill.</p>
+                        <p>Challenge a friend locally. Alternate turns manually on the same screen.</p>
                     </div>
                 </div>
             </div>
@@ -555,6 +555,11 @@
             </div>
             
             <div class="how-to-play-body">
+                <div class="how-to-play-visual">
+                    <div class="demo-board" id="demo-board"></div>
+                    <div class="demo-caption" id="demo-caption">Step 1: Alternating turns...</div>
+                </div>
+
                 <div class="how-to-play-info">
                     <div class="step-panels-container">
                         <div class="step-panel active" data-step="1">
@@ -570,11 +575,6 @@
                             <p>Align 4 of your discs in a continuous line—either horizontally, vertically, or diagonally—to win the match.</p>
                         </div>
                     </div>
-                </div>
-                
-                <div class="how-to-play-visual">
-                    <div class="demo-board" id="demo-board"></div>
-                    <div class="demo-caption" id="demo-caption">Step 1: Alternating turns...</div>
                 </div>
             </div>
             

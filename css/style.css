@@ -1950,7 +1950,7 @@ footer .members {
 }
 
 .lobby-agents-header-row h3 {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
     margin: 0;
     letter-spacing: -0.01em;
@@ -1959,7 +1959,7 @@ footer .members {
 .agent-cards-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 20px;
     margin-bottom: 24px;
     width: 100%;
 }
@@ -1979,8 +1979,8 @@ footer .members {
 .agent-info-card {
     background-color: rgba(17, 24, 39, 0.7);
     border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 18px;
+    border-radius: 16px;
+    padding: 26px 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -2024,24 +2024,10 @@ footer .members {
 }
 
 .agent-info-card p {
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-secondary);
     line-height: 1.45;
     margin: 0;
-}
-
-/* Local Multiplayer Card stands out */
-.special-local-card {
-    border: 1.5px solid transparent;
-    background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--p1-color) 0%, var(--p2-color) 100%);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.05);
-}
-
-.special-local-card:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.15);
 }
 
 .lobby-agents-illustration {
@@ -2075,7 +2061,7 @@ footer .members {
 
 .how-to-play-body {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 28px;
     margin: 22px 0 24px;
     align-items: stretch;
@@ -2148,7 +2134,7 @@ footer .members {
 }
 
 .step-dot-label {
-    font-size: 11.5px;
+    font-size: 13.5px;
     font-weight: 550;
     color: var(--text-secondary);
     transition: color 0.3s ease;
@@ -2170,7 +2156,10 @@ footer .members {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 12px 6px;
+    padding: 24px 32px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
 }
 
 .step-panels-container {
@@ -2189,16 +2178,16 @@ footer .members {
 }
 
 .step-panel h3 {
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 600;
     color: #ffffff;
     margin: 0;
 }
 
 .step-panel p {
-    font-size: 13.5px;
+    font-size: 14.5px;
     color: var(--text-secondary);
-    line-height: 1.55;
+    line-height: 1.6;
     margin: 0;
 }
 
