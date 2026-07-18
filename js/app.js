@@ -525,7 +525,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 4. Update Back and Next buttons state
         if (btnPrevStep) {
-            btnPrevStep.disabled = step === 1;
+            btnPrevStep.disabled = false;
+            btnPrevStep.textContent = step === 1 ? 'Close' : 'Back';
         }
         if (btnNextStep) {
             btnNextStep.textContent = step === 3 ? "Got it!" : "Next";
@@ -1262,6 +1263,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnPrevStep.addEventListener('click', () => {
             if (currentDemoStep > 1) {
                 setDemoStep(currentDemoStep - 1);
+            } else {
+                closeHowToPlayModal();
             }
         });
     }
