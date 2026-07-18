@@ -1068,7 +1068,7 @@ input[type="range"] {
     width: calc(var(--cell-size) + 2px);
     height: calc(var(--cell-size) + 2px);
     transform: translate(-50%, -50%);
-    border: 2px dotted currentColor;
+    border: 2.5px dashed currentColor;
     border-radius: 50%;
     pointer-events: none;
     z-index: 3;
