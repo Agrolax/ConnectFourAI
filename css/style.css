@@ -2301,7 +2301,11 @@ footer .members {
         grid-template-columns: 1fr;
         gap: 20px;
     }
+    /* Animation above step title/subtitle on phone */
     .how-to-play-visual {
+        order: -1;
+    }
+    .how-to-play-info {
         order: 1;
     }
     .stepper-horizontal {
